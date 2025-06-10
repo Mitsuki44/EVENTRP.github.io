@@ -15,10 +15,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <!-- 
-        Подключаем библиотеку wasm-media-encoders для кодирования в OGG Vorbis прямо в браузере.
-        WasmMediaEncoder.min.js загружается из CDN, а ogg.wasm будет загружаться из той же папки.
+        Подключаем ffmpeg.wasm.
+        Это WebAssembly-версия FFmpeg, работающая прямо в браузere.
+        Загрузка скрипта может занять некоторое время при первом запуске.
     -->
-    <script src="https://unpkg.com/wasm-media-encoders/dist/umd/WasmMediaEncoder.min.js"></script>
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/ffmpeg.min.js" xintegrity="sha384-yEFh2gA3K9ifbb1VsoUAMlQo6iO9C7v561P+P780k2zXG0gKjTq2sR79D+q3v/S/" crossorigin="anonymous"></script>
 
     <style>
         body {
@@ -39,10 +40,40 @@
             background-clip: text;
             text-fill-color: transparent;
         }
-        .btn-toggle-active {
-            background-color: #ec4899; /* bg-pink-500 */
-            color: white;
-            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+        .lds-ring {
+          display: inline-block;
+          position: relative;
+          width: 20px;
+          height: 20px;
+        }
+        .lds-ring div {
+          box-sizing: border-box;
+          display: block;
+          position: absolute;
+          width: 16px;
+          height: 16px;
+          margin: 2px;
+          border: 2px solid #fff;
+          border-radius: 50%;
+          animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+          border-color: #fff transparent transparent transparent;
+        }
+        .lds-ring div:nth-child(1) {
+          animation-delay: -0.45s;
+        }
+        .lds-ring div:nth-child(2) {
+          animation-delay: -0.3s;
+        }
+        .lds-ring div:nth-child(3) {
+          animation-delay: -0.15s;
+        }
+        @keyframes lds-ring {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
         }
     </style>
 </head>
@@ -56,7 +87,7 @@
                     <h1 class="text-4xl md:text-5xl font-bold text-gradient tracking-wider">
                         MP3 в OGG Конвертер
                     </h1>
-                    <p class="text-slate-400 mt-2">Ретро-конвертер на максимальной скорости</p>
+                    <p class="text-slate-400 mt-2">Ретро-конвертер на базе FFMPEG</p>
                 </header>
 
                 <hr class="border-slate-700/50 my-8">
@@ -75,40 +106,25 @@
                                     <span class="mt-2 block font-semibold text-slate-300">Нажмите, чтобы загрузить</span>
                                     <span class="block text-xs text-slate-400">или перетащите файл сюда</span>
                                 </div>
-                                <input id="file-upload" name="file-upload" type="file" class="sr-only" accept=".mp3">
+                                <input id="file-upload" name="file-upload" type="file" class="sr-only" accept=".mp3,audio/*">
                             </label>
                             <p id="file-name" class="mt-4 text-center text-pink-400 font-medium truncate"></p>
                         </div>
                     </div>
-
-                    <!-- Шаг 2: Дополнительные опции -->
-                    <div>
-                        <h2 class="text-2xl font-semibold text-slate-200 flex items-center gap-3">
-                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-teal-500 text-white font-bold">2</span>
-                            Дополнительные опции
-                        </h2>
-                        <div class="mt-4 p-6 bg-slate-800/50 rounded-lg border border-slate-700 flex flex-col md:flex-row gap-4">
-                            <button id="fade-in-btn" type="button" class="flex-1 text-center bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-3 px-4 rounded-lg transition-all duration-200">
-                                Плавное начало
-                            </button>
-                            <button id="fade-out-btn" type="button" class="flex-1 text-center bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-3 px-4 rounded-lg transition-all duration-200">
-                                Плавное затухание
-                            </button>
-                        </div>
-                    </div>
                     
-                    <!-- Шаг 3: Конвертация -->
+                    <!-- Шаг 2: Конвертация -->
                     <div>
                         <h2 class="text-2xl font-semibold text-slate-200 flex items-center gap-3">
-                             <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">3</span>
+                             <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">2</span>
                              Начать процесс
                         </h2>
                         <div class="mt-4 flex flex-col items-center gap-4">
                             <button id="convert-btn" type="button" disabled class="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-blue-500/50 transition-all duration-300">
-                                <span>Конвертировать</span>
+                                <span id="convert-btn-text">Конвертировать</span>
+                                <div id="loader" class="hidden lds-ring"><div></div><div></div><div></div><div></div></div>
                             </button>
                              <a id="download-btn" href="#" download="converted.ogg" class="hidden w-full md:w-auto flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-teal-500/50 transition-all duration-300">
-                                <span>Скачать файл</span>
+                                <span>Скачать OGG</span>
                             </a>
                         </div>
                     </div>
@@ -121,162 +137,110 @@
     </div>
 
     <script>
-        window.onload = async () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            const { createFFmpeg, fetchFile } = FFmpeg;
+
             const statusText = document.getElementById('status-text');
             const convertBtn = document.getElementById('convert-btn');
+            const convertBtnText = document.getElementById('convert-btn-text');
+            const loader = document.getElementById('loader');
             const fileUploadInput = document.getElementById('file-upload');
             const fileNameDisplay = document.getElementById('file-name');
             const downloadBtn = document.getElementById('download-btn');
-            const fadeInBtn = document.getElementById('fade-in-btn');
-            const fadeOutBtn = document.getElementById('fadeOut-btn');
 
             let selectedFile = null;
-            let fadeInEnabled = false;
-            let fadeOutEnabled = false;
-            let oggEncoder = null; 
+            let ffmpeg; // Объявляем ffmpeg здесь
+            let ffmpegLoaded = false;
 
-            // Инициализация Ogg кодировщика через WebAssembly.
-            // Файл ogg.wasm должен находиться в той же директории, что и этот HTML-файл.
-            statusText.textContent = "Loading encoding engine...";
-            try {
-                if (typeof WasmMediaEncoder === 'undefined' || typeof WasmMediaEncoder.createOggEncoder === 'undefined') {
-                    throw new Error("WasmMediaEncoder library is not loaded from CDN.");
-                }
-                // Загружаем WASM-модуль по относительному пути
-                oggEncoder = await WasmMediaEncoder.createOggEncoder({ 
-                    wasm: 'ogg.wasm' 
-                }); 
-                statusText.textContent = "Engine ready. Select a file.";
-            } catch (error) {
-                console.error("Failed to load WASM Ogg encoder:", error);
-                statusText.textContent = "Error: Failed to load encoding engine. Check console for details.";
-                convertBtn.disabled = true;
-                return;
-            }
+            const loadFFmpeg = async () => {
+                statusText.textContent = 'Загрузка ядра FFMPEG (до ~30МБ)...';
+                ffmpeg = createFFmpeg({
+                    log: true,
+                    // Используем CDN для загрузки ядра ffmpeg
+                    corePath: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+                });
+                await ffmpeg.load();
+                ffmpegLoaded = true;
+                statusText.textContent = 'Движок готов. Выберите файл.';
+            };
             
+            // Начинаем загрузку ffmpeg сразу после загрузки страницы
+            loadFFmpeg().catch(err => {
+                console.error("FFmpeg loading error:", err);
+                statusText.textContent = 'Ошибка загрузки FFMPEG. Обновите страницу.';
+            });
+
             const handleFileSelect = (e) => {
                 const files = e.target.files || e.dataTransfer?.files;
                 if (!files || files.length === 0) {
                     selectedFile = null;
                     fileNameDisplay.textContent = '';
-                    statusText.textContent = 'No file selected.';
+                    statusText.textContent = 'Файл не выбран.';
+                    convertBtn.disabled = true;
                     return;
                 }
                 selectedFile = files[0];
                 if (!selectedFile.type.startsWith('audio/')) {
-                    statusText.textContent = 'Error: Please select an audio file (e.g., .mp3, .wav).';
+                    statusText.textContent = 'Ошибка: Пожалуйста, выберите аудиофайл.';
                     fileUploadInput.value = '';
                     selectedFile = null;
                     fileNameDisplay.textContent = '';
+                    convertBtn.disabled = true;
                     return;
                 }
                 fileNameDisplay.textContent = selectedFile.name;
-                statusText.textContent = `Ready to convert: ${selectedFile.name}`;
+                statusText.textContent = `Готов к конвертации: ${selectedFile.name}`;
                 downloadBtn.classList.add('hidden');
-                convertBtn.disabled = false;
+                convertBtn.disabled = !ffmpegLoaded;
             };
 
             const convertFile = async () => {
-                if (!selectedFile) {
-                    statusText.textContent = 'First, select a file.';
-                    return;
-                }
-                if (!oggEncoder) {
-                    statusText.textContent = 'Encoding engine not loaded. Please refresh.';
+                if (!selectedFile || !ffmpegLoaded) {
+                    statusText.textContent = ffmpegLoaded ? 'Сначала выберите файл.' : 'FFMPEG еще не загружен.';
                     return;
                 }
 
                 convertBtn.disabled = true;
+                loader.classList.remove('hidden');
+                convertBtnText.textContent = 'Конвертация...';
                 downloadBtn.classList.add('hidden');
-                statusText.textContent = 'Reading file...';
+                statusText.textContent = 'Чтение файла...';
 
                 try {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const fileReader = new FileReader();
-
-                    fileReader.onload = async (e) => {
-                        try {
-                            statusText.textContent = 'Decoding audio... This may take a while for large files.';
-                            const audioBuffer = await audioContext.decodeAudioData(e.target.result);
-
-                            // --- Параметры аудио для конвертации ---
-                            const targetSampleRate = 48000;
-                            const numberOfChannels = 1; // Моно
-                            
-                            statusText.textContent = 'Resampling audio (48kHz) and converting to mono...';
-                            
-                            const offlineContext = new OfflineAudioContext(
-                                numberOfChannels, 
-                                audioBuffer.duration * targetSampleRate, 
-                                targetSampleRate
-                            );
-                            const bufferSource = offlineContext.createBufferSource();
-                            bufferSource.buffer = audioBuffer;
-                            bufferSource.connect(offlineContext.destination);
-                            bufferSource.start();
-                            const resampledBuffer = await offlineContext.startRendering();
-                            const finalAudioData = resampledBuffer.getChannelData(0);
-
-                            // Применение эффектов плавного появления/затухания
-                            if(fadeInEnabled) {
-                                let fadeDuration = Math.min(2, resampledBuffer.duration); // не более 2 секунд
-                                for(let i = 0; i < targetSampleRate * fadeDuration; i++) {
-                                    finalAudioData[i] *= (i / (targetSampleRate * fadeDuration));
-                                }
-                            }
-                            if(fadeOutEnabled) {
-                                let fadeDuration = Math.min(2, resampledBuffer.duration); // не более 2 секунд
-                                let startIndex = finalAudioData.length - (targetSampleRate * fadeDuration);
-                                for(let i = startIndex; i < finalAudioData.length; i++) {
-                                     finalAudioData[i] *= 1 - ((i - startIndex) / (targetSampleRate * fadeDuration));
-                                }
-                            }
-
-                            // --- Кодирование в OGG ---
-                            statusText.textContent = 'Encoding to OGG...';
-                            
-                            oggEncoder.configure({
-                                sampleRate: targetSampleRate,
-                                numberOfChannels: numberOfChannels,
-                                vbrQuality: 3.0 // Качество (от -0.1 до 10.0)
-                            });
-
-                            oggEncoder.encode([finalAudioData]);
-                            const blob = oggEncoder.finalize();
-
-                            // --- Создание ссылки на скачивание ---
-                            const url = URL.createObjectURL(blob);
-                            downloadBtn.href = url;
-                            const originalName = selectedFile.name.split('.').slice(0, -1).join('.');
-                            downloadBtn.download = `${originalName}.ogg`;
-                            
-                            downloadBtn.classList.remove('hidden');
-                            statusText.textContent = 'Done! File is ready for download.';
-
-                        } catch (err) {
-                            console.error("Audio processing error:", err);
-                            statusText.textContent = `Error during audio processing: ${err.message || 'Unknown error'}. Ensure it is a valid MP3 file.`;
-                        } finally {
-                            convertBtn.disabled = false;
-                        }
-                    };
+                    const inputFileName = 'input.mp3';
+                    const outputFileName = 'output.ogg';
                     
-                    fileReader.onerror = (e) => {
-                        console.error("FileReader error:", e);
-                        statusText.textContent = 'Error reading file.';
-                        convertBtn.disabled = false;
-                    };
+                    ffmpeg.FS('writeFile', inputFileName, await fetchFile(selectedFile));
 
-                    fileReader.readAsArrayBuffer(selectedFile);
+                    statusText.textContent = 'Запуск конвертации... Это может занять время.';
+                    
+                    // Команда для ffmpeg: -i [входной_файл] -c:a [кодек] [выходной_файл]
+                    // libvorbis - это кодек для OGG
+                    await ffmpeg.run('-i', inputFileName, '-c:a', 'libvorbis', outputFileName);
+
+                    statusText.textContent = 'Создание файла для скачивания...';
+                    const data = ffmpeg.FS('readFile', outputFileName);
+                    
+                    const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/ogg' }));
+                    downloadBtn.href = url;
+                    
+                    const originalName = selectedFile.name.split('.').slice(0, -1).join('.');
+                    downloadBtn.download = `${originalName}.ogg`;
+                    
+                    downloadBtn.classList.remove('hidden');
+                    statusText.textContent = 'Готово! Файл можно скачивать.';
 
                 } catch (error) {
-                    console.error("Critical error in convertFile:", error);
-                    statusText.textContent = 'A critical error occurred. Check console.';
+                    console.error("FFmpeg conversion error:", error);
+                    statusText.textContent = 'Произошла ошибка во время конвертации.';
+                } finally {
                     convertBtn.disabled = false;
+                    loader.classList.add('hidden');
+                    convertBtnText.textContent = 'Конвертировать';
                 }
             };
 
-            // Функционал Drag and drop
+            // Drag and drop
             const dropZone = fileUploadInput.parentElement;
             ['dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, e => e.preventDefault()));
             dropZone.addEventListener('dragover', () => dropZone.classList.add('border-pink-400'));
@@ -287,19 +251,9 @@
                 handleFileSelect({ target: fileUploadInput });
             });
 
-            // Переключатели опций
-            fadeInBtn.addEventListener('click', () => {
-                fadeInEnabled = !fadeInEnabled;
-                fadeInBtn.classList.toggle('btn-toggle-active', fadeInEnabled);
-            });
-            fadeOutBtn.addEventListener('click', () => {
-                fadeOutEnabled = !fadeOutEnabled;
-                fadeOutBtn.classList.toggle('btn-toggle-active', fadeOutEnabled);
-            });
-
             fileUploadInput.addEventListener('change', handleFileSelect);
             convertBtn.addEventListener('click', convertFile);
-        };
+        });
     </script>
 </body>
 </html>
