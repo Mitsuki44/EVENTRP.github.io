@@ -507,7 +507,7 @@ const itemsList = [
             let finalCustomInfo = customInfoColor !== 'Standart' ? `${customInfoColor}${customInfoRaw}</color>` : customInfoRaw;
             const scriptBody = `${role};${finalCustomInfo};${nickname};${health};${items};${ammoString};${infoSum}`;
             
-            const command = playerId ? `/clscript ${playerId} ${scriptBody}` : scriptBody;
+            const command = playerId ? `clscript ${playerId} ${scriptBody}` : scriptBody;
             document.getElementById('output-box').textContent = command;
         };
 
