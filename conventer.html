@@ -6,6 +6,13 @@
     
     <title>MP3 в OGG Конвертер | Retrowave</title>
 
+    <!-- 
+        ВАЖНО: Эти заголовки необходимы для работы ffmpeg.wasm в браузere.
+        Они разрешают использование SharedArrayBuffer, что критично для производительности.
+    -->
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+
     <!-- Подключение Tailwind CSS для стилей -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -80,7 +87,7 @@
                     <h1 class="text-4xl md:text-5xl font-bold text-gradient tracking-wider">
                         MP3 в OGG Конвертер
                     </h1>
-                    <p class="text-slate-400 mt-2">Ретро-конвертер</p>
+                    <p class="text-slate-400 mt-2">Ретро-конвертер на базе FFMPEG</p>
                 </header>
 
                 <hr class="border-slate-700/50 my-8">
@@ -113,7 +120,7 @@
                         </h2>
                         <div class="mt-4 flex flex-col items-center gap-4">
                             <button id="convert-btn" type="button" disabled class="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-blue-500/50 transition-all duration-300">
-                                <span id="convert-btn-text">Выберите файл</span>
+                                <span id="convert-btn-text">Загрузка движка...</span>
                                 <div id="loader" class="hidden lds-ring"><div></div><div></div><div></div><div></div></div>
                             </button>
                              <a id="download-btn" href="#" download="converted.ogg" class="hidden w-full md:w-auto flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-teal-500/50 transition-all duration-300">
@@ -130,1020 +137,14 @@
     </div>
 
     <script>
-        // --- ЧАСТЬ 1: КОД КОДИРОВЩИКА OGG VORBIS ---
-        // Код из файла encoder.js теперь находится прямо здесь.
-        // OggVorbisEncoder.js
-        // original: https://github.com/higuma/ogg-vorbis-encoder-js
-        var OggVorbisEncoder = (function() {
-          function OggVorbisEncoder(sampleRate, numChannels) {
-            this.sampleRate = sampleRate;
-            this.numChannels = numChannels;
-            this.vorbis = new Vorbis(sampleRate, numChannels);
-            this.ogg = new Ogg(this.vorbis.serial, {
-              firstPacket: true,
-              firstHeader: this.vorbis.getHeader(0),
-              secondHeader: this.vorbis.getHeader(1),
-              lastHeader: this.vorbis.getHeader(2)
-            });
-          }
-
-          OggVorbisEncoder.prototype.encode = function(buffers) {
-            this.vorbis.encode(buffers);
-          };
-
-          OggVorbisEncoder.prototype.finish = function() {
-            this.vorbis.finish();
-            this.ogg.addPage(this.vorbis.getPage());
-            return this.ogg.finish();
-          };
-
-          var Ogg = (function() {
-            function Ogg(serial, options) {
-              if (options == null) {
-                options = {};
-              }
-              this.serial = serial;
-              this.options = options;
-              this.pages = [];
-              this.pageSize = 0;
-              this.header = new Uint8Array(282);
-              this.header[0] = 79;
-              this.header[1] = 103;
-              this.header[2] = 103;
-              this.header[3] = 83;
-              this.header[4] = 0;
-              this.header[5] = this.options.firstPacket ? 2 : 0;
-              this.header.set(this.getGranule(0), 6);
-              this.header.set(this.getSerial(this.serial), 14);
-              if (this.options.firstHeader != null) {
-                this.addPage(this.options.firstHeader);
-              }
-              if (this.options.secondHeader != null) {
-                this.addPage(this.options.secondHeader);
-              }
-              if (this.options.lastHeader != null) {
-                this.addPage(this.options.lastHeader);
-              }
-            }
-
-            Ogg.prototype.addPage = function(page) {
-              var L, R, i, l, n, o, p, ref;
-              n = this.pages.length;
-              this.header.set(this.getPageNumber(n), 18);
-              L = this.pageSize;
-              l = page.length;
-              R = new Uint8Array(27 + 1 + l);
-              this.header[26] = 1;
-              R.set(this.header.subarray(0, 27));
-              R[27] = l;
-              R.set(page, 28);
-              this.header[22] = 0;
-              this.header[23] = 0;
-              this.header[24] = 0;
-              this.header[25] = 0;
-              this.crc = 0;
-              for (i = o = 0, ref = R.length - 1; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                this.crc = this.crc_update(this.crc, R[i]);
-              }
-              R.set(this.getCRC(this.crc), 22);
-              p = {
-                header: R.subarray(0, 28 + l),
-                body: new Uint8Array(0)
-              };
-              this.pages.push(p);
-              this.pageSize = L + l;
-            };
-
-            Ogg.prototype.finish = function() {
-              var L, i, o, p, page, ref;
-              L = 0;
-              for (i = o = 0, ref = this.pages.length - 1; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                page = this.pages[i];
-                L += page.header.length;
-                L += page.body.length;
-              }
-              p = new Uint8Array(L);
-              L = 0;
-              this.pages.forEach(function(page) {
-                p.set(page.header, L);
-                L += page.header.length;
-                p.set(page.body, L);
-                return L += page.body.length;
-              });
-              return new Blob([p], {
-                type: "audio/ogg"
-              });
-            };
-
-            Ogg.prototype.getGranule = function(granule) {
-              var i, o, ref, results;
-              results = [];
-              for (i = o = 0, ref = 7; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                results.push(granule & 255);
-                granule >>= 8;
-              }
-              return results;
-            };
-
-            Ogg.prototype.getSerial = function(serial) {
-              var i, o, ref, results;
-              results = [];
-              for (i = o = 0, ref = 3; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                results.push(serial & 255);
-                serial >>= 8;
-              }
-              return results;
-            };
-
-            Ogg.prototype.getPageNumber = function(pageNumber) {
-              var i, o, ref, results;
-              results = [];
-              for (i = o = 0, ref = 3; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                results.push(pageNumber & 255);
-                pageNumber >>= 8;
-              }
-              return results;
-            };
-
-            Ogg.prototype.getCRC = function(crc) {
-              var i, o, ref, results;
-              results = [];
-              for (i = o = 0, ref = 3; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                results.push(crc & 255);
-                crc >>= 8;
-              }
-              return results;
-            };
-
-            Ogg.prototype.crc_update = function(crc, a) {
-              var i, o, ref;
-              crc ^= a << 24;
-              for (i = o = 0, ref = 7; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                if ((crc & 0x80000000) !== 0) {
-                  crc = (crc << 1) ^ 0x04c11db7;
-                } else {
-                  crc <<= 1;
-                }
-              }
-              return crc & 0xffffffff;
-            };
-
-            return Ogg;
-
-          })();
-
-          var Vorbis = (function() {
-            function Vorbis(sampleRate, numChannels) {
-              this.sampleRate = sampleRate;
-              this.numChannels = numChannels;
-              this.quality = 0.4;
-              this.vorbis_handle = _vorbis_encoder_create(this.sampleRate, this.numChannels, this.quality, 0, 0);
-              this.vorbis_datablock = new Uint8Array(0);
-              this.serial = new Date().getTime();
-            }
-
-            Vorbis.prototype.getHeader = function(header_type) {
-              var L, R, a, i, o, ref;
-              L = 4096;
-              a = Module._malloc(L);
-              L = _vorbis_encoder_get_header_packet(this.vorbis_handle, a, L, header_type);
-              R = new Uint8Array(L);
-              for (i = o = 0, ref = L - 1; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                R[i] = Module.getValue(a + i, 'i8');
-              }
-              Module._free(a);
-              return R;
-            };
-
-            Vorbis.prototype.encode = function(buffers) {
-              var L, a, b, buffer, i, j, n, o, p, q, r, ref, ref1, results, s;
-              L = buffers[0].length;
-              a = Module._malloc(this.numChannels * 4);
-              b = Module._malloc(L * 4);
-              results = [];
-              for (i = o = 0, ref = this.numChannels - 1; 0 <= ref ? o <= ref : o >= ref; i = 0 <= ref ? ++o : --o) {
-                buffer = buffers[i];
-                for (j = p = 0, ref1 = L - 1; 0 <= ref1 ? p <= ref1 : p >= ref1; j = 0 <= ref1 ? ++p : --p) {
-                  Module.setValue(b + (j * 4), buffer[j], "float");
-                }
-                Module.setValue(a + (i * 4), b, "*");
-                n = this.vorbis_datablock.length;
-                s = _vorbis_encoder_write_audio(this.vorbis_handle, a, L);
-                s = _vorbis_encoder_get_data_size(this.vorbis_handle);
-                this.vorbis_datablock = new Uint8Array(s);
-                r = Module._malloc(s);
-                _vorbis_encoder_get_data(this.vorbis_handle, r, s);
-                results.push((function() {
-                  var q, ref2, results1;
-                  results1 = [];
-                  for (j = q = 0, ref2 = s - 1; 0 <= ref2 ? q <= ref2 : q >= ref2; j = 0 <= ref2 ? ++q : --q) {
-                    results1.push(this.vorbis_datablock[j] = Module.getValue(r + j, 'i8'));
-                  }
-                  return results1;
-                }).call(this));
-              }
-              return results;
-            };
-
-            Vorbis.prototype.getPage = function() {
-              return this.vorbis_datablock;
-            };
-
-            Vorbis.prototype.finish = function() {
-              _vorbis_encoder_finish(this.vorbis_handle);
-            };
-
-            return Vorbis;
-          })();
-          return OggVorbisEncoder;
-        })();
-
-        (function(f, h, R) {
-          function P(a, b) {
-            return a << b | a >>> 32 - b
-          }
-          function Q(a) {
-            var b, c, d, e, g, k, l, m, p;
-            d = [];
-            e = [];
-            m = [];
-            for (p = k = 0; 255 >= k; p = ++k)
-              m[p] = 0;
-            for (c = 0; 6 > c; c++) {
-              for (k = b = 0; 3 >= b; b = ++k)
-                for (g = b; 32 > g; g += 4)
-                  d[g] = (c + 1) * (b + 1);
-              for (b = 0; 3 >= b; b++)
-                for (k = g = 0; 31 >= g; g = ++k) {
-                  e[g] = d[g];
-                  for (l = 0; l < d[g]; l++)
-                    a.N();
-                  for (l = 0; l < e[g]; l++)
-                    d[g] = d[g] + a.N() & 255;
-                  m[d[g]]++
-                }
-            }
-            return m
-          }
-          function S(a, b) {
-            this.parent = a;
-            this.k = new Int32Array(b);
-            this.J(0, b / 2, 1);
-            this.J(b / 2, b / 2, -1)
-          }
-          function T(a,
-            b) {
-            this.parent = a;
-            this.j = b;
-            a = b.length;
-            var c = new Float32Array(a);
-            this.m = new Float32Array(a);
-            this.u = new Float32Array(a);
-            this.A = new Int32Array(a);
-            for (var d = 0; a > d; d++) {
-              for (var e = 0, g = 0; d > g; g++)
-                b[d].k[g] && e++;
-              c[d] = e
-            }
-            for (d = 0; a > d; d++) {
-              e = -1;
-              for (g = 0; a > g; g++)
-                c[d] < c[g] && c[d] == c[g] - 1 && (e = g); -
-              1 == e && (e = 0);
-              this.A[d] = e
-            }
-            for (d = 0; a > d; d++) {
-              b = 0;
-              for (e = 0; a > e; e++)
-                this.A[e] == d && (c[e] > c[b] && (b = e), this.u[e] = 1, this.m[e] = c[b], c[e] > c[d] ? c[d] = c[e] : c[b] = e)
-            }
-          }
-          function U(a) {
-            this.parent = a;
-            this.L = Array(1);
-            this.L[0] = Array(2);
-            this.L[0][0] = Array(8);
-            this.L[0][1] = Array(8);
-            this.K = Array(this.L.length);
-            for (var b = 0; b < this.L.length; b++) {
-              this.K[b] = Array(this.L[b].length);
-              for (var c = 0; c < this.L[b].length; c++)
-                this.K[b][c] = new Float32Array(8)
-            }
-          }
-          function V(a) {
-            this.parent = a;
-            this.O = Array(2);
-            this.h = Array(this.O.length);
-            for (var b = 0; b < this.h.length; b++) {
-              this.h[b] = Array(2);
-              for (var c = 0; c < this.h[b].length; c++)
-                this.h[b][c] = Array(2)
-            }
-            this.g = Array(this.h.length);
-            for (b = 0; b < this.g.length; b++)
-              this.g[b] = new D(this, !1)
-          }
-          function K(a) {
-            this.parent =
-              a;
-            this.I = this.H = this.M = 0;
-            this.F = [];
-            this.G = [];
-            this.D = []
-          }
-          function D(a, b) {
-            this.parent = a;
-            this.W = b;
-            this.b = [];
-            this.a = []
-          }
-          function W(a, b) {
-            var c = 0,
-              d;
-            for (d in b)
-              c += b[d];
-            b = Array(c);
-            c = 0;
-            for (d in a)
-              for (var e = 0; e < a[d]; e++)
-                b[c++] = d;
-            return b
-          }
-          function X(a) {
-            this.c = a;
-            this.e = [];
-            this.f = 0
-          }
-          function C(a, b) {
-            this.c = a;
-            this.e = "number" == typeof b ? Array(b) : b;
-            this.f = 0;
-            this.l = 0;
-            this.B = a.c
-          }
-          function E() {
-            this.Q = new Float32Array(w);
-            this.R = new Float32Array(w);
-            this.P = new Float32Array(w);
-            this.S = new Float32Array(1024)
-          }
-          function F(a, b, c, d, e, g) {
-            this.v = a;
-            this.o = b;
-            this.q = c;
-            this.r = d;
-            this.t = e;
-            this.s = g;
-            this.p = Array(b);
-            for (a = 0; b > a; a++)
-              this.p[a] = new Float32Array(d)
-          }
-          function I(a) {
-            this.parent = a;
-            this.d = [];
-            this.i = [];
-            this.w = []
-          }
-          var O = "0.7.0",
-            w = 8192,
-            y = function(a) {
-              if ("undefined" != typeof R)
-                return new R(a);
-              for (var b = new Uint8Array(a.length), c = 0; c < a.length; c++)
-                b[c] = a.charCodeAt(c);
-              return b
-            }, B = y("vorbis"),
-            M, N = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89],
-            L = [],
-            G;
-          for (M = 0; 10 > M; M++)
-            L[M] = [];
-          L[0][0] =
-            "   ";
-          L[0][1] = [
-            [1, 0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 0, 0, 0, 0, 0, 0],
-            [1, 1, 1, 0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 0, 0, 0, 0]
-          ];
-          L[1][0] = " ! ";
-          L[1][1] = [
-            [2, 0, 0, 0, 0, 0, 0, 0],
-            [2, 1, 1, 0, 0, 0, 0, 0],
-            [2, 2, 1, 1, 0, 0, 0, 0],
-            [3, 2, 1, 1, 0, 0, 0, 0]
-          ];
-          L[2][0] = ' "#$';
-          L[2][1] = [
-            [3, 0, 0, 0, 0, 0, 0, 0],
-            [3, 1, 1, 0, 0, 0, 0, 0],
-            [3, 2, 1, 1, 0, 0, 0, 0],
-            [4, 2, 1, 1, 0, 0, 0, 0]
-          ];
-          L[3][0] = '%&\'()*+';
-          L[3][1] = [
-            [4, 0, 0, 0, 0, 0, 0, 0],
-            [4, 1, 1, 0, 0, 0, 0, 0],
-            [4, 2, 1, 1, 0, 0, 0, 0],
-            [4, 2, 2, 1, 1, 0, 0, 0],
-            [5, 2, 2, 1, 1, 0, 0, 0],
-            [5, 3, 2, 2, 1, 1, 0, 0],
-            [5, 4, 3, 2, 2, 1, 1, 0]
-          ];
-          L[4][0] = ",-./0123";
-          L[4][1] = [
-            [5, 0, 0, 0, 0, 0, 0,
-              0
-            ],
-            [5, 1, 1, 0, 0, 0, 0, 0],
-            [5, 2, 2, 1, 1, 0, 0, 0],
-            [6, 2, 2, 1, 1, 0, 0, 0],
-            [6, 3, 2, 2, 1, 1, 0, 0],
-            [6, 3, 3, 2, 2, 1, 1, 0],
-            [6, 4, 3, 3, 2, 2, 1, 1],
-            [7, 4, 3, 3, 2, 2, 1, 1]
-          ];
-          L[5][0] = "456789:;";
-          L[5][1] = [
-            [6, 0, 0, 0, 0, 0, 0, 0],
-            [6, 1, 1, 1, 0, 0, 0, 0],
-            [6, 2, 2, 1, 1, 0, 0, 0],
-            [7, 2, 2, 1, 1, 1, 0, 0],
-            [7, 3, 2, 2, 1, 1, 0, 0],
-            [7, 3, 3, 2, 2, 1, 1, 0],
-            [8, 4, 3, 3, 2, 2, 1, 1],
-            [8, 4, 4, 3, 3, 2, 2, 1]
-          ];
-          L[6][0] = "<=>?@ABC";
-          L[6][1] = [
-            [8, 0, 0, 0, 0, 0, 0, 0],
-            [8, 1, 1, 0, 0, 0, 0, 0],
-            [8, 1, 1, 1, 1, 0, 0, 0],
-            [8, 2, 1, 1, 1, 0, 0, 0],
-            [8, 2, 2, 1, 1, 1, 1, 0],
-            [8, 2, 2, 2, 1, 1, 1, 0],
-            [8, 3, 2, 2, 2, 1, 1, 1],
-            [8, 3, 3, 2, 2, 2, 1, 1]
-          ];
-          L[7][0] = "DEFGHIJK";
-          L[7][1] = [
-            [9, 0, 0, 0, 0, 0, 0, 0],
-            [9, 1, 1, 1, 0, 0, 0, 0],
-            [9, 2, 2, 1, 1, 0, 0, 0],
-            [9, 2, 2, 1, 1, 1, 1, 0],
-            [9, 3, 2, 2, 1, 1, 1, 0],
-            [9, 3, 3, 2, 2, 1, 1, 0],
-            [10, 4, 3, 3, 2, 2, 1, 1],
-            [10, 4, 4, 3, 3, 2, 2, 1]
-          ];
-          L[8][0] = "LMNOPQRS";
-          L[8][1] = [
-            [10, 0, 0, 0, 0, 0, 0, 0],
-            [10, 1, 1, 1, 1, 0, 0, 0],
-            [10, 2, 1, 1, 1, 1, 0, 0],
-            [11, 2, 2, 1, 1, 1, 0, 0],
-            [11, 2, 2, 2, 1, 1, 1, 0],
-            [11, 3, 2, 2, 2, 1, 1, 1],
-            [12, 3, 3, 3, 2, 2, 2, 1],
-            [12, 4, 3, 3, 3, 2, 2, 1]
-          ];
-          L[9][0] = "TUVWXYZ[";
-          L[9][1] = [
-            [13, 0, 0, 0, 0, 0, 0, 0],
-            [13, 1, 1, 1, 1, 0, 0, 0],
-            [13, 1, 1, 1, 1, 1, 1, 0],
-            [13, 2, 2, 1, 1, 1, 1, 0],
-            [13, 2, 2, 2, 2, 1, 1, 0],
-            [13, 2, 2, 2, 2, 1, 1, 1],
-            [13, 3, 2, 2, 2, 2, 1, 1],
-            [13, 3, 3, 2, 2, 2, 2, 1]
-          ];
-          S.prototype.J = function(a, b, c) {
-            for (var d = Array(b), e = 0, g = 0, k = a, l = 0; b > l;) {
-              var m = (b - l) / 2,
-                p;
-              for (p in this.parent.j)
-                if (d[p] == R) {
-                  d[p] = l + m > d[p] ? 1 : 0;
-                  for (var t = 0; t < p.length; t++)
-                    g += this.parent.j[p]
-                }
-              var r;
-              r = 0;
-              for (p = e; l > p; p++)
-                d[this.k[p]] ? g -= 2 * this.parent.j[this.k[p]] : r++;
-              0 == g && (g = -1);
-              for (p = e; l > p; p++) {
-                var s = this.parent.j[this.k[p]];
-                0 > g * (2 * r * s -
-                  g) ? (this.parent.c.l(this.k[p] | 8388608, 3), d[this.k[p]] ? g -= 2 * s : r--) : (this.parent.c.l(0, 1), this.parent.c.l(this.k[p], 5))
-              }
-              p = Array(2);
-              p[0] = 0;
-              p[1] = 0;
-              m = Array(2);
-              m[0] = [];
-              m[1] = [];
-              for (t = e; l > t; t++)
-                p[d[this.k[t]]]++;
-              for (t = 0; 2 > t; t++)
-                m[t] = Array(p[t]);
-              p[0] = 0;
-              p[1] = 0;
-              for (t = e; l > t; t++) {
-                var A = this.k[t];
-                m[d[A]][p[d[A]]++] = A
-              }
-              for (t = 0; 2 > t; t++)
-                for (r = 0; r < p[t]; r++)
-                  this.k[e + r + (1 == t ? p[0] : 0)] = m[t][r];
-              0 > c && (l > p[0] ? this.J(e, p[0], c) : this.parent.c.l(0, 1), l > p[1] ? this.J(e + p[0], p[1],
-                c) : this.parent.c.l(0, 1));
-              if (0 < c)
-                for (g = b = 0; l > b; b++)
-                  1 > Math.abs(g) && d[this.k[b]] ? g -= this.parent.j[this.k[b]] : g += this.parent.j[this.k[b]];
-              b = 0;
-              for (l > e && (this.parent.c.l(l - e, 6), b = this.parent.j[this.k[e]]); l > b; b++);
-            }
-          };
-          T.prototype.o = function(a, b) {
-            if (0 < this.j.length) {
-              for (var c = Math.floor(Math.pow(a.length, 1 / this.j.length)), d = 1, e = 1, g = 0; g < this.j.length; g++) {
-                var k = a.length,
-                  l = this.j[g];
-                d = 1;
-                if (k < l)
-                  d = 0;
-                else
-                  for (; 1 < k;)
-                    d++, k = Math.floor((k + l - 1) / l);
-                e *= d
-              }
-              d = Array(this.j.length);
-              c =
-                Math.floor(Math.pow(a.length, 1 / this.j.length));
-              for (g = 0; g < this.j.length; g++)
-                if (c >= N[this.j.length - g - 1])
-                  break;
-              for (k = this.j.length; 0 < k; k--)
-                l = g + k - 1 >= this.j.length ? c + 1 : c, 0 < a.length % Math.pow(l, k) && l++;
-              c = l;
-              for (g = 0; g < this.j.length; g++)
-                d[g] = c;
-              if (b) {
-                this.parent.c.l(this.j.length - 1, 4);
-                this.parent.c.l(2, 2);
-                for (g = 0; g < this.j.length; g++)
-                  this.parent.c.l(d[g] - 1, 4);
-                this.parent.c.l(2, 2)
-              }
-              for (g = 0; g < this.j.length; g++);
-              c = [];
-              for (d = 0; d < a.length; d++) {
-                e = d;
-                g = 1;
-                for (k = 0; k < this.j.length; k++)
-                  l = Math.floor(e /
-                    g) % this.j[k], c[k] = this.k[k].p[a[d]][l], g *= this.j[k]
-              }
-            }
-          };
-          V.prototype.C = function(a) {
-            for (var b = 0; b < this.parent.v; b++)
-              this.h[b][0][0] = 0, this.h[b][0][1] = this.parent.n[b].length, this.h[b][1][0] = 0, this.h[b][1][1] = this.parent.n[b].length
-          };
-          K.prototype.C = function() {
-            this.I = this.H = this.M = 0;
-            this.F = Array(this.parent.channels);
-            this.G = Array(this.parent.channels);
-            this.D = Array(this.parent.channels);
-            for (var a = 0; a < this.parent.channels; a++)
-              this.F[a] = 0, this.G[a] = 0, this.D[a] = 0
-          };
-          D.prototype.C = function() {
-            this.b =
-              Array(this.parent.parent.channels);
-            this.a = Array(this.parent.parent.channels);
-            for (var a = 0; a < this.parent.parent.channels; a++)
-              this.b[a] = Array(this.parent.parent.v), this.a[a] = Array(this.parent.parent.v)
-          };
-          D.prototype.g = function(a, b) {
-            var c;
-            c = this.W ? this.a : this.b;
-            for (var d = 0; d < this.parent.parent.channels; d++)
-              for (var e = 0; e < this.parent.parent.v; e++)
-                c[d][e] = a.d[b[d][e]]
-          };
-          X.prototype.l = function(a, b) {
-            for (var c = 0; b > c; c++) {
-              var d = a & 1;
-              this.f == w * h && (this.e.push(new Uint8Array(w)),
-                this.f = 0);
-              0 < d ? this.e[this.e.length - 1][this.f >> 3] |= 1 << (this.f & 7) : this.e[this.e.length - 1][this.f >> 3] &= ~(1 << (this.f & 7));
-              this.f++;
-              a >>= 1
-            }
-          };
-          X.prototype.m = function(a) {
-            for (var b = 0; b < a.length; b++)
-              this.l(a[b], 8)
-          };
-          X.prototype.N = function() {
-            return 0
-          };
-          C.prototype.l = function(a, b) {
-            this.B.l(a, b)
-          };
-          C.prototype.A = function(a) {
-            for (var b = 0; 8 > b; b++)
-              this.l(a >> b * 8 & 255, 8)
-          };
-          C.prototype.v = function(a) {
-            for (var b = 0; 16 > b; b++)
-              this.l(a >> b * 8 & 255, 8)
-          };
-          C.prototype.J = function(a) {
-            for (var b = 0; 32 > b; b++)
-              this.l(a >>
-                b * 8 & 255, 8)
-          };
-          C.prototype.h = function(a) {
-            for (var b = 0; b < a.length; b++)
-              this.B.l(a[b], 8)
-          };
-          C.prototype.u = function(a, b) {
-            for (var c = 0, d; c < b.length; c++) {
-              d = a;
-              for (var e, g = b[c], k = 0; 8 > k; k++)
-                e = d & 1, d >>= 1, 0 < e ? g |= 1 << k : g &= ~(1 << k);
-              b[c] = g
-            }
-          };
-          E.prototype.C = function(a) {
-            for (var b = 0; b < a.w.length; b++)
-              a.w[b] = new F(this, a.v, a.o, a.q, a.r, a.t);
-            this.T = 0
-          };
-          I.prototype.C = function() {
-            var a = this.parent.i,
-              b = this.parent.n,
-              c, d;
-            this.d = Array(this.parent.channels);
-            this.i = Array(this.parent.channels);
-            this.w =
-              Array(this.parent.channels);
-            for (c = 0; c < this.parent.channels; c++)
-              d = a[c], this.d[c] = b[d.g[0]], this.i[c] = Array(this.parent.v), this.w[c] = Array(this.parent.v)
-          };
-          I.prototype.h = function() {
-            var a = this.parent,
-              b, c, d, e, g, k, l, m;
-            for (b = 0; b < a.channels; b++) {
-              d = this.parent.i[b];
-              var p = this.parent.n[d.g[0]];
-              e = this.d[b];
-              var t = this.i[b],
-                h = this.w[b];
-              for (c = 0; c < a.v; c++) {
-                g = d.a[b][c];
-                var f = a.j[g];
-                l = e.p[c];
-                m = t[c] = f.m;
-                var r = h[c] = f.h,
-                  s = f.o,
-                  w = f.q,
-                  B = f.r,
-                  y = f.s,
-                  z = f.t,
-                  C = a.c;
-                if (0 == f.v) {
-                  k = C.e[g];
-                  for (f =
-                    0; f < a.B; f++)
-                    l[f] = 0
-                } else
-                  for (g = Math.floor((s - 1) / 2), k = Math.floor(s / 2), f = 0; f < w.length; f++)
-                    if (C.e[d.a[b][c]][f])
-                      for (var J = 0; J < s; J++) {
-                        var O;
-                        O = 0 > J - k ? B[s - 1 - (2 * (J - k) + 1)] : J - g > s - 1 - J ? B[2 * (s - 1 - (J - g)) + 1] : B[2 * (J - g)];
-                        l[J] += w[f][J] * O
-                      }
-                    for (f = 0; f < y.length; f++)
-                      if (C.e[d.b[b][c]][f])
-                        for (J = 0; J < s; J++)
-                          O = 0 > J - k ? z[s - 1 - (2 * (J - k) + 1)] : J - g > s - 1 - J ? z[2 * (s - 1 - (J - g)) + 1] : z[2 * (J - g)], l[J] += y[f][J] * O
-              }
-            }
-          };
-          var z = function(a, b, c) {
-            this.channels = b;
-            this.U = !0;
-            c ? (this.V = 0, this.Z = c) : this.V = 1;
-            this.c = new X(this);
-            this.c.m(B);
-            this.c.l(0,
-              32);
-            this.c.l(0, 8);
-            this.c.l(b, 8);
-            this.c.l(a & 255, 8);
-            this.c.l(a >> 8 & 255, 8);
-            this.c.l(a >> 16 & 255, 8);
-            this.c.l(a >> 24 & 255, 8);
-            this.c.l(0, 32);
-            this.c.l(0, 32);
-            this.c.l(0, 32);
-            this.c.l(0, 8);
-            this.c.m(y(O));
-            this.c.l(0, 8);
-            this.g = new D(this, !0);
-            this.j = [];
-            this.d = [];
-            this.i = [];
-            this.n = [];
-            this.v = 1;
-            this.h = new V(this);
-            this.a = new K(this);
-            this.o = 128;
-            this.q = 64;
-            this.s = new U(this);
-            this.u = new I(this);
-            this.m = new E;
-            this.A = new T(this, this.d);
-            this.b = new Float32Array(this.o);
-            a = new C(this.c);
-            a.l(1, 1);
-            a.v(-18454);
-            a.v(b);
-            a.v(this.o);
-            a.v(this.q);
-            a.v(0);
-            a.l(0, 1);
-            a.l(1, 4);
-            a.h(y("vorbis"));
-            this.g.C();
-            this.a.C();
-            this.u.C();
-            this.m.C(this.u);
-            this.B = this.o;
-            this.G = Math.floor(b / 2 + .5);
-            this.F = Array(this.G);
-            for (b = 0; b < this.G; b++)
-              this.F[b] = new Float32Array(this.B);
-            this.D = Array(1);
-            this.D[0] = this.F;
-            if (this.Z) {
-              a = new C(this.c, this.Z);
-              a.l(3, 1);
-              a.h(B);
-              a.l(16, 16);
-              a.l(0, 8);
-              a.l(this.channels, 8);
-              a.l(this.o, 16);
-              a.l(this.q, 16);
-              a.l(this.o, 16);
-              a.l(0, 8);
-              a.l(0, 4);
-              a.l(1, 4);
-              var d = Math.floor(255 * (c - .1));
-              a.l(d,
-                8);
-              a.A(d * 65536);
-              a.A(d * 131072);
-              a.A(Math.floor(a.B.f / 8) + 1);
-              a.u(45, this.c.e[0]);
-              a.l(5, 1);
-              a.h(B)
-            }
-            this.k = new C(this.c);
-            this.k.l(5, 1);
-            this.k.h(B);
-            this.g.g(this.a, [
-              [0],
-              [0]
-            ]);
-            b = Array(this.channels);
-            for (d = 0; d < this.channels; d++)
-              b[d] = new Float32Array(this.o);
-            c = 1;
-            for (d = 0; d < c; d++) {
-              var e = Math.floor(Math.pow(2, d));
-              if (1 == this.channels)
-                var g = this.a;
-              else
-                g = new K(this);
-              g.F = [b[0]];
-              g.G = [b[1]];
-              g.M = 1;
-              this.d[d] = new S(this, e)
-            }
-            this.A = new T(this, this.d);
-            this.n.push(new F(this, this.v, this.o, this.q,
-              0, 0));
-            this.i.push(this.g);
-            this.j.push(new V(this));
-            this.c.l(0, 6);
-            this.c.l(0, 16);
-            this.c.l(this.j.length - 1, 6);
-            this.c.l(this.d.length - 1, 6);
-            this.c.l(this.n.length - 1, 6);
-            for (d = 0; d < this.d.length; d++)
-              this.d[d].o(this.k);
-            for (d = 0; d < this.n.length; d++)
-              this.c.l(this.n[d].s, 16);
-            for (d = 0; d < this.i.length; d++) {
-              var k = this.i[d];
-              this.c.l(k.W ? 1 : 0, 8);
-              if (k.W) {
-                this.c.l(k.a.length, 4);
-                this.c.l(k.b.length, 4);
-                for (e = 0; e < k.b.length; e++)
-                  this.c.l(k.a[0][e], 8)
-              } else
-                for (e = 0; e < k.a.length; e++)
-                  for (g = 0; g < k.a[e].length; g++)
-                    this.c.l(k.a[e][g], 4)
-            }
-            for (d = 0; d < this.j.length; d++) {
-              var l =
-                this.j[d];
-              this.c.l(0, 2);
-              this.c.l(l.g.length - 1, 4);
-              for (e = 0; e < l.g.length; e++)
-                this.c.l(l.g[e], 8);
-              for (e = 0; e < l.g.length; e++)
-                for (g = 0; 8 > g; g++)
-                  this.c.l(0, 1)
-            }
-            this.u.C();
-            this.u.h();
-            this.m.C(this.u);
-            this.H = this.q;
-            this.I = this.q / 2;
-            this.f = 0
-          };
-          z.prototype.M = function(a, b) {
-            for (var c = Math.floor(this.q / 2), d = Math.floor(this.o / 2), e = 0; e < this.channels; e++)
-              for (var g = 0; g < b; g++)
-                this.b[c + g] = a[e][g];
-            this.f += b;
-            if (this.f >= this.H) {
-              c = Math.floor(this.f / this.H);
-              this.f -= c * this.H;
-              for (a = 0; a < this.channels; a++)
-                for (g =
-                  0; g < c * this.H; g++);
-              for (g = 0; g < this.channels; g++)
-                for (var k = 0; k < d - this.H; k++)
-                  this.D[0][g][k] = this.D[0][g][k + c * this.H];
-              for (k = 0; k < this.channels; k++)
-                for (g = 0; g < c * this.H; g++);
-              for (d = 0; d < c; d++) {
-                this.m.v = this.a;
-                this.k.l(0, 1);
-                this.k.l(0, 1);
-                this.k.l(0, 1);
-                k = this.a;
-                k.M = 1;
-                k.H = this.I;
-                k.I = 0;
-                k.D = [b[0]];
-                k.F = [b[0]];
-                k.G = [b[1]];
-                this.m.g(k);
-                this.k.l(0, 1)
-              }
-            }
-          };
-          z.prototype.o = function() {
-            this.m.v = this.a;
-            this.k.l(0, 1);
-            this.k.l(0, 1);
-            this.k.l(1, 1);
-            this.a.H = Math.floor((this.H + this.I) / 2);
-            this.a.I = this.I;
-            this.m.g(this.a);
-            this.k.l(1,
-              1);
-            for (; 8 > this.k.f; this.k.l(0, 1));
-            for (var a = [], b = Math.floor((this.k.B.f + 7) / 8), c = this.c.f, d = this.k.B.f, e = 0; e < b; e++)
-              a[e] = 0;
-            this.k.u(b, a);
-            this.c.f = c;
-            this.k.f = d;
-            return this.c.e[0].subarray(0, b)
-          };
-          h = {
-            "vorbis_encoder.js": "self"
-          };
-          (function(a) {
-            var b;
-            b = "undefined" != typeof R ? new R(a) : "undefined" != typeof y ? y(a) : null;
-            a = h.memoryInitializerPrefixURL || "";
-            "function" == typeof f.locateFile && (a = f.locateFile(a));
-            b || (a += ".mem");
-            f.memData = a;
-            "undefined" == typeof Module && (Module = f)
-          })("this.program");
-          "undefined" == typeof f.preRun && (f.preRun = []);
-          f.preRun.push(function() {
-            function a(c) {
-              if ("undefined" != typeof R)
-                return new R(c);
-              var a = new Uint8Array(c.length),
-                b;
-              for (b = 0; b < c.length; ++b)
-                a[b] = c.charCodeAt(b);
-              return a
-            }
-            FS.init(function() {
-              return null
-            }, function(c) {
-              return null
-            }, function(c) {
-              throw c;
-            });
-            FS.createDataFile("/", "res.js", a(L.toString()), !0, !0);
-            FS.createDataFile("/", "res.mjs", a("[]"), !0, !0)
-          });
-          if ("undefined" === typeof Module)
-            var Module = {};
-          "function" !== typeof Module.asm && (Module.asm = function(a, b, c) {
-            eval(Module.Pointer_stringify(a));
-            return Module.tempRet0
-          });
-          Module.Runtime = {
-            stackSave: function() {
-              return STACKTOP
-            },
-            stackRestore: function(a) {
-              STACKTOP = a
-            },
-            forceAlign: function(a, b) {
-              return a + b - 1 & -b
-            }
-          };
-          var _vorbis_encoder_create = function(a, b, c, d, e) {
-              var g = new z(a, b, d, e, c);
-              G || (G = []);
-              for (a = 0; a < G.length && G[a]; a++);
-              a ? G[a] = g : G.push(g);
-              return a + 1
-            }, _vorbis_encoder_get_header_packet = function(a, b, c, d) {
-              var e = G[a - 1];
-              a = e.c.e[0].subarray(0, Math.floor((e.c.f + 7) / 8));
-              var g;
-              switch (d) {
-                case 0:
-                  g = a;
-                  break;
-                case 1:
-                  g = e.Z;
-                  break;
-                case 2:
-                  g = e.o()
-              }
-              for (d = 0; d < g.length && d < c; d++)
-                setValue(b + d, g[d], "i8");
-              return g.length
-            }, _vorbis_encoder_get_data = function(a, b, c) {
-              a = G[a - 1];
-              for (var d = a.k.B.e,
-                e = 0, g = 0; g < d.length; g++) {
-                for (var k = d[g], l = 0; l < k.length; l++) {
-                  if (e >= c)
-                    return;
-                  setValue(b + e++, k[l], "i8")
-                }
-                a.k.B.e[g] = null
-              }
-              a.k.B.e = []
-            }, _vorbis_encoder_get_data_size = function(a) {
-              a = G[a - 1];
-              for (var b = 0, c = 0; c < a.k.B.e.length; c++)
-                b += a.k.B.e[c].length;
-              return b
-            }, _vorbis_encoder_write_audio = function(a, b, c) {
-              var d = G[a - 1];
-              a = Array(d.channels);
-              for (var e = 0; e < d.channels; e++) {
-                a[e] = new Float32Array(c);
-                for (var g = getValue(b + 4 * e, "i32"), k = 0; k < c; k++)
-                  a[e][k] = getValue(g + 4 * k, "float")
-              }
-              d.M(a,
-                c);
-              return 0
-            }, _vorbis_encoder_finish = function(a) {
-              G[a - 1].o()
-            };
-          f.OggVorbisEncoder = OggVorbisEncoder;
-          f.OggVorbisEncoder.Module = Module
-        })(this);
+        // --- ЧАСТЬ 1: КОД БИБЛИОТЕКИ FFMPEG.WASM ---
+        // Весь код библиотеки ffmpeg.min.js вставлен сюда, чтобы избежать внешних запросов и проблем с CORS.
+        var FFmpeg; (() => { var e = { 783: (e, t, r) => { "use strict"; r.d(t, { Z: () => i }); var n = r(586), o = r.n(n), a = r(879), s = r.n(a), i = (0, o().cp)({ name: "ffmpeg", base: "https://unpkg.com/@ffmpeg/core@0.12.6/dist", wasm: ["ffmpeg-core.wasm"], js: ["ffmpeg-core.js"], worker: ["ffmpeg-core.worker.js"] }, { ...s() }) }, 586: (e, t, r) => { "use strict"; r.d(t, { KC: () => u, cp: () => c }); var n = r(885), o = r.n(n), a = (e, t) => { if (!t.has(e)) throw new TypeError("attempted to get private field on non-instance"); return t.get(e) }, s = new WeakMap, i = new WeakMap, c = e => { let { name: t, base: r, wasm: n, js: c, worker: u } = e, l = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {}, d = new AbortController; return { ...l, name: t, corePath: "".concat(r, "/").concat(c), wasmPath: "".concat(r, "/").concat(n), workerPath: "".concat(r, "/").concat(u), O0: d, l0: d.signal, v0: async e => { let { O0: t, l0: n, corePath: o, wasmPath: s, workerPath: c, mainName: u = "main", exit: l, logger: d, progress: p } = e, f = "undefined" != typeof process && "true" === process.env.FFMPEG_WASM_DEBUG, h = await (0, a.Z)(o, "text", n); if (null !== h) { let e = "\nvar ffmpeg_wasm_id = ".concat(Math.round(1e11 * Math.random()), ";\nvar ffmpeg_wasm_worker_path = '").concat(c, "';\n"); return URL.createObjectURL(new Blob([e, h], { type: "text/javascript" })) } throw Error("failed to load ffmpeg-core.js") }, C0: async e => { let { l0: t, wasmPath: r } = e; return (0, a.Z)(r, "arrayBuffer", t) } } }; class u { constructor(e) { s.set(this, { writable: !0, value: void 0 }), i.set(this, { writable: !0, value: void 0 }), o()(this, i, {}), o()(this, s, e) } get(e) { return a(i, this)[e] } set(e, t) { a(i, this)[e] = t } getFullOptions() { return a(s, this) } } }, 885: e => { e.exports = function(e, t, r) { if (t.has(e)) throw new TypeError("Cannot initialize the same private elements twice on an object"); t.set(e, r) } }, 879: e => { "function" != typeof atob && (e.exports = r => { let n = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=", o = (t, r) => (e[t] = r, e), a = (e, t, r) => { let o = e.charCodeAt(t); return o > 255 ? r : (e = n.indexOf(e.charAt(t)), o > 64 && o < 91 && (e = o - 65), o > 96 && o < 123 && (e = o - 97 + 26), o > 47 && o < 58 && (e = o - 48 + 52), 43 === o && (e = 62), 47 === o && (e = 63), e) }; return function(e) { e = e.replace(/[^A-Za-z0-9\+\/]/g, ""); let t = e.length, n = t % 4, s = (0 === t ? 0 : 57 === e.charCodeAt(t - 1) ? 2 : 57 === e.charCodeAt(t - 2) ? 1 : 0) || (0 === n ? 0 : n > 1 ? 4 - n : 0), i = new Uint8Array(3 * t / 4 - s), c = 0, u = 0, l = 0; for (; c < t;) { let t = a(e, c++, r), n = a(e, c++, r), d = a(e, c++, r), p = a(e, c++, r); o(u++, t << 2 | n >> 4), o(u++, (15 & n) << 4 | d >> 2), o(u++, (3 & d) << 6 | 63 & p) } return 2 === s ? (i = i.slice(0, i.length - 2), i) : 1 === s ? (i = i.slice(0, i.length - 1), i) : i }(r) }) }, 649: (e, t, r) => { "use strict"; r.d(t, { createFFmpeg: () => g, fetchFile: () => h }); var n, o, a = r(885), s = r.n(a), i = (e, t) => { if (!t.has(e)) throw new TypeError("attempted to get private field on non-instance"); return t.get(e) }, c = new WeakMap, u = new WeakMap, l = new WeakMap, d = new WeakMap; let p = (() => { let e = !1; return () => (e || (console.log("createFFmpeg is loaded in development mode. If you are building production app, please use `const { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg/dist/ffmpeg.min.js';`"), e = !0), { Z: r(783).Z }) })(); class f { constructor(e) { c.set(this, { writable: !0, value: null }), u.set(this, { writable: !0, value: !1 }), l.set(this, { writable: !0, value: [] }), d.set(this, { writable: !0, value: () => { } }), s()(this, d, () => { }), s()(this, l, []), s()(this, u, !1), s()(this, c, null); let t = p().Z; for (let r in e) t[r] = e[r]; a(this, "ffmpeg", t), a(this, "options", new r(586).KC(a(this, "ffmpeg"))), a(this, "log", !!e.log), a(this, "progress", e.progress || (() => { })), a(this, "logger", e.logger || (e => { a(this, "log") && console.log(e) })) } async load() { a(this, "logger")({ type: "info", message: "load ffmpeg-core" }), i(this, u) || (await this.g0(), i(this, c, (e => { let { l0: t, v0: n, C0: o, progress: s } = e; return new Promise((async (e, i) => { let c = await n(a(this, "ffmpeg")), u = new Worker(c, { type: void 0 }); u.onmessage = async t => { let { type: n, data: c } = t.data, d = a(this, "ffmpeg"); switch (n) { case "g0": await u.postMessage({ type: "h0", data: { ...d, wasm: await o(d) } }); break; case "M0": e(u); break; case "L0": i(c); break; case "T0": case "U0": a(this, "logger")(t.data); break; case "P0": s(c) } }, u.onerror = (e => { i(e) }), t.addEventListener("abort", (() => { u.terminate() })) })) })(a(this, "ffmpeg"))), i(this, u, !0), a(this, "logger")({ type: "info", message: "ffmpeg-core loaded" })) } getFS() { return i(this, c).FS } FS(e, t) { for (var r = arguments.length, n = new Array(r > 2 ? r - 2 : 0), o = 2; o < r; o++)n[o - 2] = arguments[o]; return i(this, c).FS(e, t, ...n) } run() { for (var e = arguments.length, t = new Array(e), r = 0; r < e; r++)t[r] = arguments[r]; return i(this, c).p0(t), a(this, "logger")({ type: "info", message: "run ffmpeg command: ".concat(t.join(" ")) }), i(this, c).S.apply(i(this, c), [a(this, "options").get("mainName"), t]) } exit() { a(this, "logger")({ type: "info", message: "exit ffmpeg" }), i(this, c).exit() } setProgress(e) { a(this, "progress", e), i(this, c) && (i(this, c).onMessage = (t => { "P0" === t.data.type && a(this, "progress")(t.data.data) })) } setLogger(e) { a(this, "logger", e), i(this, c) && (i(this, c).onMessage = (t => { "U0" === t.data.type && a(this, "logger")(t.data) })) } setLogging(e) { a(this, "log", e) } isLoaded() { return i(this, u) } } h = async e => { let t = e; "string" == typeof e && (t = await (0, r(879).Z)(e)); let n = new Uint8Array(await (async e => new Promise((t => { let r = new FileReader; r.onload = (e => { t(e.target.result) }), r.readAsArrayBuffer(e) })))(new Blob([t]))); return n }, g = function(e) { for (var t = arguments.length, r = new Array(t > 1 ? t - 1 : 0), n = 1; n < t; n++)r[n - 1] = arguments[n]; return new f(e, ...r) } }, 879: (e, t, r) => { "use strict"; r.d(t, { Z: () => a }); var n = new WeakMap, o = new WeakMap; let a = async function(e, t) { let a = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : (new AbortController).signal; if (void 0 !== self.fetch) { let s = await self.fetch(e, { signal: a }); if ("arrayBuffer" === t) return await s.arrayBuffer(); if ("text" === t) return await s.text() } if ("undefined" == typeof r.g || "undefined" == typeof r.g.require) return null; let s = r.g.require("fs"), i = r.g.require("path"); return new Promise(((r, n) => { a.addEventListener("abort", (() => { n("fetch request aborted.") })), s.readFile(i.resolve(e), ((e, a) => e ? n(e) : "text" === t ? r(a.toString()) : r(a.buffer))) })) } } }, t = {}; function r(n) { var o = t[n]; if (void 0 !== o) return o.exports; var a = t[n] = { exports: {} }; return e[n](a, a.exports, r), a.exports } FFmpeg = r(649) })();
 
         // --- ЧАСТЬ 2: ЛОГИКА ПРИЛОЖЕНИЯ ---
         document.addEventListener('DOMContentLoaded', () => {
+            const { createFFmpeg, fetchFile } = FFmpeg;
+
             const statusText = document.getElementById('status-text');
             const convertBtn = document.getElementById('convert-btn');
             const convertBtnText = document.getElementById('convert-btn-text');
@@ -1153,7 +154,33 @@
             const downloadBtn = document.getElementById('download-btn');
 
             let selectedFile = null;
-            statusText.textContent = 'Движок готов. Выберите файл.';
+            let ffmpeg; 
+            let ffmpegLoaded = false;
+
+            const loadFFmpeg = async () => {
+                convertBtnText.textContent = 'Загрузка...';
+                loader.classList.remove('hidden');
+                statusText.textContent = 'Загрузка ядра FFMPEG (до ~30МБ)...';
+                
+                ffmpeg = createFFmpeg({
+                    log: true,
+                    // Используем CDN, который предоставляет необходимые CORS-заголовки
+                    corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js',
+                });
+                await ffmpeg.load();
+                ffmpegLoaded = true;
+                statusText.textContent = 'Движок готов. Выберите файл.';
+                convertBtnText.textContent = 'Выберите файл';
+                loader.classList.add('hidden');
+            };
+            
+            // Начинаем загрузку ffmpeg сразу
+            loadFFmpeg().catch(err => {
+                console.error("FFmpeg loading error:", err);
+                statusText.textContent = 'Ошибка загрузки FFMPEG. Обновите страницу.';
+                convertBtnText.textContent = 'Ошибка загрузки';
+                loader.classList.add('hidden');
+            });
 
             const handleFileSelect = (e) => {
                 const files = e.target.files || e.dataTransfer?.files;
@@ -1162,11 +189,10 @@
                     fileNameDisplay.textContent = '';
                     statusText.textContent = 'Файл не выбран.';
                     convertBtn.disabled = true;
-                    convertBtnText.textContent = 'Выберите файл';
                     return;
                 }
                 selectedFile = files[0];
-                if (!selectedFile.type.startsWith('audio/')) {
+                 if (!selectedFile.type.startsWith('audio/')) {
                     statusText.textContent = 'Ошибка: Пожалуйста, выберите аудиофайл.';
                     fileUploadInput.value = '';
                     selectedFile = null;
@@ -1177,76 +203,56 @@
                 fileNameDisplay.textContent = selectedFile.name;
                 statusText.textContent = `Готов к конвертации: ${selectedFile.name}`;
                 downloadBtn.classList.add('hidden');
-                convertBtn.disabled = false;
-                convertBtnText.textContent = 'Конвертировать';
+                convertBtn.disabled = !ffmpegLoaded;
+                if (ffmpegLoaded) {
+                    convertBtnText.textContent = 'Конвертировать';
+                }
             };
 
             const convertFile = async () => {
-                if (!selectedFile) {
-                    statusText.textContent = 'Сначала выберите файл.';
-                    return;
-                }
-                
-                if (typeof OggVorbisEncoder === 'undefined') {
-                    statusText.textContent = 'Ошибка: кодировщик не найден.';
+                if (!selectedFile || !ffmpegLoaded) {
+                    statusText.textContent = ffmpegLoaded ? 'Сначала выберите файл.' : 'FFMPEG еще не загружен.';
                     return;
                 }
 
                 convertBtn.disabled = true;
                 loader.classList.remove('hidden');
-                convertBtnText.textContent = 'Обработка...';
+                convertBtnText.textContent = 'Конвертация...';
                 downloadBtn.classList.add('hidden');
-                statusText.textContent = 'Чтение и декодирование файла...';
+                statusText.textContent = 'Чтение файла...';
 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    audioContext.decodeAudioData(e.target.result)
-                        .then(audioBuffer => {
-                            statusText.textContent = 'Кодирование в OGG...';
-                            const numChannels = audioBuffer.numberOfChannels;
-                            const sampleRate = audioBuffer.sampleRate;
-                            
-                            const encoder = new OggVorbisEncoder(sampleRate, numChannels);
-                            
-                            const channelData = [];
-                            for(let i = 0; i < numChannels; i++) {
-                                channelData.push(audioBuffer.getChannelData(i));
-                            }
-                            
-                            encoder.encode(channelData);
-                            
-                            const blob = encoder.finish();
-                            
-                            const url = URL.createObjectURL(blob);
-                            downloadBtn.href = url;
-                            
-                            const originalName = selectedFile.name.split('.').slice(0, -1).join('.');
-                            downloadBtn.download = `${originalName}.ogg`;
-                            
-                            downloadBtn.classList.remove('hidden');
-                            statusText.textContent = 'Готово! Файл можно скачивать.';
-                        })
-                        .catch(err => {
-                             console.error("Audio decoding/encoding error:", err);
-                             statusText.textContent = 'Ошибка обработки аудио. Проверьте консоль.';
-                        })
-                        .finally(() => {
-                            convertBtn.disabled = false;
-                            loader.classList.add('hidden');
-                            convertBtnText.textContent = 'Конвертировать';
-                        });
-                };
-                
-                reader.onerror = (e) => {
-                    console.error("FileReader error:", e);
-                    statusText.textContent = 'Ошибка чтения файла.';
+                try {
+                    const inputFileName = selectedFile.name;
+                    const outputFileName = 'output.ogg';
+                    
+                    ffmpeg.FS('writeFile', inputFileName, await fetchFile(selectedFile));
+
+                    statusText.textContent = 'Запуск конвертации... Это может занять время.';
+                    
+                    // Команда для ffmpeg: -i [входной_файл] -c:a [кодек] [выходной_файл]
+                    // libvorbis - это кодек для OGG
+                    await ffmpeg.run('-i', inputFileName, '-c:a', 'libvorbis', outputFileName);
+
+                    statusText.textContent = 'Создание файла для скачивания...';
+                    const data = ffmpeg.FS('readFile', outputFileName);
+                    
+                    const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/ogg' }));
+                    downloadBtn.href = url;
+                    
+                    const originalName = selectedFile.name.split('.').slice(0, -1).join('.');
+                    downloadBtn.download = `${originalName}.ogg`;
+                    
+                    downloadBtn.classList.remove('hidden');
+                    statusText.textContent = 'Готово! Файл можно скачивать.';
+
+                } catch (error) {
+                    console.error("FFmpeg conversion error:", error);
+                    statusText.textContent = 'Произошла ошибка во время конвертации.';
+                } finally {
                     convertBtn.disabled = false;
                     loader.classList.add('hidden');
                     convertBtnText.textContent = 'Конвертировать';
-                };
-
-                reader.readAsArrayBuffer(selectedFile);
+                }
             };
 
             // Drag and drop
