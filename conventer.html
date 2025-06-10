@@ -16,9 +16,10 @@
 
     <!-- 
         НОВАЯ ТЕХНОЛОГИЯ: Подключаем библиотеку для кодирования в OGG Vorbis (WebAssembly).
-        Используется wasm-media-encoders для более надежной работы.
+        Используется wasm-media-encoders.
+        ВАЖНО: WasmMediaEncoder.min.js и ogg.wasm должны быть размещены в той же папке, что и этот HTML-файл.
     -->
-    <script src="https://unpkg.com/wasm-media-encoders/dist/umd/WasmMediaEncoder.min.js"></script>
+    <script src="./WasmMediaEncoder.min.js"></script>
 
     <style>
         body {
@@ -121,7 +122,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => { // Changed to async to await WasmMediaEncoder
+        document.addEventListener('DOMContentLoaded', async () => {
             const statusText = document.getElementById('status-text');
             const convertBtn = document.getElementById('convert-btn');
             const fileUploadInput = document.getElementById('file-upload');
@@ -133,20 +134,18 @@
             let selectedFile = null;
             let fadeInEnabled = false;
             let fadeOutEnabled = false;
-            let oggEncoder = null; // To store the encoder instance
+            let oggEncoder = null; 
 
             // Initialize the WASM Ogg encoder
             statusText.textContent = "Loading encoding engine...";
             try {
-                // Ensure WasmMediaEncoder is available globally (from UMD build)
-                if (typeof WasmMediaEncoder === 'undefined' || typeof WasmMediaEncoder.createOggEncoder === 'undefined') {
-                    throw new Error("WasmMediaEncoder is not defined or createOggEncoder is missing.");
-                }
-                oggEncoder = await WasmMediaEncoder.createOggEncoder();
+                // IMPORTANT: Provide the path to the ogg.wasm file relative to this HTML file.
+                // Assuming ogg.wasm is in the same directory as this HTML.
+                oggEncoder = await WasmMediaEncoder.createOggEncoder({ wasm: './ogg.wasm' }); 
                 statusText.textContent = "Engine ready. Select a file.";
             } catch (error) {
                 console.error("Failed to load WASM Ogg encoder:", error);
-                statusText.textContent = "Error: Failed to load encoding engine. Check console for details.";
+                statusText.textContent = "Error: Failed to load encoding engine. Make sure 'ogg.wasm' is in the same folder. Check console for details.";
                 convertBtn.disabled = true;
                 return;
             }
@@ -204,27 +203,28 @@
                             statusText.textContent = 'Resampling audio (48kHz) and converting to mono...';
                             let finalAudioData;
 
-                            if (audioBuffer.sampleRate !== targetSampleRate || audioBuffer.numberOfChannels > 1) {
-                                const offlineContext = new OfflineAudioContext(numberOfChannels, audioBuffer.duration * targetSampleRate, targetSampleRate);
-                                const bufferSource = offlineContext.createBufferSource();
-                                bufferSource.buffer = audioBuffer;
-                                bufferSource.connect(offlineContext.destination);
-                                bufferSource.start();
-                                const resampledBuffer = await offlineContext.startRendering();
-                                finalAudioData = resampledBuffer.getChannelData(0); // Get mono channel
-                            } else {
-                                finalAudioData = audioBuffer.getChannelData(0); // Already mono and target sample rate
-                            }
+                            // Create an OfflineAudioContext to handle resampling and channel conversion
+                            const offlineContext = new OfflineAudioContext(
+                                numberOfChannels, 
+                                audioBuffer.duration * targetSampleRate, 
+                                targetSampleRate
+                            );
+                            const bufferSource = offlineContext.createBufferSource();
+                            bufferSource.buffer = audioBuffer;
+                            bufferSource.connect(offlineContext.destination);
+                            bufferSource.start();
+                            const resampledBuffer = await offlineContext.startRendering();
+                            finalAudioData = resampledBuffer.getChannelData(0); // Get mono channel data from the (potentially resampled) buffer
 
                             // Apply fade in/out effects if enabled
                             if(fadeInEnabled) {
-                                let fadeDuration = Math.min(2, audioBuffer.duration); // up to 2 seconds
+                                let fadeDuration = Math.min(2, resampledBuffer.duration); // up to 2 seconds of processed buffer
                                 for(let i = 0; i < targetSampleRate * fadeDuration; i++) {
                                     finalAudioData[i] *= (i / (targetSampleRate * fadeDuration));
                                 }
                             }
                             if(fadeOutEnabled) {
-                                let fadeDuration = Math.min(2, audioBuffer.duration); // up to 2 seconds
+                                let fadeDuration = Math.min(2, resampledBuffer.duration); // up to 2 seconds of processed buffer
                                 let startIndex = finalAudioData.length - (targetSampleRate * fadeDuration);
                                 for(let i = startIndex; i < finalAudioData.length; i++) {
                                      finalAudioData[i] *= 1 - ((i - startIndex) / (targetSampleRate * fadeDuration));
@@ -234,11 +234,14 @@
                             // --- Encode to OGG using wasm-media-encoders ---
                             statusText.textContent = 'Encoding to OGG...';
                             
-                            // Configure the encoder for OGG Vorbis
+                            // Reset and configure the encoder for OGG Vorbis
+                            // The `configure` method implicitly uses the `numberOfChannels` and `sampleRate`
+                            // that the `createOggEncoder` was initialized with or configured later.
+                            // However, it's good practice to ensure all parameters are explicitly set.
                             oggEncoder.configure({
                                 sampleRate: targetSampleRate,
-                                numberOfChannels: numberOfChannels,
-                                vbrQuality: 3.0 // Quality from -1.0 to 10.0 (3.0 is a good default)
+                                numberOfChannels: numberOfChannels, // This should always be 1
+                                vbrQuality: 3.0 // Quality from -1.0 (worst) to 10.0 (best). 3.0 is good.
                             });
 
                             // The encode method expects an array of Float32Array for channels
