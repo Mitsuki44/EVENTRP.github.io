@@ -3,289 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synthwave ASCII-арт Генератор</title>
+    <title>Главная - Event Tools</title>
+    <!-- Подключение Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключение шрифта Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* Применяем основной шрифт и стили для фона */
         body {
             font-family: 'Roboto', sans-serif;
-            background-image: url('https://media1.tenor.com/m/GiO4XNKti44AAAAd/retrowave-synthwave.gif');
-            background-attachment: fixed;
+            background-image: url('https://i.pinimg.com/originals/1a/a2/00/1aa2008c04d15f46d38b797cb1452ed4.gif');
             background-size: cover;
-            color: #e2e8f0; /* text-slate-200 */
+            background-attachment: fixed;
+            background-position: center;
         }
-        /* Custom scrollbar styles */
+
+        /* Стиль для градиентного текста в стиле Gemini */
+        .gemini-gradient-text {
+            background-image: linear-gradient(to right, #4285F4, #9B59B6, #EA4335, #FBBC05);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block; /* Необходимо для корректной работы градиента */
+        }
+        
+        /* Стилизация скроллбара для webkit-браузеров */
         ::-webkit-scrollbar {
-            width: 10px;
+            width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #1e293b; /* bg-slate-800 */
+            background-color: #1e293b; /* bg-slate-800 */
         }
         ::-webkit-scrollbar-thumb {
-            background: #475569; /* bg-slate-600 */
+            background-color: #475569; /* bg-slate-600 */
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #64748b; /* bg-slate-500 */
+            background-color: #64748b; /* bg-slate-500 */
         }
-        .gradient-text {
-            background-image: linear-gradient(to right, #a5b4fc, #f9a8d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        /* Стиль для курсора в эффекте печати */
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: #9B59B6;
+            animation: blink 0.7s infinite;
+            margin-left: 4px;
+            vertical-align: bottom;
         }
-        /* Hide content by default */
-        .accordion-content {
-            display: none;
-        }
-        /* Styles for the message box */
-        .message-box {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #1e293b; /* bg-slate-800 */
-            border: 1px solid #334155; /* border-slate-700 */
-            border-radius: 8px;
-            padding: 15px 25px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            display: none; /* Hidden by default */
-            color: #e2e8f0;
-            font-weight: bold;
+
+        /* Анимация мигания курсора */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <!-- Message Box -->
-    <div id="messageBox" class="message-box"></div>
+<body class="bg-slate-900 text-slate-300">
 
-    <div class="max-w-7xl mx-auto bg-slate-900/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-slate-700 shadow-lg space-y-8">
-        <!-- Главный заголовок -->
-        <h1 class="text-4xl md:text-5xl font-bold text-center gradient-text flex items-center justify-center gap-4">
-            <img src="https://media.tenor.com/W2S-qT1g2HwAAAAi/pixel-art-neon.gif" alt="Неоновая анимация" class="w-10 h-10 hidden sm:block">
-            ASCII-арт Генератор
-            <img src="https://media.tenor.com/W2S-qT1g2HwAAAAi/pixel-art-neon.gif" alt="Неоновая анимация" class="w-10 h-10 hidden sm:block">
-        </h1>
+    <!-- Основной контейнер страницы -->
+    <div class="min-h-screen flex items-center justify-center p-4">
+        
+        <!-- Центральная карточка с контентом -->
+        <div class="max-w-5xl w-full mx-auto bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-700 shadow-2xl p-6 md:p-8 text-center">
 
-        <hr class="border-slate-700">
+            <!-- Приветственный заголовок (будет заполнен через JS) -->
+            <h1 id="typing-heading" class="text-4xl md:text-5xl font-bold mb-6 min-h-[60px] md:min-h-[75px]">
+                <span class="gemini-gradient-text"></span>
+            </h1>
 
-        <!-- Секция для загрузки изображения -->
-        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 space-y-4">
-            <h4 class="text-xl font-semibold border-b border-slate-700 pb-2 text-slate-200">Генерация из изображения</h4>
-            <label for="imageUpload" class="block text-slate-300 font-medium mb-2">Загрузите изображение:</label>
-            <input type="file" id="imageUpload" accept="image/*" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 text-slate-300">
-            <div class="flex flex-col md:flex-row gap-4 mt-4">
-                <div class="flex-grow">
-                    <label for="imageChar" class="block text-slate-300 font-medium mb-2">Символ для арта:</label>
-                    <input type="text" id="imageChar" value="█" maxlength="1" class="w-20 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 text-slate-300 text-center">
-                </div>
-                <div class="flex-grow">
-                    <label for="imageWidth" class="block text-slate-300 font-medium mb-2">Ширина (px):</label>
-                    <input type="number" id="imageWidth" value="75" min="10" max="200" class="w-20 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 text-slate-300 text-center">
-                </div>
-                <div class="flex-grow">
-                    <label for="imageInvert" class="block text-slate-300 font-medium mb-2">Инвертировать:</label>
-                    <input type="checkbox" id="imageInvert" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 text-pink-400 rounded-lg focus:ring-blue-500">
-                </div>
+            <!-- Разделительная линия -->
+            <hr class="border-slate-700 my-6">
+            
+            <!-- Основной текст -->
+            <div id="main-text" class="text-lg text-slate-300 space-y-4">
+                <p>Добро пожаловать на рабочий портал <span class="font-bold text-white">EventRP</span>! Этот сайт — ваш главный инструмент для творчества и реализации идей.</p>
+                <p class="text-slate-400">Здесь собраны утилиты, созданные для упрощения вашей работы. Этот портал можно смело назвать единственным в своём роде.</p>
+                <p>Если вы получили доступ к этому сайту, но работаете в другом отделе, — это отличный повод задуматься о переходе в нашу команду. В <span class="font-bold text-white">EventRP</span> вы сможете раскрыть свой потенциал на 100%.</p>
+                <p>Мы ценим опыт, поэтому квалифицированные специалисты сразу получают соответствующую роль и все возможности для развития.</p>
+                <p class="mt-8 text-base text-slate-500 italic">В ином случае вы нищий.</p>
             </div>
-            <button id="generateImageAscii" class="w-full bg-blue-600 hover:bg-blue-700 transition-colors rounded-lg py-3 px-4 font-bold flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-4 4 4 4-4v4zM6 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
-                Сгенерировать изображение в ASCII
-            </button>
-            <canvas id="imageCanvas" class="hidden"></canvas>
+
         </div>
-
-        <!-- Вывод результата -->
-        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg p-6 space-y-4">
-            <h4 class="text-xl font-semibold border-b border-slate-700 pb-2 text-slate-200">Результат</h4>
-            <div class="bg-slate-700 border border-slate-600 rounded-lg p-4 relative">
-                <pre id="outputAscii" class="text-slate-300 whitespace-pre-wrap overflow-auto font-mono text-xs"></pre>
-                <div class="absolute top-2 right-2 flex gap-2">
-                    <button id="copyRaw" class="bg-indigo-600 hover:bg-indigo-700 transition-colors rounded-lg py-2 px-3 text-sm font-bold flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"></path><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"></path></svg>
-                        Копировать
-                    </button>
-                </div>
-            </div>
-            <div class="flex flex-col sm:flex-row gap-4 mt-4">
-                <button id="copyIntercom" class="w-full sm:w-1/2 bg-teal-500 hover:bg-teal-600 transition-colors rounded-lg py-3 px-4 font-bold flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2h-2.586l-3.586 3.586A1 1 0 019 17.586V15H4a2 2 0 01-2-2V5z"></path></svg>
-                    Подготовить Intercom?
-                </button>
-                <button id="copySpawntoy" class="w-full sm:w-1/2 bg-pink-500 hover:bg-pink-600 transition-colors rounded-lg py-3 px-4 font-bold flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.458 5.674c-.588-1.564-1.299-2.564-1.299-2.564a1 1 0 00-1.802 0s-.711 1-1.299 2.564c-.212.563-.388 1.164-.534 1.792-.096.417-.184.856-.252 1.309C6.07 9.569 5.86 10.5 5.86 10.5a1 1 0 001.98 0s.21-1.069.606-2.535c.068-.261.156-.52.264-.775.146-.34.316-.677.51-.994.4-.64.88-1.213 1.38-1.748.5-.535 1.05-1.025 1.62-1.487a1 1 0 00-.73-1.761z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M12.983 14.161c-.588 1.564-1.299 2.564-1.299 2.564a1 1 0 01-1.802 0s-.711-1-1.299-2.564c-.212-.563-.388-1.164-.534-1.792-.096-.417-.184-.856-.252-1.309-.396-1.535-.606-2.535-.606-2.535a1 1 0 011.98 0s.21 1.069.606 2.535c.068.261.156.52.264.775.146.34.316.677.51.994.4.64.88 1.213 1.38 1.748.5.535 1.05 1.025 1.62 1.487a1 1 0 01-.73 1.761z" clip-rule="evenodd"></path></svg>
-                    Подготовить /spawntoy?
-                </button>
-            </div>
-        </div>
+        
     </div>
 
     <script>
-        // Function to show a temporary message
-        function showMessage(message, duration = 3000) {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = message;
-            messageBox.style.display = 'block';
-            setTimeout(() => {
-                messageBox.style.display = 'none';
-            }, duration);
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const headingElement = document.querySelector('#typing-heading .gemini-gradient-text');
+            const textToType = "Приветствую, сотрудник EventRP!";
+            let index = 0;
 
-        // --- Image ASCII Art Generation ---
-        document.getElementById('imageUpload').addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
+            // Добавляем курсор в начало
+            headingElement.innerHTML = '<span class="typing-cursor"></span>';
+            const cursorSpan = headingElement.querySelector('.typing-cursor');
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.getElementById('imageCanvas');
-                    const ctx = canvas.getContext('2d');
-                    const imageWidth = parseInt(document.getElementById('imageWidth').value);
-                    const imageChar = document.getElementById('imageChar').value;
-                    const invertColors = document.getElementById('imageInvert').checked;
-
-                    // Calculate aspect ratio to maintain image proportions
-                    const aspectRatio = img.width / img.height;
-                    const newWidth = imageWidth;
-                    const newHeight = Math.round(newWidth / aspectRatio / 2); // Divide by 2 for character height compensation
-
-                    canvas.width = newWidth;
-                    canvas.height = newHeight;
-
-                    // Draw image scaled to new dimensions
-                    ctx.drawImage(img, 0, 0, newWidth, newHeight);
-
-                    const imageData = ctx.getImageData(0, 0, newWidth, newHeight);
-                    const data = imageData.data;
-                    let ascii = '';
-
-                    // Grayscale ramp for ASCII conversion, from light to dark. Removed space.
-                    const grayRamp = '.:-=+*#%@';
-                    // Inverted for darker characters on lighter background. Removed space.
-                    const invertedGrayRamp = '@%#*+=-:.';
-
-                    for (let y = 0; y < newHeight; y++) {
-                        for (let x = 0; x < newWidth; x++) {
-                            const i = (y * newWidth + x) * 4;
-                            const r = data[i];
-                            const g = data[i + 1];
-                            const b = data[i + 2];
-
-                            // Calculate brightness (grayscale)
-                            const brightness = (r * 0.2126 + g * 0.7152 + b * 0.0722); // ITU-R BT.709 Luminance
-
-                            let char;
-                            if (imageChar) { // If a specific character is provided, use it for all non-transparent pixels
-                                char = imageChar;
-                            } else { // Otherwise, use the characters from the ramp based on brightness
-                                const currentGrayRamp = invertColors ? invertedGrayRamp : grayRamp;
-                                let charIndex = Math.floor(brightness / 255 * (currentGrayRamp.length - 1));
-                                char = currentGrayRamp[charIndex];
-                            }
-                            
-                            // Get the color of the pixel
-                            const hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-
-                            // Apply color tag
-                            ascii += `<span style="color:${hexColor}">${char}</span>`;
-                        }
-                        ascii += '\n'; // New line after each row
-                    }
-                    document.getElementById('outputAscii').innerHTML = ascii;
-                    showMessage('Изображение преобразовано в ASCII-арт!');
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // Event listener for image generation button
-        document.getElementById('generateImageAscii').addEventListener('click', () => {
-            const fileInput = document.getElementById('imageUpload');
-            if (!fileInput.files || fileInput.files.length === 0) {
-                showMessage('Пожалуйста, сначала загрузите изображение.');
-                return;
-            }
-            // Trigger the change event on the file input to re-process the image
-            fileInput.dispatchEvent(new Event('change'));
-        });
-
-
-        // --- Copy to Clipboard Functions ---
-        function copyToClipboard(textToCopy, formatType) {
-            let processedText = textToCopy;
-
-            if (formatType === 'raw') {
-                // Remove HTML color spans for raw copy
-                processedText = processedText.replace(/<span style="color:#[0-9a-fA-F]{6}">/g, '')
-                                           .replace(/<\/span>/g, '');
-            } else {
-                // Step 1: Convert <span> to <color=#HEX>CHAR</color>
-                processedText = processedText.replace(/<span style="color:#([0-9a-fA-F]{6})">([^<]+)<\/span>/g, '<color=#$1>$2</color>');
-
-                // Step 2: Handle newlines and prepare for single line based on format type
-                if (formatType === 'intercom') {
-                    // For intercom, remove all actual newlines to make it a single line
-                    processedText = processedText.replace(/\n/g, '');
-                } else if (formatType === 'spawntoy') {
-                    // For spawntoy, replace actual newlines with literal '\n' characters (escaped for JS string)
-                    processedText = processedText.replace(/\n/g, '\n');
-                }
-
-                // Step 3: Ensure no remaining double quotes. This should catch any remaining if not removed by earlier regex.
-                processedText = processedText.replace(/"/g, '');
-
-                // Step 4: Add prefixes
-                if (formatType === 'intercom') {
-                    processedText = `icomtxt <size=80><line-height=85%><mspace=0.5em>${processedText}`;
-                } else if (formatType === 'spawntoy') {
-                    processedText = `spawntoy text <size=0.75><line-height=100%><mspace=0.56em>${processedText}`;
-                }
-            }
-
-            // Using document.execCommand('copy') as navigator.clipboard.writeText might not work in some iframe contexts
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = processedText;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showMessage('Скопировано в буфер обмена!');
+            function type() {
+                if (index < textToType.length) {
+                    // Вставляем символ перед курсором
+                    cursorSpan.insertAdjacentText('beforebegin', textToType.charAt(index));
+                    index++;
+                    setTimeout(type, 80); // Скорость печати
                 } else {
-                    showMessage('Ошибка при копировании.');
+                    // Убираем курсор
+                    cursorSpan.style.display = 'none';
                 }
-            } catch (err) {
-                showMessage('Не удалось скопировать: ' + err);
-            } finally {
-                document.body.removeChild(tempTextArea);
             }
-        }
-
-        document.getElementById('copyRaw').addEventListener('click', () => {
-            const asciiContent = document.getElementById('outputAscii').innerHTML;
-            copyToClipboard(asciiContent, 'raw');
+            
+            // Начинаем анимацию печати сразу
+            setTimeout(type, 500);
         });
-
-        document.getElementById('copyIntercom').addEventListener('click', () => {
-            const asciiContent = document.getElementById('outputAscii').innerHTML;
-            copyToClipboard(asciiContent, 'intercom');
-        });
-
-        document.getElementById('copySpawntoy').addEventListener('click', () => {
-            const asciiContent = document.getElementById('outputAscii').innerHTML;
-            copyToClipboard(asciiContent, 'spawntoy');
-        });
-
-        // Initial generation for placeholder text (optional, but good for demo)
-        window.onload = () => {
-             // Now that text generation is removed, no initial text generation is needed.
-             // If you want an initial image generation, you would add logic here to
-             // simulate an image upload and click.
-        };
-
     </script>
 </body>
 </html>
