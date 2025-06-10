@@ -134,39 +134,47 @@
             let fadeInEnabled = false;
             let fadeOutEnabled = false;
 
-            // Проверяем, доступна ли библиотека кодировщика
+            // Check if the encoder library is available
             if (typeof OggVorbisEncoder === 'undefined') {
-                statusText.textContent = "Ошибка: не удалось загрузить движок кодирования.";
+                statusText.textContent = "Error: Failed to load encoding engine. Check console for details.";
+                console.error("OggVorbisEncoder library is not defined. Ensure 'https://cdn.jsdelivr.net/npm/ogg-vorbis-encoder-js@1.1.2/dist/OggVorbisEncoder.min.js' is accessible.");
                 convertBtn.disabled = true;
                 return;
             }
-            statusText.textContent = "Движок готов. Выберите файл.";
+            statusText.textContent = "Engine ready. Select a file.";
 
             const handleFileSelect = (e) => {
                 const files = e.target.files || e.dataTransfer?.files;
-                if (!files || files.length === 0) return;
+                if (!files || files.length === 0) {
+                    selectedFile = null;
+                    fileNameDisplay.textContent = '';
+                    statusText.textContent = 'No file selected.';
+                    return;
+                }
                 selectedFile = files[0];
-                if (!selectedFile.type.startsWith('audio/')) { // Мягкая проверка на любой аудиофайл
-                    statusText.textContent = 'Ошибка: Выберите аудиофайл.';
-                    fileUploadInput.value = '';
+                // Relaxed audio file type check, allow any audio/*
+                if (!selectedFile.type.startsWith('audio/')) {
+                    statusText.textContent = 'Error: Please select an audio file (e.g., .mp3, .wav).';
+                    fileUploadInput.value = ''; // Clear file input
                     selectedFile = null;
                     fileNameDisplay.textContent = '';
                     return;
                 }
                 fileNameDisplay.textContent = selectedFile.name;
-                statusText.textContent = `Готов к конвертации: ${selectedFile.name}`;
+                statusText.textContent = `Ready to convert: ${selectedFile.name}`;
                 downloadBtn.classList.add('hidden');
+                convertBtn.disabled = false; // Enable convert button once file is selected
             };
 
             const convertFile = async () => {
                 if (!selectedFile) {
-                    statusText.textContent = 'Сначала выберите файл.';
+                    statusText.textContent = 'First, select a file.';
                     return;
                 }
 
                 convertBtn.disabled = true;
                 downloadBtn.classList.add('hidden');
-                statusText.textContent = 'Чтение файла...';
+                statusText.textContent = 'Reading file...';
 
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -174,15 +182,15 @@
 
                     fileReader.onload = async (e) => {
                         try {
-                            statusText.textContent = 'Декодирование аудио...';
+                            statusText.textContent = 'Decoding audio... This may take a while for large files.';
                             const audioBuffer = await audioContext.decodeAudioData(e.target.result);
 
-                            // --- Обработка аудио для соответствия параметрам ---
+                            // --- Audio processing to match parameters ---
                             const targetSampleRate = 48000;
-                            const numberOfChannels = 1; // Моно
+                            const numberOfChannels = 1; // Mono
 
-                            // Resampling (передискретизация) до 48000 Гц
-                            statusText.textContent = 'Изменение частоты...';
+                            // Resampling to 48000 Hz
+                            statusText.textContent = 'Resampling audio (48kHz)...';
                             const offlineContext = new OfflineAudioContext(numberOfChannels, audioBuffer.duration * targetSampleRate, targetSampleRate);
                             const bufferSource = offlineContext.createBufferSource();
                             bufferSource.buffer = audioBuffer;
@@ -190,68 +198,76 @@
                             bufferSource.start();
                             const resampledBuffer = await offlineContext.startRendering();
 
-                            // Получаем моно-канал
+                            // Get mono channel
                             let monoChannelData = resampledBuffer.getChannelData(0);
 
-                            // Применяем эффекты плавного появления/затухания, если нужно
+                            // Apply fade in/out effects if enabled
                             if(fadeInEnabled) {
-                                let fadeDuration = Math.min(2, resampledBuffer.duration); // до 2 секунд
+                                let fadeDuration = Math.min(2, resampledBuffer.duration); // up to 2 seconds
                                 for(let i = 0; i < targetSampleRate * fadeDuration; i++) {
                                     monoChannelData[i] *= (i / (targetSampleRate * fadeDuration));
                                 }
                             }
                             if(fadeOutEnabled) {
-                                let fadeDuration = Math.min(2, resampledBuffer.duration); // до 2 секунд
+                                let fadeDuration = Math.min(2, resampledBuffer.duration); // up to 2 seconds
                                 let startIndex = monoChannelData.length - (targetSampleRate * fadeDuration);
                                 for(let i = startIndex; i < monoChannelData.length; i++) {
                                      monoChannelData[i] *= 1 - ((i - startIndex) / (targetSampleRate * fadeDuration));
                                 }
                             }
 
-                            // --- Кодирование в OGG ---
-                            statusText.textContent = 'Кодирование в OGG...';
-                            const encoder = new OggVorbisEncoder(targetSampleRate, numberOfChannels, 0.4); // 0.4 - качество
+                            // --- Encode to OGG ---
+                            statusText.textContent = 'Encoding to OGG...';
+                            const encoder = new OggVorbisEncoder(targetSampleRate, numberOfChannels, 0.4); // 0.4 - quality
                             encoder.encode([monoChannelData]);
                             const blob = encoder.finish();
 
-                            // --- Создание ссылки для скачивания ---
+                            // --- Create download link ---
                             const url = URL.createObjectURL(blob);
                             downloadBtn.href = url;
                             const originalName = selectedFile.name.split('.').slice(0, -1).join('.');
                             downloadBtn.download = `${originalName}.ogg`;
                             
                             downloadBtn.classList.remove('hidden');
-                            statusText.textContent = 'Готово! Файл можно скачать.';
+                            statusText.textContent = 'Done! File is ready for download.';
 
                         } catch (err) {
-                            console.error(err);
-                            statusText.textContent = 'Ошибка: не удалось обработать аудиофайл.';
+                            console.error("Audio processing error:", err); // Log specific error
+                            if (err.name === 'EncodingError' || (err.message && err.message.includes('decodeAudioData'))) {
+                                statusText.textContent = 'Error: Failed to decode or process audio. Ensure it is a valid MP3/audio file.';
+                            } else {
+                                statusText.textContent = 'Error during audio processing. Check console for details.';
+                            }
                         } finally {
                             convertBtn.disabled = false;
                         }
                     };
                     
-                    fileReader.onerror = () => {
-                        statusText.textContent = 'Ошибка при чтении файла.';
+                    fileReader.onerror = (e) => {
+                        console.error("FileReader error:", e);
+                        statusText.textContent = 'Error reading file.';
                         convertBtn.disabled = false;
                     };
 
                     fileReader.readAsArrayBuffer(selectedFile);
 
                 } catch (error) {
-                    console.error(error);
-                    statusText.textContent = 'Произошла критическая ошибка.';
+                    console.error("Critical error in convertFile:", error);
+                    statusText.textContent = 'A critical error occurred. Check console.';
                     convertBtn.disabled = false;
                 }
             };
 
+            // Drag and drop functionality
             const dropZone = fileUploadInput.parentElement;
             ['dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, e => e.preventDefault()));
             dropZone.addEventListener('dragover', () => dropZone.classList.add('border-pink-400'));
             dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-pink-400'));
             dropZone.addEventListener('drop', e => {
                 dropZone.classList.remove('border-pink-400');
+                // Assign files from dataTransfer to fileInput
                 fileUploadInput.files = e.dataTransfer.files;
+                // Trigger change event to process the dropped file
                 handleFileSelect({ target: fileUploadInput });
             });
 
