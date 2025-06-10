@@ -306,7 +306,7 @@
           yamlString += `  pages:\n`;
           data.pages.forEach(page => {
               // Properly format multi-line strings if any (though textarea is single line here)
-              yamlString += `  - "${page.replace(/"/g, '\\"')}"\n`;
+              yamlString += `  - ${page.replace(/"/g, '\\"')}\n`;
           });
           yamlString += `  picked_up_hint_duration: ${data.picked_up_hint_duration}\n`;
           yamlString += `  selected_hint_duration: ${data.selected_hint_duration}\n`;
