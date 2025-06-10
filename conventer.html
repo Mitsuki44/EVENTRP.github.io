@@ -17,8 +17,9 @@
     <!-- 
         НОВАЯ ТЕХНОЛОГИЯ: Подключаем библиотеку для кодирования в OGG Vorbis.
         Она работает без сложных настроек безопасности.
+        Ссылка обновлена на рабочую версию с GitHub.
     -->
-    <script src="https://cdn.jsdelivr.net/npm/ogg-vorbis-encoder-js@1.1.2/dist/OggVorbisEncoder.min.js"></script>
+    <script src="https://raw.githubusercontent.com/higuma/ogg-vorbis-encoder-js/master/lib/OggVorbisEncoder.min.js"></script>
 
     <style>
         body {
@@ -137,7 +138,7 @@
             // Check if the encoder library is available
             if (typeof OggVorbisEncoder === 'undefined') {
                 statusText.textContent = "Error: Failed to load encoding engine. Check console for details.";
-                console.error("OggVorbisEncoder library is not defined. Ensure 'https://cdn.jsdelivr.net/npm/ogg-vorbis-encoder-js@1.1.2/dist/OggVorbisEncoder.min.js' is accessible.");
+                console.error("OggVorbisEncoder library is not defined. Ensure 'https://raw.githubusercontent.com/higuma/ogg-vorbis-encoder-js/master/lib/OggVorbisEncoder.min.js' is accessible.");
                 convertBtn.disabled = true;
                 return;
             }
