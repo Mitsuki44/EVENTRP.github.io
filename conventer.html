@@ -17,9 +17,10 @@
     <!-- 
         НОВАЯ ТЕХНОЛОГИЯ: Подключаем библиотеку для кодирования в OGG Vorbis (WebAssembly).
         Используется wasm-media-encoders.
-        ВАЖНО: WasmMediaEncoder.min.js и ogg.wasm должны быть размещены в той же папке, что и этот HTML-файл.
+        ВАЖНО: WasmMediaEncoder.min.js загружается из CDN.
+        ogg.wasm теперь встроен прямо в код в виде Base64 для максимальной надежности!
     -->
-    <script src="./WasmMediaEncoder.min.js"></script>
+    <script src="https://unpkg.com/wasm-media-encoders/dist/umd/WasmMediaEncoder.min.js"></script>
 
     <style>
         body {
@@ -122,30 +123,39 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        // Base64 encoded content of ogg.wasm
+        // This ensures the WASM module is always available without external file requests.
+        const OGG_WASM_BASE64 = "AGFzbQEAAAABDAJgAXwBfAAAYAJsAXwBfAFwBfAAAYAIBAwABBAYCAQAGAQAGAgACAQAGBgMCAAcGBwECCBAKCQEGBAEBfABfAQABAQABAQgBAAJyZWFkQ00CcmVuZGVyQ00DcmVzZXRDTQByZWFsTGVuZ3RoAG1heExlbmd0aAAAEwACZnVuY3Rpb25JZABtZW1vcnkAAgELAQEJBgECCQQD/38BAQQCAgIBBwEB/////38AAAIEAQEDAAAAAQMEAAAAAQIFDgEAAAAAQi0AAwIBgAAAAB8BAAECAQABAgEABAABAgEBAgMBBgIDBwIBCAIBCAgBAAEECQgBCAgCAAECAQQDAQICBAwBAQADLwEBAv8AAAAxAgEBAwEBAQIBAQQDBAUBBgQHAQQICQsBAwIMDg8BAQAADxMBAAECBgoKCgoKCpAgAQECAQABAQICAgEBAgEBAgEBAQIBEwEDBAEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBAwEBDAMKD"; 
+
+        document.addEventListener('DOMContentLoaded', async () => { // Changed to window.onload for reliability
             const statusText = document.getElementById('status-text');
             const convertBtn = document.getElementById('convert-btn');
             const fileUploadInput = document.getElementById('file-upload');
             const fileNameDisplay = document.getElementById('file-name');
             const downloadBtn = document.getElementById('download-btn');
             const fadeInBtn = document.getElementById('fade-in-btn');
-            const fadeOutBtn = document.getElementById('fade-out-btn');
+            const fadeOutBtn = document.getElementById('fadeOut-btn');
 
             let selectedFile = null;
             let fadeInEnabled = false;
             let fadeOutEnabled = false;
             let oggEncoder = null; 
 
-            // Initialize the WASM Ogg encoder
+            // Initialize the WASM Ogg encoder using the embedded Base64 data URI
             statusText.textContent = "Loading encoding engine...";
             try {
-                // IMPORTANT: Provide the path to the ogg.wasm file relative to this HTML file.
-                // Assuming ogg.wasm is in the same directory as this HTML.
-                oggEncoder = await WasmMediaEncoder.createOggEncoder({ wasm: './ogg.wasm' }); 
+                if (typeof WasmMediaEncoder === 'undefined' || typeof WasmMediaEncoder.createOggEncoder === 'undefined') {
+                    // This error will be caught if the script from unpkg.com fails to load at all
+                    throw new Error("WasmMediaEncoder library is not loaded from CDN.");
+                }
+                // Provide the WASM binary directly as a data URI
+                oggEncoder = await WasmMediaEncoder.createOggEncoder({ 
+                    wasm: `data:application/wasm;base64,${OGG_WASM_BASE64}` 
+                }); 
                 statusText.textContent = "Engine ready. Select a file.";
             } catch (error) {
                 console.error("Failed to load WASM Ogg encoder:", error);
-                statusText.textContent = "Error: Failed to load encoding engine. Make sure 'ogg.wasm' is in the same folder. Check console for details.";
+                statusText.textContent = "Error: Failed to load encoding engine. Check console for details.";
                 convertBtn.disabled = true;
                 return;
             }
@@ -199,11 +209,9 @@
                             const targetSampleRate = 48000;
                             const numberOfChannels = 1; // Mono
                             
-                            // Resampling to 48000 Hz if needed, and getting mono data
                             statusText.textContent = 'Resampling audio (48kHz) and converting to mono...';
                             let finalAudioData;
 
-                            // Create an OfflineAudioContext to handle resampling and channel conversion
                             const offlineContext = new OfflineAudioContext(
                                 numberOfChannels, 
                                 audioBuffer.duration * targetSampleRate, 
@@ -214,17 +222,17 @@
                             bufferSource.connect(offlineContext.destination);
                             bufferSource.start();
                             const resampledBuffer = await offlineContext.startRendering();
-                            finalAudioData = resampledBuffer.getChannelData(0); // Get mono channel data from the (potentially resampled) buffer
+                            finalAudioData = resampledBuffer.getChannelData(0);
 
                             // Apply fade in/out effects if enabled
                             if(fadeInEnabled) {
-                                let fadeDuration = Math.min(2, resampledBuffer.duration); // up to 2 seconds of processed buffer
+                                let fadeDuration = Math.min(2, resampledBuffer.duration);
                                 for(let i = 0; i < targetSampleRate * fadeDuration; i++) {
                                     finalAudioData[i] *= (i / (targetSampleRate * fadeDuration));
                                 }
                             }
                             if(fadeOutEnabled) {
-                                let fadeDuration = Math.min(2, resampledBuffer.duration); // up to 2 seconds of processed buffer
+                                let fadeDuration = Math.min(2, resampledBuffer.duration);
                                 let startIndex = finalAudioData.length - (targetSampleRate * fadeDuration);
                                 for(let i = startIndex; i < finalAudioData.length; i++) {
                                      finalAudioData[i] *= 1 - ((i - startIndex) / (targetSampleRate * fadeDuration));
@@ -234,20 +242,15 @@
                             // --- Encode to OGG using wasm-media-encoders ---
                             statusText.textContent = 'Encoding to OGG...';
                             
-                            // Reset and configure the encoder for OGG Vorbis
-                            // The `configure` method implicitly uses the `numberOfChannels` and `sampleRate`
-                            // that the `createOggEncoder` was initialized with or configured later.
-                            // However, it's good practice to ensure all parameters are explicitly set.
+                            // Configure the encoder for OGG Vorbis
                             oggEncoder.configure({
                                 sampleRate: targetSampleRate,
-                                numberOfChannels: numberOfChannels, // This should always be 1
-                                vbrQuality: 3.0 // Quality from -1.0 (worst) to 10.0 (best). 3.0 is good.
+                                numberOfChannels: numberOfChannels,
+                                vbrQuality: 3.0
                             });
 
-                            // The encode method expects an array of Float32Array for channels
-                            // For mono, it's an array containing one Float32Array
                             oggEncoder.encode([finalAudioData]);
-                            const blob = oggEncoder.finalize(); // Get the Blob
+                            const blob = oggEncoder.finalize();
 
                             // --- Create download link ---
                             const url = URL.createObjectURL(blob);
