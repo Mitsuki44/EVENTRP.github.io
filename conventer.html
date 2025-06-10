@@ -15,11 +15,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <!-- 
-        НОВАЯ ТЕХНОЛОГИЯ: Подключаем библиотеку для кодирования в OGG Vorbis.
-        Она работает без сложных настроек безопасности.
-        Ссылка обновлена на рабочую версию с Unpkg CDN.
+        НОВАЯ ТЕХНОЛОГИЯ: Подключаем библиотеку для кодирования в OGG Vorbis (WebAssembly).
+        Используется wasm-media-encoders для более надежной работы.
     -->
-    <script src="https://unpkg.com/ogg-vorbis-encoder-js@1.1.2/lib/OggVorbisEncoder.min.js"></script>
+    <script src="https://unpkg.com/wasm-media-encoders/dist/umd/WasmMediaEncoder.min.js"></script>
 
     <style>
         body {
@@ -122,7 +121,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => { // Changed to async to await WasmMediaEncoder
             const statusText = document.getElementById('status-text');
             const convertBtn = document.getElementById('convert-btn');
             const fileUploadInput = document.getElementById('file-upload');
@@ -134,16 +133,24 @@
             let selectedFile = null;
             let fadeInEnabled = false;
             let fadeOutEnabled = false;
+            let oggEncoder = null; // To store the encoder instance
 
-            // Check if the encoder library is available
-            if (typeof OggVorbisEncoder === 'undefined') {
+            // Initialize the WASM Ogg encoder
+            statusText.textContent = "Loading encoding engine...";
+            try {
+                // Ensure WasmMediaEncoder is available globally (from UMD build)
+                if (typeof WasmMediaEncoder === 'undefined' || typeof WasmMediaEncoder.createOggEncoder === 'undefined') {
+                    throw new Error("WasmMediaEncoder is not defined or createOggEncoder is missing.");
+                }
+                oggEncoder = await WasmMediaEncoder.createOggEncoder();
+                statusText.textContent = "Engine ready. Select a file.";
+            } catch (error) {
+                console.error("Failed to load WASM Ogg encoder:", error);
                 statusText.textContent = "Error: Failed to load encoding engine. Check console for details.";
-                console.error("OggVorbisEncoder library is not defined. Ensure 'https://unpkg.com/ogg-vorbis-encoder-js@1.1.2/lib/OggVorbisEncoder.min.js' is accessible.");
                 convertBtn.disabled = true;
                 return;
             }
-            statusText.textContent = "Engine ready. Select a file.";
-
+            
             const handleFileSelect = (e) => {
                 const files = e.target.files || e.dataTransfer?.files;
                 if (!files || files.length === 0) {
@@ -153,10 +160,9 @@
                     return;
                 }
                 selectedFile = files[0];
-                // Relaxed audio file type check, allow any audio/*
                 if (!selectedFile.type.startsWith('audio/')) {
                     statusText.textContent = 'Error: Please select an audio file (e.g., .mp3, .wav).';
-                    fileUploadInput.value = ''; // Clear file input
+                    fileUploadInput.value = '';
                     selectedFile = null;
                     fileNameDisplay.textContent = '';
                     return;
@@ -164,12 +170,16 @@
                 fileNameDisplay.textContent = selectedFile.name;
                 statusText.textContent = `Ready to convert: ${selectedFile.name}`;
                 downloadBtn.classList.add('hidden');
-                convertBtn.disabled = false; // Enable convert button once file is selected
+                convertBtn.disabled = false;
             };
 
             const convertFile = async () => {
                 if (!selectedFile) {
                     statusText.textContent = 'First, select a file.';
+                    return;
+                }
+                if (!oggEncoder) {
+                    statusText.textContent = 'Encoding engine not loaded. Please refresh.';
                     return;
                 }
 
@@ -189,39 +199,52 @@
                             // --- Audio processing to match parameters ---
                             const targetSampleRate = 48000;
                             const numberOfChannels = 1; // Mono
+                            
+                            // Resampling to 48000 Hz if needed, and getting mono data
+                            statusText.textContent = 'Resampling audio (48kHz) and converting to mono...';
+                            let finalAudioData;
 
-                            // Resampling to 48000 Hz
-                            statusText.textContent = 'Resampling audio (48kHz)...';
-                            const offlineContext = new OfflineAudioContext(numberOfChannels, audioBuffer.duration * targetSampleRate, targetSampleRate);
-                            const bufferSource = offlineContext.createBufferSource();
-                            bufferSource.buffer = audioBuffer;
-                            bufferSource.connect(offlineContext.destination);
-                            bufferSource.start();
-                            const resampledBuffer = await offlineContext.startRendering();
-
-                            // Get mono channel
-                            let monoChannelData = resampledBuffer.getChannelData(0);
+                            if (audioBuffer.sampleRate !== targetSampleRate || audioBuffer.numberOfChannels > 1) {
+                                const offlineContext = new OfflineAudioContext(numberOfChannels, audioBuffer.duration * targetSampleRate, targetSampleRate);
+                                const bufferSource = offlineContext.createBufferSource();
+                                bufferSource.buffer = audioBuffer;
+                                bufferSource.connect(offlineContext.destination);
+                                bufferSource.start();
+                                const resampledBuffer = await offlineContext.startRendering();
+                                finalAudioData = resampledBuffer.getChannelData(0); // Get mono channel
+                            } else {
+                                finalAudioData = audioBuffer.getChannelData(0); // Already mono and target sample rate
+                            }
 
                             // Apply fade in/out effects if enabled
                             if(fadeInEnabled) {
-                                let fadeDuration = Math.min(2, resampledBuffer.duration); // up to 2 seconds
+                                let fadeDuration = Math.min(2, audioBuffer.duration); // up to 2 seconds
                                 for(let i = 0; i < targetSampleRate * fadeDuration; i++) {
-                                    monoChannelData[i] *= (i / (targetSampleRate * fadeDuration));
+                                    finalAudioData[i] *= (i / (targetSampleRate * fadeDuration));
                                 }
                             }
                             if(fadeOutEnabled) {
-                                let fadeDuration = Math.min(2, resampledBuffer.duration); // up to 2 seconds
-                                let startIndex = monoChannelData.length - (targetSampleRate * fadeDuration);
-                                for(let i = startIndex; i < monoChannelData.length; i++) {
-                                     monoChannelData[i] *= 1 - ((i - startIndex) / (targetSampleRate * fadeDuration));
+                                let fadeDuration = Math.min(2, audioBuffer.duration); // up to 2 seconds
+                                let startIndex = finalAudioData.length - (targetSampleRate * fadeDuration);
+                                for(let i = startIndex; i < finalAudioData.length; i++) {
+                                     finalAudioData[i] *= 1 - ((i - startIndex) / (targetSampleRate * fadeDuration));
                                 }
                             }
 
-                            // --- Encode to OGG ---
+                            // --- Encode to OGG using wasm-media-encoders ---
                             statusText.textContent = 'Encoding to OGG...';
-                            const encoder = new OggVorbisEncoder(targetSampleRate, numberOfChannels, 0.4); // 0.4 - quality
-                            encoder.encode([monoChannelData]);
-                            const blob = encoder.finish();
+                            
+                            // Configure the encoder for OGG Vorbis
+                            oggEncoder.configure({
+                                sampleRate: targetSampleRate,
+                                numberOfChannels: numberOfChannels,
+                                vbrQuality: 3.0 // Quality from -1.0 to 10.0 (3.0 is a good default)
+                            });
+
+                            // The encode method expects an array of Float32Array for channels
+                            // For mono, it's an array containing one Float32Array
+                            oggEncoder.encode([finalAudioData]);
+                            const blob = oggEncoder.finalize(); // Get the Blob
 
                             // --- Create download link ---
                             const url = URL.createObjectURL(blob);
@@ -233,12 +256,8 @@
                             statusText.textContent = 'Done! File is ready for download.';
 
                         } catch (err) {
-                            console.error("Audio processing error:", err); // Log specific error
-                            if (err.name === 'EncodingError' || (err.message && err.message.includes('decodeAudioData'))) {
-                                statusText.textContent = 'Error: Failed to decode or process audio. Ensure it is a valid MP3/audio file.';
-                            } else {
-                                statusText.textContent = 'Error during audio processing. Check console for details.';
-                            }
+                            console.error("Audio processing error:", err);
+                            statusText.textContent = `Error during audio processing: ${err.message || 'Unknown error'}. Ensure it is a valid MP3/audio file.`;
                         } finally {
                             convertBtn.disabled = false;
                         }
@@ -266,9 +285,7 @@
             dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-pink-400'));
             dropZone.addEventListener('drop', e => {
                 dropZone.classList.remove('border-pink-400');
-                // Assign files from dataTransfer to fileInput
                 fileUploadInput.files = e.dataTransfer.files;
-                // Trigger change event to process the dropped file
                 handleFileSelect({ target: fileUploadInput });
             });
 
