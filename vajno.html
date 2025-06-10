@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор Кастомного Оружия</title>
+    
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Подключение шрифта Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Иконка страницы -->
+    <link rel="icon" href="https://cdn.discordapp.com/icons/389532939152654342/a_a5a3619c7bce639a1e2937bf5a89ef61.gif?size=128" type="image/gif">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('https://i.pinimg.com/originals/29/14/97/2914979d57cf620dbf74856235f6f704.gif');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        /* Стиль для градиентного текста */
+        .gradient-text {
+            background-image: linear-gradient(to right, #a5b4fc, #f9a8d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        /* Стилизация скроллбара для Webkit-браузеров */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; /* bg-slate-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; /* bg-slate-600 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* bg-slate-500 */
+        }
+        .reborn.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300 p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto space-y-8 bg-slate-900/80 backdrop-blur-sm p-8 rounded-2xl border border-slate-700">
+        <!-- Главный заголовок -->
+        <h1 class="text-4xl md:text-5xl font-bold my-6 text-center gradient-text flex items-center justify-center gap-4">
+            Генератор Кастомного Оружия
+        </h1>
+
+        <!-- Основная карточка с настройками -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg">
+            <h2 class="text-2xl font-bold text-slate-200 mb-6 border-b border-slate-700 pb-4">Основные параметры</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div>
+                    <label for="GunType" class="block text-sm font-medium text-slate-400 mb-1">Тип оружия</label>
+                    <select id="GunType" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="0">Выберите</option>
+                        <option value="GunE11SR">MTF-E11-SR</option>
+                        <option value="GunCOM15">COM-15</option>
+                        <option value="GunCrossvec">Crossvec</option>
+                        <option value="GunLogicer">Logicer</option>
+                        <option value="GunCOM18">COM-18</option>
+                        <option value="GunRevolver">Revolver</option>
+                        <option value="GunAK">AK</option>
+                        <option value="GunShotgun">Shotgun</option>
+                        <option value="GunFSP9">FSP-9</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="id" class="block text-sm font-medium text-slate-400 mb-1">ID</label>
+                    <input type="text" id="id" placeholder="Например, 1001" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label for="name" class="block text-sm font-medium text-slate-400 mb-1">Название</label>
+                    <input type="text" id="name" placeholder="Например, 'Прототип X'" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div class="lg:col-span-3">
+                    <label for="des" class="block text-sm font-medium text-slate-400 mb-1">Описание</label>
+                    <textarea id="des" rows="2" placeholder="Краткое описание оружия..." class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+                </div>
+                <div>
+                    <label for="wei" class="block text-sm font-medium text-slate-400 mb-1">Вес</label>
+                    <input type="text" id="wei" placeholder="Например, 2.5" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label for="Clip" class="block text-sm font-medium text-slate-400 mb-1">Патронов в обойме</label>
+                    <input type="text" id="Clip" placeholder="Например, 30" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- Аккордеон с настройками -->
+        <div class="space-y-4">
+            <!-- Секция: Обвесы -->
+<!-- Attachments Section -->
+<div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+    <button onclick="toggleSectionVisibility('ATACH')" class="w-full flex justify-between items-center p-4 text-left font-bold text-slate-200 hover:bg-slate-700/50 transition-colors">
+        <span>Обвесы</span>
+        <svg class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+    </button>
+    <div id="ATACH" class="reborn hidden p-6 border-t border-slate-700 space-y-6">
+        
+        <!-- Attachment Change Toggle -->
+        <div>
+            <label for="change" class="block text-sm font-medium text-slate-300 mb-2">Можно ли менять обвесы?</label>
+            <select id="change" class="w-full md:w-1/3 bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <option value="true">Да</option>
+                <option value="false">Нет</option>
+            </select>
+        </div>
+
+        <!-- Available Attachments -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Доступные обвесы</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="flex items-center"><input type="checkbox" id="None" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="None" class="ml-2 text-sm font-medium text-slate-300">None</label></div>
+                <div class="flex items-center"><input type="checkbox" id="IronSights" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="IronSights" class="ml-2 text-sm font-medium text-slate-300">IronSights</label></div>
+                <div class="flex items-center"><input type="checkbox" id="DotSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="DotSight" class="ml-2 text-sm font-medium text-slate-300">DotSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="HoloSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="HoloSight" class="ml-2 text-sm font-medium text-slate-300">HoloSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="NightVisionSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="NightVisionSight" class="ml-2 text-sm font-medium text-slate-300">NightVisionSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="AmmoSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="AmmoSight" class="ml-2 text-sm font-medium text-slate-300">AmmoSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ScopeSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ScopeSight" class="ml-2 text-sm font-medium text-slate-300">ScopeSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="StandardStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="StandardStock" class="ml-2 text-sm font-medium text-slate-300">StandardStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ExtendedStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ExtendedStock" class="ml-2 text-sm font-medium text-slate-300">ExtendedStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="RetractedStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="RetractedStock" class="ml-2 text-sm font-medium text-slate-300">RetractedStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="LightweightStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="LightweightStock" class="ml-2 text-sm font-medium text-slate-300">LightweightStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="HeavyStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="HeavyStock" class="ml-2 text-sm font-medium text-slate-300">HeavyStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="RecoilReducingStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="RecoilReducingStock" class="ml-2 text-sm font-medium text-slate-300">RecoilReducingStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="Foregrip" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="Foregrip" class="ml-2 text-sm font-medium text-slate-300">Foregrip</label></div>
+                <div class="flex items-center"><input type="checkbox" id="Laser" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="Laser" class="ml-2 text-sm font-medium text-slate-300">Laser</label></div>
+                <div class="flex items-center"><input type="checkbox" id="Flashlight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="Flashlight" class="ml-2 text-sm font-medium text-slate-300">Flashlight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="AmmoCounter" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="AmmoCounter" class="ml-2 text-sm font-medium text-slate-300">AmmoCounter</label></div>
+                <div class="flex items-center"><input type="checkbox" id="StandardBarrel" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="StandardBarrel" class="ml-2 text-sm font-medium text-slate-300">StandardBarrel</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ExtendedBarrel" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ExtendedBarrel" class="ml-2 text-sm font-medium text-slate-300">ExtendedBarrel</label></div>
+                <div class="flex items-center"><input type="checkbox" id="SoundSuppressor" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="SoundSuppressor" class="ml-2 text-sm font-medium text-slate-300">SoundSuppressor</label></div>
+                <div class="flex items-center"><input type="checkbox" id="FlashHider" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="FlashHider" class="ml-2 text-sm font-medium text-slate-300">FlashHider</label></div>
+                <div class="flex items-center"><input type="checkbox" id="MuzzleBrake" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="MuzzleBrake" class="ml-2 text-sm font-medium text-slate-300">MuzzleBrake</label></div>
+                <div class="flex items-center"><input type="checkbox" id="MuzzleBooster" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="MuzzleBooster" class="ml-2 text-sm font-medium text-slate-300">MuzzleBooster</label></div>
+                <div class="flex items-center"><input type="checkbox" id="StandardMagFMJ" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="StandardMagFMJ" class="ml-2 text-sm font-medium text-slate-300">StandardMagFMJ</label></div>
+                <div class="flex items-center"><input type="checkbox" id="StandardMagAP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="StandardMagAP" class="ml-2 text-sm font-medium text-slate-300">StandardMagAP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="StandardMagJHP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="StandardMagJHP" class="ml-2 text-sm font-medium text-slate-300">StandardMagJHP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ExtendedMagFMJ" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ExtendedMagFMJ" class="ml-2 text-sm font-medium text-slate-300">ExtendedMagFMJ</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ExtendedMagAP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ExtendedMagAP" class="ml-2 text-sm font-medium text-slate-300">ExtendedMagAP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ExtendedMagJHP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ExtendedMagJHP" class="ml-2 text-sm font-medium text-slate-300">ExtendedMagJHP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="DrumMagFMJ" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="DrumMagFMJ" class="ml-2 text-sm font-medium text-slate-300">DrumMagFMJ</label></div>
+                <div class="flex items-center"><input type="checkbox" id="DrumMagAP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="DrumMagAP" class="ml-2 text-sm font-medium text-slate-300">DrumMagAP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="DrumMagJHP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="DrumMagJHP" class="ml-2 text-sm font-medium text-slate-300">DrumMagJHP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="LowcapMagFMJ" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="LowcapMagFMJ" class="ml-2 text-sm font-medium text-slate-300">LowcapMagFMJ</label></div>
+                <div class="flex items-center"><input type="checkbox" id="LowcapMagAP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="LowcapMagAP" class="ml-2 text-sm font-medium text-slate-300">LowcapMagAP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="LowcapMagJHP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="LowcapMagJHP" class="ml-2 text-sm font-medium text-slate-300">LowcapMagJHP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="CylinderMag5" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="CylinderMag5" class="ml-2 text-sm font-medium text-slate-300">CylinderMag5</label></div>
+                <div class="flex items-center"><input type="checkbox" id="CylinderMag6" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="CylinderMag6" class="ml-2 text-sm font-medium text-slate-300">CylinderMag6</label></div>
+                <div class="flex items-center"><input type="checkbox" id="CylinderMag7" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="CylinderMag7" class="ml-2 text-sm font-medium text-slate-300">CylinderMag7</label></div>
+                <div class="flex items-center"><input type="checkbox" id="CarbineBody" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="CarbineBody" class="ml-2 text-sm font-medium text-slate-300">CarbineBody</label></div>
+                <div class="flex items-center"><input type="checkbox" id="RifleBody" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="RifleBody" class="ml-2 text-sm font-medium text-slate-300">RifleBody</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ShortBarrel" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ShortBarrel" class="ml-2 text-sm font-medium text-slate-300">ShortBarrel</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ShotgunChoke" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ShotgunChoke" class="ml-2 text-sm font-medium text-slate-300">ShotgunChoke</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ShotgunExtendedBarrel" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ShotgunExtendedBarrel" class="ml-2 text-sm font-medium text-slate-300">ShotgunExtendedBarrel</label></div>
+                <div class="flex items-center"><input type="checkbox" id="NoRifleStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="NoRifleStock" class="ml-2 text-sm font-medium text-slate-300">NoRifleStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ShotgunSingleShot" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ShotgunSingleShot" class="ml-2 text-sm font-medium text-slate-300">ShotgunSingleShot</label></div>
+                <div class="flex items-center"><input type="checkbox" id="ShotgunDoubleShot" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="ShotgunDoubleShot" class="ml-2 text-sm font-medium text-slate-300">ShotgunDoubleShot</label></div>
+            </div>
+        </div>
+        
+        <!-- Banned Attachments -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Запрещенные обвесы</h3>
+             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="flex items-center"><input type="checkbox" id="BNone" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BNone" class="ml-2 text-sm font-medium text-slate-300">None</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BIronSights" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BIronSights" class="ml-2 text-sm font-medium text-slate-300">IronSights</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BDotSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BDotSight" class="ml-2 text-sm font-medium text-slate-300">DotSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BHoloSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BHoloSight" class="ml-2 text-sm font-medium text-slate-300">HoloSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BNightVisionSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BNightVisionSight" class="ml-2 text-sm font-medium text-slate-300">NightVisionSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BAmmoSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BAmmoSight" class="ml-2 text-sm font-medium text-slate-300">AmmoSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BScopeSight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BScopeSight" class="ml-2 text-sm font-medium text-slate-300">ScopeSight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BStandardStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BStandardStock" class="ml-2 text-sm font-medium text-slate-300">StandardStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BExtendedStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BExtendedStock" class="ml-2 text-sm font-medium text-slate-300">ExtendedStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BRetractedStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BRetractedStock" class="ml-2 text-sm font-medium text-slate-300">RetractedStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BLightweightStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BLightweightStock" class="ml-2 text-sm font-medium text-slate-300">LightweightStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BHeavyStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BHeavyStock" class="ml-2 text-sm font-medium text-slate-300">HeavyStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BRecoilReducingStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BRecoilReducingStock" class="ml-2 text-sm font-medium text-slate-300">RecoilReducingStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BForegrip" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BForegrip" class="ml-2 text-sm font-medium text-slate-300">Foregrip</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BLaser" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BLaser" class="ml-2 text-sm font-medium text-slate-300">Laser</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BFlashlight" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BFlashlight" class="ml-2 text-sm font-medium text-slate-300">Flashlight</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BAmmoCounter" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BAmmoCounter" class="ml-2 text-sm font-medium text-slate-300">AmmoCounter</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BStandardBarrel" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BStandardBarrel" class="ml-2 text-sm font-medium text-slate-300">StandardBarrel</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BExtendedBarrel" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BExtendedBarrel" class="ml-2 text-sm font-medium text-slate-300">ExtendedBarrel</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BSoundSuppressor" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BSoundSuppressor" class="ml-2 text-sm font-medium text-slate-300">SoundSuppressor</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BFlashHider" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BFlashHider" class="ml-2 text-sm font-medium text-slate-300">FlashHider</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BMuzzleBrake" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BMuzzleBrake" class="ml-2 text-sm font-medium text-slate-300">MuzzleBrake</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BMuzzleBooster" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BMuzzleBooster" class="ml-2 text-sm font-medium text-slate-300">MuzzleBooster</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BStandardMagFMJ" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BStandardMagFMJ" class="ml-2 text-sm font-medium text-slate-300">StandardMagFMJ</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BStandardMagAP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BStandardMagAP" class="ml-2 text-sm font-medium text-slate-300">StandardMagAP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BStandardMagJHP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BStandardMagJHP" class="ml-2 text-sm font-medium text-slate-300">StandardMagJHP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BExtendedMagFMJ" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BExtendedMagFMJ" class="ml-2 text-sm font-medium text-slate-300">ExtendedMagFMJ</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BExtendedMagAP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BExtendedMagAP" class="ml-2 text-sm font-medium text-slate-300">ExtendedMagAP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BExtendedMagJHP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BExtendedMagJHP" class="ml-2 text-sm font-medium text-slate-300">ExtendedMagJHP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BDrumMagFMJ" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BDrumMagFMJ" class="ml-2 text-sm font-medium text-slate-300">DrumMagFMJ</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BDrumMagAP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BDrumMagAP" class="ml-2 text-sm font-medium text-slate-300">DrumMagAP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BDrumMagJHP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BDrumMagJHP" class="ml-2 text-sm font-medium text-slate-300">DrumMagJHP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BLowcapMagFMJ" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BLowcapMagFMJ" class="ml-2 text-sm font-medium text-slate-300">LowcapMagFMJ</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BLowcapMagAP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BLowcapMagAP" class="ml-2 text-sm font-medium text-slate-300">LowcapMagAP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BLowcapMagJHP" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BLowcapMagJHP" class="ml-2 text-sm font-medium text-slate-300">LowcapMagJHP</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BCylinderMag5" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BCylinderMag5" class="ml-2 text-sm font-medium text-slate-300">CylinderMag5</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BCylinderMag6" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BCylinderMag6" class="ml-2 text-sm font-medium text-slate-300">CylinderMag6</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BCylinderMag7" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BCylinderMag7" class="ml-2 text-sm font-medium text-slate-300">CylinderMag7</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BCarbineBody" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BCarbineBody" class="ml-2 text-sm font-medium text-slate-300">CarbineBody</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BRifleBody" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BRifleBody" class="ml-2 text-sm font-medium text-slate-300">RifleBody</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BShortBarrel" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BShortBarrel" class="ml-2 text-sm font-medium text-slate-300">ShortBarrel</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BShotgunChoke" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BShotgunChoke" class="ml-2 text-sm font-medium text-slate-300">ShotgunChoke</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BShotgunExtendedBarrel" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BShotgunExtendedBarrel" class="ml-2 text-sm font-medium text-slate-300">ShotgunExtendedBarrel</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BNoRifleStock" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BNoRifleStock" class="ml-2 text-sm font-medium text-slate-300">NoRifleStock</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BShotgunSingleShot" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BShotgunSingleShot" class="ml-2 text-sm font-medium text-slate-300">ShotgunSingleShot</label></div>
+                <div class="flex items-center"><input type="checkbox" id="BShotgunDoubleShot" class="w-4 h-4 text-indigo-600 bg-slate-700 border-slate-600 rounded focus:ring-indigo-500"><label for="BShotgunDoubleShot" class="ml-2 text-sm font-medium text-slate-300">ShotgunDoubleShot</label></div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Firing and Sound Section -->
+<div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+    <!-- Accordion Button -->
+    <button onclick="toggleSectionVisibility('fire')" class="w-full flex justify-between items-center p-4 text-left font-bold text-slate-200 hover:bg-slate-700/50 transition-colors">
+        <span>Стрельба и Звук</span>
+        <svg class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+    </button>
+
+    <!-- Accordion Content -->
+    <div id="fire" class="reborn hidden p-6 border-t border-slate-700 space-y-8">
+
+        <!-- Firing Settings -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Настройка стрельбы</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="usage" class="block text-sm font-medium text-slate-300 mb-2">Патрон тратится при выстреле</label>
+                    <input type="text" id="usage" value="1" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label for="unload" class="block text-sm font-medium text-slate-300 mb-2">Можно ли разряжать оружие?</label>
+                    <select id="unload" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <option value="true">Да</option>
+                        <option value="false">Нет</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="refresh" class="flex items-center text-sm font-medium text-slate-300 mb-2">
+                        Убрать/вернуть оружие после выстрела?
+                        <div class="relative flex items-center group ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 text-slate-300 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                Хорошо для каких-то снайперских винтовок.
+                            </div>
+                        </div>
+                    </label>
+                    <select id="refresh" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <option value="false">Нет</option>
+                        <option value="true">Да</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cooldown Settings -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Настройка кулдауна</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                    <label for="cooldown" class="flex items-center text-sm font-medium text-slate-300 mb-2">
+                        Кулдаун на выстрелы (сек)
+                        <div class="relative flex items-center group ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-60 p-2 bg-slate-900 text-slate-300 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                Работает только при "Кол-во патрон в обойме:" > 1. Значение -1 отключает кулдаун.
+                            </div>
+                        </div>
+                    </label>
+                    <input type="text" id="cooldown" value="-1" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                 <div>
+                    <label for="dable" class="flex items-center text-sm font-medium text-slate-300 mb-2">
+                        Разрешать ли двойной выстрел?
+                        <div class="relative flex items-center group ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 text-slate-300 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                Работает только при использовании КД выстрелов.
+                            </div>
+                        </div>
+                    </label>
+                    <select id="dable" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <option value="false">Нет</option>
+                        <option value="true">Да</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="cdmes" class="flex items-center text-sm font-medium text-slate-300 mb-2">
+                        Сообщение при кулдауне
+                         <div class="relative flex items-center group ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-900 text-slate-300 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                Используйте {0} для вывода времени кулдауна.
+                            </div>
+                        </div>
+                    </label>
+                    <textarea id="cdmes" rows="2" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">Оружие ещё не готово к выстрелу! Оно может стрелять только раз в {0} секунд.</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sound Settings -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Настройка звука при выстреле</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="songname" class="block text-sm font-medium text-slate-300 mb-2">Название звука из файлов</label>
+                    <input type="text" id="songname" placeholder="Например, Shot.ogg" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label for="songdummy" class="block text-sm font-medium text-slate-300 mb-2">Имя звука (dummy)</label>
+                    <input type="text" id="songdummy" placeholder="Например, WeaponSound" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label for="volume" class="block text-sm font-medium text-slate-300 mb-2">Громкость</label>
+                    <input type="text" id="volume" placeholder="Например, 100" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                 <div>
+                    <label for="radius" class="block text-sm font-medium text-slate-300 mb-2">Радиус</label>
+                    <input type="text" id="radius" placeholder="Например, 15" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- Damage Section -->
+<div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+    <!-- Accordion Button -->
+    <button onclick="toggleSectionVisibility('damage')" class="w-full flex justify-between items-center p-4 text-left font-bold text-slate-200 hover:bg-slate-700/50 transition-colors">
+        <span>Урон</span>
+        <svg class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+    </button>
+
+    <!-- Accordion Content -->
+    <div id="damage" class="reborn hidden p-6 border-t border-slate-700 space-y-8">
+
+        <!-- Base Damage -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Базовый урон</h3>
+            <div>
+                 <label for="damages" class="block text-sm font-medium text-slate-300 mb-2">Базовые единицы урона</label>
+                 <input type="number" id="damages" placeholder="Например, 25" class="w-full md:w-1/3 bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
+        </div>
+
+        <!-- Damage by Armor and Hitbox -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Урон по частям тела зависимо от брони</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- No Armor -->
+                <div class="space-y-3">
+                    <h4 class="font-medium text-slate-300">Без брони</h4>
+                    <div>
+                        <label for="NoneHead" class="block text-xs font-medium text-slate-400">Голова</label>
+                        <input type="number" id="NoneHead" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="NoneBody" class="block text-xs font-medium text-slate-400">Тело</label>
+                        <input type="number" id="NoneBody" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="NoneLimb" class="block text-xs font-medium text-slate-400">Конечности</label>
+                        <input type="number" id="NoneLimb" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+                <!-- Light Armor -->
+                <div class="space-y-3">
+                    <h4 class="font-medium text-slate-300">Лёгкая броня</h4>
+                    <div>
+                        <label for="LighHead" class="block text-xs font-medium text-slate-400">Голова</label>
+                        <input type="number" id="LighHead" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="LighBody" class="block text-xs font-medium text-slate-400">Тело</label>
+                        <input type="number" id="LighBody" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="LighLimb" class="block text-xs font-medium text-slate-400">Конечности</label>
+                        <input type="number" id="LighLimb" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+                <!-- Combat Armor -->
+                <div class="space-y-3">
+                    <h4 class="font-medium text-slate-300">Средняя броня</h4>
+                    <div>
+                        <label for="CombHead" class="block text-xs font-medium text-slate-400">Голова</label>
+                        <input type="number" id="CombHead" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="CombBody" class="block text-xs font-medium text-slate-400">Тело</label>
+                        <input type="number" id="CombBody" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="CombLimb" class="block text-xs font-medium text-slate-400">Конечности</label>
+                        <input type="number" id="CombLimb" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+                <!-- Heavy Armor -->
+                <div class="space-y-3">
+                    <h4 class="font-medium text-slate-300">Тяжёлая броня</h4>
+                    <div>
+                        <label for="HeavHead" class="block text-xs font-medium text-slate-400">Голова</label>
+                        <input type="number" id="HeavHead" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="HeavBody" class="block text-xs font-medium text-slate-400">Тело</label>
+                        <input type="number" id="HeavBody" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="HeavLimb" class="block text-xs font-medium text-slate-400">Конечности</label>
+                        <input type="number" id="HeavLimb" placeholder="X" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Damage by Role -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Урон по ролям</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4">
+                <div><label for="ChaosConscript" class="block text-sm font-medium text-slate-300 mb-1">Новобранец ПХ</label><input type="text" id="ChaosConscript" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="ChaosMarauder" class="block text-sm font-medium text-slate-300 mb-1">Мародёр ПХ</label><input type="text" id="ChaosMarauder" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="ChaosRepressor" class="block text-sm font-medium text-slate-300 mb-1">Усмиритель ПХ</label><input type="text" id="ChaosRepressor" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="ChaosRifleman" class="block text-sm font-medium text-slate-300 mb-1">Стрелок ПХ</label><input type="text" id="ChaosRifleman" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="ClassD" class="block text-sm font-medium text-slate-300 mb-1">Класс Д</label><input type="text" id="ClassD" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="FacilityGuard" class="block text-sm font-medium text-slate-300 mb-1">Охранник комплекса</label><input type="text" id="FacilityGuard" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="NtfCaptain" class="block text-sm font-medium text-slate-300 mb-1">Капитан МОГ</label><input type="text" id="NtfCaptain" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="NtfPrivate" class="block text-sm font-medium text-slate-300 mb-1">Рядовой МОГ</label><input type="text" id="NtfPrivate" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="NtfSergeant" class="block text-sm font-medium text-slate-300 mb-1">Сержант МОГ</label><input type="text" id="NtfSergeant" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="NtfSpecialist" class="block text-sm font-medium text-slate-300 mb-1">Специалист МОГ</label><input type="text" id="NtfSpecialist" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scientist" class="block text-sm font-medium text-slate-300 mb-1">Учёный</label><input type="text" id="Scientist" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scp049" class="block text-sm font-medium text-slate-300 mb-1">SCP-049</label><input type="text" id="Scp049" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scp0492" class="block text-sm font-medium text-slate-300 mb-1">SCP-049-2</label><input type="text" id="Scp0492" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scp079" class="block text-sm font-medium text-slate-300 mb-1">SCP-079</label><input type="text" id="Scp079" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scp096" class="block text-sm font-medium text-slate-300 mb-1">SCP-096</label><input type="text" id="Scp096" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scp106" class="block text-sm font-medium text-slate-300 mb-1">SCP-106</label><input type="text" id="Scp106" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scp173" class="block text-sm font-medium text-slate-300 mb-1">SCP-173</label><input type="text" id="Scp173" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scp3114" class="block text-sm font-medium text-slate-300 mb-1">SCP-3114</label><input type="text" id="Scp3114" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Scp939" class="block text-sm font-medium text-slate-300 mb-1">SCP-939</label><input type="text" id="Scp939" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+                <div><label for="Tutorial" class="block text-sm font-medium text-slate-300 mb-1">Обучение</label><input type="text" id="Tutorial" placeholder="X" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Additional Configuration Section -->
+<div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+    <!-- Accordion Button -->
+    <button onclick="toggleSectionVisibility('CFG')" class="w-full flex justify-between items-center p-4 text-left font-bold text-slate-200 hover:bg-slate-700/50 transition-colors">
+        <span>Дополнительная конфигурация</span>
+        <svg class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+    </button>
+
+    <!-- Accordion Content -->
+    <div id="CFG" class="reborn hidden p-6 border-t border-slate-700 space-y-8">
+
+        <!-- Weapon Scale Settings -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Размер оружия (Scale)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="growthX" class="block text-sm font-medium text-slate-300 mb-2">Размер по оси X</label>
+                    <input type="text" id="growthX" placeholder="1.0" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label for="growthY" class="block text-sm font-medium text-slate-300 mb-2">Размер по оси Y</label>
+                    <input type="text" id="growthY" placeholder="1.0" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label for="growthZ" class="block text-sm font-medium text-slate-300 mb-2">Размер по оси Z</label>
+                    <input type="text" id="growthZ" placeholder="1.0" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- Hint Settings -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2">Подсказки (Hints)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div>
+                    <label for="timeP" class="block text-sm font-medium text-slate-300 mb-2">Длительность подсказки при подборе (сек)</label>
+                    <input type="text" id="timeP" placeholder="5" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                 <div>
+                    <label for="timeU" class="block text-sm font-medium text-slate-300 mb-2">Длительность подсказки при выборе (сек)</label>
+                    <input type="text" id="timeU" placeholder="3" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        </div>
+        
+        <!-- Генерация и вывод -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg">
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="generateAllScripts()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    Сгенерировать
+                </button>
+                <button onclick="copyAllScripts()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                    Копировать
+                </button>
+            </div>
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-slate-400 mb-2">Результат (YAML):</label>
+                <pre id="allScriptsOutput" class="all-output w-full p-4 bg-slate-900 rounded-lg border border-slate-700 min-h-[200px] text-purple-300 font-mono text-xs whitespace-pre-wrap overflow-auto"></pre>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- СКРИПТЫ ---
+        
+        function toggleSectionVisibility(sectionId) {
+            const section = document.getElementById(sectionId);
+            const button = section.previousElementSibling;
+            const icon = button.querySelector('svg');
+
+            if (section) {
+                section.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            }
+        }
+        
+        // --- Функциональность генерации скрипта ---
+        // Весь ваш JavaScript код для generateAllScripts, copyAllScripts и т.д.
+        // должен быть здесь. Я сохраняю его как есть, чтобы не нарушать логику.
+            function generateAllScripts() {
+                let allScripts = '';  // Очищаем переменную перед началом генерации
+
+                const GunType = document.getElementById('GunType').value;
+                const des = document.getElementById('des').value;
+                const name = document.getElementById('name').value;
+                const id = document.getElementById('id').value;
+                const wei = document.getElementById('wei').value;
+                const Clip = document.getElementById('Clip').value;
+                const unload = document.getElementById('unload').value;
+                const usage = document.getElementById('usage').value;
+                const refresh = document.getElementById('refresh').value;
+                const change = document.getElementById('change').value;
+                const cooldown = document.getElementById('cooldown').value;
+                const cdmes = document.getElementById('cdmes').value;
+                const dable = document.getElementById('dable').value;
+                const songname = document.getElementById('songname').value;
+                const volume = document.getElementById('volume').value;
+                const radius = document.getElementById('radius').value;
+                const songdummy = document.getElementById('songdummy').value;
+                const damage = document.getElementById('damages').value;
+                let NoneHead;  // Объявляем переменную вне условия
+                if (document.getElementById('NoneHead').value != "") {
+                    NoneHead = document.getElementById('NoneHead').value / damage;
+                } else {
+                    NoneHead = 1;
+                }
+                let NoneBody;  // Объявляем переменную вне условия
+                if (document.getElementById('NoneBody').value != "") {
+                    NoneBody = document.getElementById('NoneBody').value / damage;
+                } else {
+                    NoneBody = 1;
+                }
+                let NoneLimb;  // Объявляем переменную вне условия
+                if (document.getElementById('NoneLimb').value != "") {
+                    NoneLimb = document.getElementById('NoneLimb').value / damage;
+                } else {
+                    NoneLimb = 1;
+                }
+                let LighHead;  // Объявляем переменную вне условия
+                if (document.getElementById('LighHead').value != "") {
+                    LighHead = document.getElementById('LighHead').value / damage;
+                } else {
+                    LighHead = 1;
+                }
+                let LighBody;  // Объявляем переменную вне условия
+                if (document.getElementById('LighBody').value != "") {
+                    LighBody = document.getElementById('LighBody').value / damage;
+                } else {
+                    LighBody = 1;
+                }
+                let LighLimb;  // Объявляем переменную вне условия
+                if (document.getElementById('LighLimb').value != "") {
+                    LighLimb = document.getElementById('LighLimb').value / damage;
+                } else {
+                    LighLimb = 1;
+                }
+                let CombHead;  // Объявляем переменную вне условия
+                if (document.getElementById('CombHead').value != "") {
+                    CombHead = document.getElementById('CombHead').value / damage;
+                } else {
+                    CombHead = 1;
+                }
+                let CombBody;  // Объявляем переменную вне условия
+                if (document.getElementById('CombBody').value != "") {
+                    CombBody = document.getElementById('CombBody').value / damage;
+                } else {
+                    CombBody = 1;
+                }
+                let CombLimb;  // Объявляем переменную вне условия
+                if (document.getElementById('CombLimb').value != "") {
+                    CombLimb = document.getElementById('CombLimb').value / damage;
+                } else {
+                    CombLimb = 1;
+                }
+                let HeavHead;  // Объявляем переменную вне условия
+                if (document.getElementById('HeavHead').value != "") {
+                    HeavHead = document.getElementById('HeavHead').value / damage;
+                } else {
+                    HeavHead = 1;
+                }
+                let HeavBody;  // Объявляем переменную вне условия
+                if (document.getElementById('HeavBody').value != "") {
+                    HeavBody = document.getElementById('HeavBody').value / damage;
+                } else {
+                    HeavBody = 1;
+                }
+                let HeavLimb;  // Объявляем переменную вне условия
+                if (document.getElementById('HeavLimb').value != "") {
+                    HeavLimb = document.getElementById('HeavLimb').value / damage;
+                } else {
+                    HeavLimb = 1;
+                }
+                let ChaosConscript; 
+                if (document.getElementById('ChaosConscript').value != "") {
+                    ChaosConscript = document.getElementById('ChaosConscript').value / damage;
+                } else {
+                    ChaosConscript = 1;
+                }
+
+                let ChaosMarauder; 
+                if (document.getElementById('ChaosMarauder').value != "") {
+                    ChaosMarauder = document.getElementById('ChaosMarauder').value / damage;
+                } else {
+                    ChaosMarauder = 1;
+                }
+
+                let ChaosRepressor; 
+                if (document.getElementById('ChaosRepressor').value != "") {
+                    ChaosRepressor = document.getElementById('ChaosRepressor').value / damage;
+                } else {
+                    ChaosRepressor = 1;
+                }
+
+                let ChaosRifleman; 
+                if (document.getElementById('ChaosRifleman').value != "") {
+                    ChaosRifleman = document.getElementById('ChaosRifleman').value / damage;
+                } else {
+                    ChaosRifleman = 1;
+                }
+
+                let ClassD; 
+                if (document.getElementById('ClassD').value != "") {
+                    ClassD = document.getElementById('ClassD').value / damage;
+                } else {
+                    ClassD = 1;
+                }
+
+                let FacilityGuard; 
+                if (document.getElementById('FacilityGuard').value != "") {
+                    FacilityGuard = document.getElementById('FacilityGuard').value / damage;
+                } else {
+                    FacilityGuard = 1;
+                }
+
+                let NtfCaptain; 
+                if (document.getElementById('NtfCaptain').value != "") {
+                    NtfCaptain = document.getElementById('NtfCaptain').value / damage;
+                } else {
+                    NtfCaptain = 1;
+                }
+
+                let NtfPrivate; 
+                if (document.getElementById('NtfPrivate').value != "") {
+                    NtfPrivate = document.getElementById('NtfPrivate').value / damage;
+                } else {
+                    NtfPrivate = 1;
+                }
+
+                let NtfSergeant; 
+                if (document.getElementById('NtfSergeant').value != "") {
+                    NtfSergeant = document.getElementById('NtfSergeant').value / damage;
+                } else {
+                    NtfSergeant = 1;
+                }
+
+                let NtfSpecialist; 
+                if (document.getElementById('NtfSpecialist').value != "") {
+                    NtfSpecialist = document.getElementById('NtfSpecialist').value / damage;
+                } else {
+                    NtfSpecialist = 1;
+                }
+
+                let Scientist; 
+                if (document.getElementById('Scientist').value != "") {
+                    Scientist = document.getElementById('Scientist').value / damage;
+                } else {
+                    Scientist = 1;
+                }
+
+                let Scp049; 
+                if (document.getElementById('Scp049').value != "") {
+                    Scp049 = document.getElementById('Scp049').value / damage;
+                } else {
+                    Scp049 = 1;
+                }
+
+                let Scp0492; 
+                if (document.getElementById('Scp0492').value != "") {
+                    Scp0492 = document.getElementById('Scp0492').value / damage;
+                } else {
+                    Scp0492 = 1;
+                }
+
+                let Scp079; 
+                if (document.getElementById('Scp079').value != "") {
+                    Scp079 = document.getElementById('Scp079').value / damage;
+                } else {
+                    Scp079 = 1;
+                }
+
+                let Scp096; 
+                if (document.getElementById('Scp096').value != "") {
+                    Scp096 = document.getElementById('Scp096').value / damage;
+                } else {
+                    Scp096 = 1;
+                }
+
+                let Scp106; 
+                if (document.getElementById('Scp106').value != "") {
+                    Scp106 = document.getElementById('Scp106').value / damage;
+                } else {
+                    Scp106 = 1;
+                }
+
+                let Scp173; 
+                if (document.getElementById('Scp173').value != "") {
+                    Scp173 = document.getElementById('Scp173').value / damage;
+                } else {
+                    Scp173 = 1;
+                }
+
+                let Scp3114; 
+                if (document.getElementById('Scp3114').value != "") {
+                    Scp3114 = document.getElementById('Scp3114').value / damage;
+                } else {
+                    Scp3114 = 1;
+                }
+
+                let Scp939; 
+                if (document.getElementById('Scp939').value != "") {
+                    Scp939 = document.getElementById('Scp939').value / damage;
+                } else {
+                    Scp939 = 1;
+                }
+
+                let Tutorial; 
+                if (document.getElementById('Tutorial').value != "") {
+                    Tutorial = document.getElementById('Tutorial').value / damage;
+                } else {
+                    Tutorial = 1;
+                }
+
+                const attachments = [
+                    "None", "IronSights", "DotSight", "HoloSight", "NightVisionSight", 
+                    "AmmoSight", "ScopeSight", "StandardStock", "ExtendedStock", 
+                    "RetractedStock", "LightweightStock", "HeavyStock", 
+                    "RecoilReducingStock", "Foregrip", "Laser", "Flashlight", 
+                    "AmmoCounter", "StandardBarrel", "ExtendedBarrel", 
+                    "SoundSuppressor", "FlashHider", "MuzzleBrake", "MuzzleBooster", 
+                    "StandardMagFMJ", "StandardMagAP", "StandardMagJHP", 
+                    "ExtendedMagFMJ", "ExtendedMagAP", "ExtendedMagJHP", 
+                    "DrumMagFMJ", "DrumMagAP", "DrumMagJHP", "LowcapMagFMJ", 
+                    "LowcapMagAP", "LowcapMagJHP", "CylinderMag4", "CylinderMag6", 
+                    "CylinderMag8", "CarbineBody", "RifleBody", "ShortBarrel", 
+                    "ShotgunChoke", "ShotgunExtendedBarrel", "NoRifleStock", 
+                    "ShotgunSingleShot", "ShotgunDoubleShot"
+                ];
+
+                let selectedAttachments = [];
+                attachments.forEach(name => {
+                    const checkbox = document.getElementById(name);
+                    if (checkbox && checkbox.checked) {
+                        selectedAttachments.push(name);
+                    }
+                });
+
+                let attachmentsOutput = "attachments:";
+                if (selectedAttachments.length > 0) {
+                    attachmentsOutput += selectedAttachments.map(name => `\n  - ${name.replace(/^B/, '')}`).join('');
+                } else {
+                    attachmentsOutput += "  []";
+                }
+
+                const attachmentsB = [
+                "BNone", "BIronSights", "BDotSight", "BHoloSight", "BNightVisionSight", 
+                "BAmmoSight", "BScopeSight", "BStandardStock", "BExtendedStock", 
+                "BRetractedStock", "BLightweightStock", "BHeavyStock", 
+                "BRecoilReducingStock", "BForegrip", "BLaser", "BFlashlight", 
+                "BAmmoCounter", "BStandardBarrel", "BExtendedBarrel", 
+                "BSoundSuppressor", "BFlashHider", "BMuzzleBrake", "BMuzzleBooster", 
+                "BStandardMagFMJ", "BStandardMagAP", "BStandardMagJHP", 
+                "BExtendedMagFMJ", "BExtendedMagAP", "BExtendedMagJHP", 
+                "BDrumMagFMJ", "BDrumMagAP", "BDrumMagJHP", "BLowcapMagFMJ", 
+                "BLowcapMagAP", "BLowcapMagJHP", "BCylinderMag4", "BCylinderMag6", 
+                "BCylinderMag8", "BCarbineBody", "BRifleBody", "BShortBarrel", 
+                "BShotgunChoke", "BShotgunExtendedBarrel", "BNoRifleStock", 
+                "BShotgunSingleShot", "BShotgunDoubleShot"
+            ];
+
+            let selectedAttachmentsB = [];
+            attachmentsB.forEach(name => {
+                const isSelected = document.getElementById(name)?.checked;
+                if (isSelected) selectedAttachmentsB.push(name);
+            });
+
+            let attachmentsOutputB = "banned_attachments:";
+            if (selectedAttachmentsB.length > 0) {
+                attachmentsOutputB += selectedAttachmentsB.map(name => `\n  - ${name.replace(/^B/, '')}`).join('');
+            } else {
+                attachmentsOutputB += "  []";
+            }
+
+
+
+                const growthX = document.getElementById('growthX').value;
+                const growthY = document.getElementById('growthY').value;
+                const growthZ = document.getElementById('growthZ').value;
+                const timeP = document.getElementById('timeP').value;
+                const timeU = document.getElementById('timeU').value;
+
+                if (songname) {
+                    allScripts += `
+- id: ${id}
+  name: ${name}
+  description: ${des}
+  weight: ${wei}
+  clip_size: ${Clip}
+  damage: ${damage}
+  spawn_properties:
+    limit: 1
+    dynamic_spawn_points: []
+    static_spawn_points: []
+    role_spawn_points: []
+    room_spawn_points: []
+    locker_spawn_points: []
+  ${attachmentsOutput}
+  shot_audio:
+    sound_name: ${songname}
+    volume: ${volume}
+    dummy_name: '${songdummy}'
+    radius: ${radius}
+  type: ${GunType}
+  ${attachmentsOutputB}
+  ammo_usage: ${usage}
+  can_unload: ${unload}
+  allow_attachments_change: ${change}
+  fire_cooldown: ${cooldown}
+  weapon_not_ready: ${cdmes}
+  armor_and_zone_damage_multipliers:
+    None:
+      Headshot: ${NoneHead}
+      Limb: ${NoneLimb}
+      Body: ${NoneBody}
+    ArmorLight:
+      Headshot: ${LighHead}
+      Limb: ${LighLimb}
+      Body: ${LighBody}
+    ArmorCombat:
+      Headshot: ${CombHead}
+      Limb: ${CombLimb}
+      Body: ${CombBody}
+    ArmorHeavy:
+      Headshot: ${HeavHead}
+      Limb: ${HeavLimb}
+      Body: ${HeavBody}
+  role_damage_multipliers:
+    ChaosConscript: ${ChaosConscript}
+    ChaosMarauder: ${ChaosMarauder}
+    ChaosRepressor: ${ChaosRepressor}
+    ChaosRifleman: ${ChaosRifleman}
+    ClassD: ${ClassD}
+    FacilityGuard: ${FacilityGuard}
+    NtfCaptain: ${NtfCaptain}
+    NtfPrivate: ${NtfPrivate}
+    NtfSergeant: ${NtfSergeant}
+    NtfSpecialist: ${NtfSpecialist}
+    Scientist: ${Scientist}
+    Scp049: ${Scp049}
+    Scp0492: ${Scp0492}
+    Scp079: ${Scp079}
+    Scp096: ${Scp096}
+    Scp106: ${Scp106}
+    Scp173: ${Scp173}
+    Scp3114: ${Scp3114}
+    Scp939: ${Scp939}
+    Tutorial: ${Tutorial}
+  force_reset_weapon_on_shot: ${refresh}
+  allow_double_shot: ${dable}
+  picked_up_hint_duration: ${timeP}
+  selected_hint_duration: ${timeU}
+  scale:
+    x: ${growthX}
+    y: ${growthY}
+    z: ${growthZ}
+                    `;
+                }
+                else {
+                    allScripts += `
+- id: ${id}
+  name: ${name}
+  description: ${des}
+  weight: ${wei}
+  clip_size: ${Clip}
+  damage: ${damage}
+  spawn_properties:
+    limit: 1
+    dynamic_spawn_points: []
+    static_spawn_points: []
+    role_spawn_points: []
+    room_spawn_points: []
+    locker_spawn_points: []
+  ${attachmentsOutput}
+  type: ${GunType}
+  ${attachmentsOutputB}
+  ammo_usage: ${usage}
+  can_unload: ${unload}
+  allow_attachments_change: ${change}
+  fire_cooldown: ${cooldown}
+  weapon_not_ready: ${cdmes}
+  armor_and_zone_damage_multipliers:
+    None:
+      Headshot: ${NoneHead}
+      Limb: ${NoneLimb}
+      Body: ${NoneBody}
+    ArmorLight:
+      Headshot: ${LighHead}
+      Limb: ${LighLimb}
+      Body: ${LighBody}
+    ArmorCombat:
+      Headshot: ${CombHead}
+      Limb: ${CombLimb}
+      Body: ${CombBody}
+    ArmorHeavy:
+      Headshot: ${HeavHead}
+      Limb: ${HeavLimb}
+      Body: ${HeavBody}
+  role_damage_multipliers:
+    ChaosConscript: ${ChaosConscript}
+    ChaosMarauder: ${ChaosMarauder}
+    ChaosRepressor: ${ChaosRepressor}
+    ChaosRifleman: ${ChaosRifleman}
+    ClassD: ${ClassD}
+    FacilityGuard: ${FacilityGuard}
+    NtfCaptain: ${NtfCaptain}
+    NtfPrivate: ${NtfPrivate}
+    NtfSergeant: ${NtfSergeant}
+    NtfSpecialist: ${NtfSpecialist}
+    Scientist: ${Scientist}
+    Scp049: ${Scp049}
+    Scp0492: ${Scp0492}
+    Scp079: ${Scp079}
+    Scp096: ${Scp096}
+    Scp106: ${Scp106}
+    Scp173: ${Scp173}
+    Scp3114: ${Scp3114}
+    Scp939: ${Scp939}
+    Tutorial: ${Tutorial}
+  force_reset_weapon_on_shot: ${refresh}
+  allow_double_shot: ${dable}
+  picked_up_hint_duration: ${timeP}
+  selected_hint_duration: ${timeU}
+  scale:
+    x: ${growthX}
+    y: ${growthY}
+    z: ${growthZ}
+                    `;
+                }
+
+                document.getElementById('allScriptsOutput').innerText = allScripts.trim();
+            }
+
+            function copyAllScripts() {
+                const allScriptsOutput = document.getElementById('allScriptsOutput');
+                if(!allScriptsOutput || !allScriptsOutput.innerText) return;
+                navigator.clipboard.writeText(allScriptsOutput.innerText).then(() => {
+                    alert("Скрипты успешно скопированы в буфер обмена!");
+                }).catch(err => {
+                    console.error('Не удалось скопировать скрипты: ', err);
+                });
+            }
+    </script>
+</body>
+</html>

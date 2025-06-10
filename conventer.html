@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>MP3 в OGG Конвертер | Retrowave</title>
+
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Подключение шрифта Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <!-- 
+        НОВАЯ ТЕХНОЛОГИЯ: Подключаем библиотеку для кодирования в OGG Vorbis.
+        Она работает без сложных настроек безопасности.
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/ogg-vorbis-encoder-js@1.1.2/dist/OggVorbisEncoder.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('https://media1.tenor.com/m/Ihk_3o5l0WkAAAAC/sun.gif');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .text-gradient {
+            background: linear-gradient(to right, #a5b4fc, #f9a8d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        .btn-toggle-active {
+            background-color: #ec4899; /* bg-pink-500 */
+            color: white;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <div class="container mx-auto max-w-4xl p-4 md:p-8 my-8">
+        <div class="bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-700 shadow-2xl shadow-pink-500/10 overflow-hidden">
+            <div class="p-6 md:p-8">
+
+                <header class="text-center">
+                    <h1 class="text-4xl md:text-5xl font-bold text-gradient tracking-wider">
+                        MP3 в OGG Конвертер
+                    </h1>
+                    <p class="text-slate-400 mt-2">Ретро-конвертер на максимальной скорости</p>
+                </header>
+
+                <hr class="border-slate-700/50 my-8">
+                
+                <div id="main-interface" class="space-y-6">
+                    <!-- Шаг 1: Выбор файла -->
+                    <div>
+                        <h2 class="text-2xl font-semibold text-slate-200 flex items-center gap-3">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-pink-500 text-white font-bold">1</span>
+                            Выберите MP3 файл
+                        </h2>
+                        <div class="mt-4 p-6 bg-slate-800/50 rounded-lg border border-slate-700">
+                             <label for="file-upload" class="relative cursor-pointer w-full flex justify-center items-center px-6 py-10 border-2 border-slate-600 border-dashed rounded-lg bg-slate-700/50 hover:border-pink-400 transition-colors">
+                                <div class="text-center">
+                                    <svg class="mx-auto h-12 w-12 text-slate-500" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4V12a4 4 0 014-4h12l4 4h12a4 4 0 014 4zm-12 4l-4-4m0 0l-4 4m4-4v12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    <span class="mt-2 block font-semibold text-slate-300">Нажмите, чтобы загрузить</span>
+                                    <span class="block text-xs text-slate-400">или перетащите файл сюда</span>
+                                </div>
+                                <input id="file-upload" name="file-upload" type="file" class="sr-only" accept=".mp3">
+                            </label>
+                            <p id="file-name" class="mt-4 text-center text-pink-400 font-medium truncate"></p>
+                        </div>
+                    </div>
+
+                    <!-- Шаг 2: Дополнительные опции -->
+                    <div>
+                        <h2 class="text-2xl font-semibold text-slate-200 flex items-center gap-3">
+                            <span class="flex items-center justify-center w-8 h-8 rounded-full bg-teal-500 text-white font-bold">2</span>
+                            Дополнительные опции
+                        </h2>
+                        <div class="mt-4 p-6 bg-slate-800/50 rounded-lg border border-slate-700 flex flex-col md:flex-row gap-4">
+                            <button id="fade-in-btn" type="button" class="flex-1 text-center bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-3 px-4 rounded-lg transition-all duration-200">
+                                Плавное начало
+                            </button>
+                            <button id="fade-out-btn" type="button" class="flex-1 text-center bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-3 px-4 rounded-lg transition-all duration-200">
+                                Плавное затухание
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Шаг 3: Конвертация -->
+                    <div>
+                        <h2 class="text-2xl font-semibold text-slate-200 flex items-center gap-3">
+                             <span class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white font-bold">3</span>
+                             Начать процесс
+                        </h2>
+                        <div class="mt-4 flex flex-col items-center gap-4">
+                            <button id="convert-btn" type="button" class="w-full md:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-blue-500/50 transition-all duration-300">
+                                <span>Конвертировать</span>
+                            </button>
+                             <a id="download-btn" href="#" download="converted.ogg" class="hidden w-full md:w-auto flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-teal-500/50 transition-all duration-300">
+                                <span>Скачать файл</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="status-container" class="pt-4 text-center">
+                        <p id="status-text" class="text-slate-400 font-mono text-sm h-5"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const statusText = document.getElementById('status-text');
+            const convertBtn = document.getElementById('convert-btn');
+            const fileUploadInput = document.getElementById('file-upload');
+            const fileNameDisplay = document.getElementById('file-name');
+            const downloadBtn = document.getElementById('download-btn');
+            const fadeInBtn = document.getElementById('fade-in-btn');
+            const fadeOutBtn = document.getElementById('fade-out-btn');
+
+            let selectedFile = null;
+            let fadeInEnabled = false;
+            let fadeOutEnabled = false;
+
+            // Проверяем, доступна ли библиотека кодировщика
+            if (typeof OggVorbisEncoder === 'undefined') {
+                statusText.textContent = "Ошибка: не удалось загрузить движок кодирования.";
+                convertBtn.disabled = true;
+                return;
+            }
+            statusText.textContent = "Движок готов. Выберите файл.";
+
+            const handleFileSelect = (e) => {
+                const files = e.target.files || e.dataTransfer?.files;
+                if (!files || files.length === 0) return;
+                selectedFile = files[0];
+                if (!selectedFile.type.startsWith('audio/')) { // Мягкая проверка на любой аудиофайл
+                    statusText.textContent = 'Ошибка: Выберите аудиофайл.';
+                    fileUploadInput.value = '';
+                    selectedFile = null;
+                    fileNameDisplay.textContent = '';
+                    return;
+                }
+                fileNameDisplay.textContent = selectedFile.name;
+                statusText.textContent = `Готов к конвертации: ${selectedFile.name}`;
+                downloadBtn.classList.add('hidden');
+            };
+
+            const convertFile = async () => {
+                if (!selectedFile) {
+                    statusText.textContent = 'Сначала выберите файл.';
+                    return;
+                }
+
+                convertBtn.disabled = true;
+                downloadBtn.classList.add('hidden');
+                statusText.textContent = 'Чтение файла...';
+
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const fileReader = new FileReader();
+
+                    fileReader.onload = async (e) => {
+                        try {
+                            statusText.textContent = 'Декодирование аудио...';
+                            const audioBuffer = await audioContext.decodeAudioData(e.target.result);
+
+                            // --- Обработка аудио для соответствия параметрам ---
+                            const targetSampleRate = 48000;
+                            const numberOfChannels = 1; // Моно
+
+                            // Resampling (передискретизация) до 48000 Гц
+                            statusText.textContent = 'Изменение частоты...';
+                            const offlineContext = new OfflineAudioContext(numberOfChannels, audioBuffer.duration * targetSampleRate, targetSampleRate);
+                            const bufferSource = offlineContext.createBufferSource();
+                            bufferSource.buffer = audioBuffer;
+                            bufferSource.connect(offlineContext.destination);
+                            bufferSource.start();
+                            const resampledBuffer = await offlineContext.startRendering();
+
+                            // Получаем моно-канал
+                            let monoChannelData = resampledBuffer.getChannelData(0);
+
+                            // Применяем эффекты плавного появления/затухания, если нужно
+                            if(fadeInEnabled) {
+                                let fadeDuration = Math.min(2, resampledBuffer.duration); // до 2 секунд
+                                for(let i = 0; i < targetSampleRate * fadeDuration; i++) {
+                                    monoChannelData[i] *= (i / (targetSampleRate * fadeDuration));
+                                }
+                            }
+                            if(fadeOutEnabled) {
+                                let fadeDuration = Math.min(2, resampledBuffer.duration); // до 2 секунд
+                                let startIndex = monoChannelData.length - (targetSampleRate * fadeDuration);
+                                for(let i = startIndex; i < monoChannelData.length; i++) {
+                                     monoChannelData[i] *= 1 - ((i - startIndex) / (targetSampleRate * fadeDuration));
+                                }
+                            }
+
+                            // --- Кодирование в OGG ---
+                            statusText.textContent = 'Кодирование в OGG...';
+                            const encoder = new OggVorbisEncoder(targetSampleRate, numberOfChannels, 0.4); // 0.4 - качество
+                            encoder.encode([monoChannelData]);
+                            const blob = encoder.finish();
+
+                            // --- Создание ссылки для скачивания ---
+                            const url = URL.createObjectURL(blob);
+                            downloadBtn.href = url;
+                            const originalName = selectedFile.name.split('.').slice(0, -1).join('.');
+                            downloadBtn.download = `${originalName}.ogg`;
+                            
+                            downloadBtn.classList.remove('hidden');
+                            statusText.textContent = 'Готово! Файл можно скачать.';
+
+                        } catch (err) {
+                            console.error(err);
+                            statusText.textContent = 'Ошибка: не удалось обработать аудиофайл.';
+                        } finally {
+                            convertBtn.disabled = false;
+                        }
+                    };
+                    
+                    fileReader.onerror = () => {
+                        statusText.textContent = 'Ошибка при чтении файла.';
+                        convertBtn.disabled = false;
+                    };
+
+                    fileReader.readAsArrayBuffer(selectedFile);
+
+                } catch (error) {
+                    console.error(error);
+                    statusText.textContent = 'Произошла критическая ошибка.';
+                    convertBtn.disabled = false;
+                }
+            };
+
+            const dropZone = fileUploadInput.parentElement;
+            ['dragover', 'dragleave', 'drop'].forEach(eventName => dropZone.addEventListener(eventName, e => e.preventDefault()));
+            dropZone.addEventListener('dragover', () => dropZone.classList.add('border-pink-400'));
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-pink-400'));
+            dropZone.addEventListener('drop', e => {
+                dropZone.classList.remove('border-pink-400');
+                fileUploadInput.files = e.dataTransfer.files;
+                handleFileSelect({ target: fileUploadInput });
+            });
+
+            fadeInBtn.addEventListener('click', () => {
+                fadeInEnabled = !fadeInEnabled;
+                fadeInBtn.classList.toggle('btn-toggle-active', fadeInEnabled);
+            });
+            fadeOutBtn.addEventListener('click', () => {
+                fadeOutEnabled = !fadeOutEnabled;
+                fadeOutBtn.classList.toggle('btn-toggle-active', fadeOutEnabled);
+            });
+
+            fileUploadInput.addEventListener('change', handleFileSelect);
+            convertBtn.addEventListener('click', convertFile);
+        });
+    </script>
+</body>
+</html>

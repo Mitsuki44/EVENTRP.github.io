@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Генератор ключ-карт SCP:SL 14.1+</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Styles -->
+  <style>
+    /* Applying the base font */
+    body {
+      font-family: 'Roboto', sans-serif;
+      /* UPDATED: New background GIF from Pinterest */
+      background-image: url('https://i.pinimg.com/originals/eb/ef/b0/ebefb0c7a04cf87e3c45169ed185de89.gif');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+    }
+    /* Style for gradient text */
+    .gradient-text {
+      background-image: linear-gradient(to right, #a5b4fc, #f9a8d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    /* Custom scrollbar for Webkit browsers */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e293b; /* bg-slate-800 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #475569; /* bg-slate-600 */
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b; /* bg-slate-500 */
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-300 p-4 md:p-8">
+
+  <!-- Main container with backdrop blur effect -->
+  <div class="max-w-7xl mx-auto space-y-8 bg-slate-900/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-slate-700">
+    
+    <!-- Page Header -->
+    <header class="text-center">
+        <h1 class="text-4xl md:text-5xl font-bold gradient-text">
+            Генератор ключ-карт SCP:SL
+        </h1>
+    </header>
+
+    <!-- Settings Card: Basic Info -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg space-y-6">
+        <h4 class="text-xl font-semibold text-slate-200 border-b border-slate-700 pb-2">Основная информация</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label for="keycard-type" class="block text-sm font-medium text-slate-300 mb-2">Тип ключ-карты</label>
+                <select id="keycard-type" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="обычная" selected>Обычная</option>
+                    <option value="админская">Админская</option>
+                    <option value="оперативника">Оперативника</option>
+                    <option value="металлическая">Металлическая</option>
+                </select>
+            </div>
+            <div>
+                <label for="player-id" class="block text-sm font-medium text-slate-300 mb-2">ID игрока</label>
+                <input type="text" id="player-id" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="12345" maxlength="5" pattern="\d{1,5}" inputmode="numeric">
+            </div>
+            <div>
+                <label for="inventory-name" class="block text-sm font-medium text-slate-300 mb-2">Название в инвентаре</label>
+                <input type="text" id="inventory-name" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Ключ-карта охраны">
+            </div>
+            <div>
+                <label for="keycard-name" class="block text-sm font-medium text-slate-300 mb-2">Имя на ключ-карте</label>
+                <input type="text" id="keycard-name" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="John Doe">
+            </div>
+             <div>
+                <label for="position" class="block text-sm font-medium text-slate-300 mb-2">Должность</label>
+                <input type="text" id="position" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Охранник">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Card: Access Levels & Appearance -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg space-y-6">
+        <h4 class="text-xl font-semibold text-slate-200 border-b border-slate-700 pb-2">Доступы и Внешний вид</h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label for="scp-access" class="block text-sm font-medium text-slate-300 mb-2">SCP доступ</label>
+                <select id="scp-access" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="0">0 (Никакой)</option> <option value="1">1 (Безопасный)</option> <option value="2">2 (Евклид)</option> <option value="3">3 (Кетер)</option>
+                </select>
+            </div>
+            <div>
+                <label for="weapon-access" class="block text-sm font-medium text-slate-300 mb-2">Оружейный доступ</label>
+                <select id="weapon-access" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                     <option value="0">0 (Нож)</option> <option value="1">1 (Пистолет)</option> <option value="2">2 (Автомат)</option> <option value="3">3 (Micro HID)</option>
+                </select>
+            </div>
+            <div>
+                <label for="admin-access" class="block text-sm font-medium text-slate-300 mb-2">Админ доступ</label>
+                <select id="admin-access" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="0">0 (Туалет)</option> <option value="1">1 (КПП)</option> <option value="2">2 (Гермоворота)</option> <option value="3">3 (Каб. Директора)</option>
+                </select>
+            </div>
+        </div>
+        <div id="serial-circle-row" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div>
+                <label for="serial-number" class="block text-sm font-medium text-slate-300 mb-2">Серийный номер</label>
+                <input type="text" id="serial-number" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Автогенерация" maxlength="10">
+            </div>
+            <div>
+                <label for="circle-count" class="block text-sm font-medium text-slate-300 mb-2">Количество кружков</label>
+                <select id="circle-count" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="0">0 кружков</option> <option value="1">1 кружок</option> <option value="2">2 кружка</option> <option value="3">3 кружка</option>
+                </select>
+            </div>
+        </div>
+         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label for="circle-color-picker" class="block text-sm font-medium text-slate-300 mb-2">Цвет кружков</label>
+                <div class="flex items-center gap-3">
+                    <input type="color" id="circle-color-picker" value="#008000" class="p-0 w-10 h-10 rounded-md cursor-pointer bg-slate-700 border-slate-600">
+                    <input type="text" id="circle-hex-code" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="#008000" maxlength="7">
+                </div>
+            </div>
+            <div>
+                <label for="border-color-picker" class="block text-sm font-medium text-slate-300 mb-2">Цвет обводки</label>
+                <div class="flex items-center gap-3">
+                    <input type="color" id="border-color-picker" value="#008000" class="p-0 w-10 h-10 rounded-md cursor-pointer bg-slate-700 border-slate-600">
+                    <input type="text" id="border-hex-code" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="#008000" maxlength="7">
+                </div>
+            </div>
+             <div>
+                <label for="label-color-picker" class="block text-sm font-medium text-slate-300 mb-2">Цвет текста</label>
+                <div class="flex items-center gap-3">
+                    <input type="color" id="label-color-picker" value="#008000" class="p-0 w-10 h-10 rounded-md cursor-pointer bg-slate-700 border-slate-600">
+                    <input type="text" id="label-hex-code" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="#008000" maxlength="7">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Actions and Output Card -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg space-y-6">
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- UPDATED: New Button Styles -->
+            <button id="btn-generate" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    Сгенерировать
+            </button>
+            <button id="btn-copy" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                    Копировать
+            </button>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Результат:</label>
+            <div id="output-box" class="w-full p-4 bg-slate-900 rounded-lg border border-slate-700 min-h-[70px] text-pink-400 font-mono text-sm whitespace-pre-wrap break-all overflow-auto"></div>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      /**
+       * Shows a temporary message (toast) on the screen.
+       * Replaces the default alert() for better UI/UX.
+       * @param {string} message - The message to display.
+       * @param {boolean} isError - If true, displays the toast in red.
+       */
+      const showToast = (message, isError = false) => {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        
+        // Base classes
+        let classes = 'fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-all duration-300 transform translate-y-10 opacity-0';
+        
+        // Color classes
+        classes += isError ? ' bg-pink-600' : ' bg-blue-600';
+        
+        toast.className = classes;
+        document.body.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => {
+          toast.classList.remove('translate-y-10');
+          toast.classList.remove('opacity-0');
+        }, 10);
+        
+        // Animate out and remove after 3 seconds
+        setTimeout(() => {
+          toast.classList.add('opacity-0');
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 3000);
+      };
+
+      // Saves form data to localStorage
+      const saveData = () => {
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+          if (input.type !== 'color') {
+            localStorage.setItem(`keycard_${input.id}`, input.value);
+          }
+        });
+      };
+
+      // Loads form data from localStorage
+      const loadData = () => {
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+          if (input.type !== 'color') {
+            const savedValue = localStorage.getItem(`keycard_${input.id}`);
+            if (savedValue !== null) {
+              input.value = savedValue;
+              if (input.id.includes('-hex-code')) {
+                const colorPickerId = input.id.replace('-hex-code', '-picker');
+                document.getElementById(colorPickerId).value = savedValue;
+              }
+            }
+          }
+        });
+        updateVisibility();
+      };
+
+      // Generates a random 10-digit serial number
+      const generateSerialNumber = () => Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+      // Updates visibility of fields based on the selected card type
+      const updateVisibility = () => {
+        const type = document.getElementById('keycard-type').value;
+        const serialCircleRow = document.getElementById('serial-circle-row');
+        const serialInput = document.getElementById('serial-number');
+        
+        if (type === 'обычная' || type === 'админская') {
+          serialCircleRow.style.display = 'none';
+        } else {
+          serialCircleRow.style.display = 'grid';
+          if (!serialInput.value.trim()) {
+            serialInput.value = generateSerialNumber();
+          }
+        }
+        setDefaultColors(type);
+      };
+
+      // Sets default colors based on the selected card type
+      const setDefaultColors = (type) => {
+        const colors = {
+          'обычная': { circle: '#008000', border: '#008000', label: '#008000' },
+          'админская': { circle: '#ff0000', border: '#ff0000', label: '#ff0000' },
+          'оперативника': { circle: '#0000ff', border: '#0000ff', label: '#ffffff' },
+          'металлическая': { circle: '#ffa500', border: '#ffa500', label: '#000000' }
+        };
+
+        if (colors[type]) {
+          document.getElementById('circle-color-picker').value = colors[type].circle;
+          document.getElementById('circle-hex-code').value = colors[type].circle;
+          document.getElementById('border-color-picker').value = colors[type].border;
+          document.getElementById('border-hex-code').value = colors[type].border;
+          document.getElementById('label-color-picker').value = colors[type].label;
+          document.getElementById('label-hex-code').value = colors[type].label;
+        }
+      };
+
+      // Syncs color picker inputs with their corresponding hex code text inputs
+      const syncColorInputs = (pickerId, hexId) => {
+        const picker = document.getElementById(pickerId);
+        const hexInput = document.getElementById(hexId);
+
+        picker.addEventListener('input', () => hexInput.value = picker.value);
+        hexInput.addEventListener('input', () => {
+          if (/^#[0-9A-F]{6}$/i.test(hexInput.value)) {
+            picker.value = hexInput.value;
+          }
+        });
+      };
+
+      // Initialize color pickers
+      syncColorInputs('circle-color-picker', 'circle-hex-code');
+      syncColorInputs('border-color-picker', 'border-hex-code');
+      syncColorInputs('label-color-picker', 'label-hex-code');
+
+      document.getElementById('keycard-type').addEventListener('change', updateVisibility);
+      document.getElementById('serial-number').addEventListener('focus', function() {
+        if (!this.value) this.value = generateSerialNumber();
+      });
+
+      // Generate Command Button Logic
+      document.getElementById('btn-generate').addEventListener('click', () => {
+        const type = document.getElementById('keycard-type').value;
+        const idPlayer = document.getElementById('player-id').value.trim();
+        const inventoryName = document.getElementById('inventory-name').value.trim().replace(/\s+/g, '_');
+        const position = document.getElementById('position').value.trim().replace(/\s+/g, '_') || "Default";
+        const keycardName = document.getElementById('keycard-name').value.trim().replace(/\s+/g, '_');
+        const scpAccess = document.getElementById('scp-access').value;
+        const weaponAccess = document.getElementById('weapon-access').value;
+        const adminAccess = document.getElementById('admin-access').value;
+        const circleColor = document.getElementById('circle-hex-code').value.toUpperCase();
+        const borderColor = document.getElementById('border-hex-code').value.toUpperCase();
+        const labelColor = document.getElementById('label-hex-code').value.toUpperCase();
+        const serialNumber = document.getElementById('serial-number').value.trim();
+        const circleCount = document.getElementById('circle-count').value;
+
+        if (!idPlayer || !/^\d{1,5}$/.test(idPlayer)) {
+          showToast('Введите корректный ID игрока (1-5 цифр)', true);
+          return;
+        }
+        if (!inventoryName || !keycardName) {
+          showToast('Заполните все обязательные поля (названия и имя)', true);
+          return;
+        }
+
+        let command = '';
+        const circleCountMap = { '0': '0', '1': '3', '2': '2', '3': '1' };
+
+        switch (type) {
+          case 'обычная':
+            command = `ckeycard ${idPlayer} KeycardCustomSite02 ${inventoryName} ${scpAccess} ${weaponAccess} ${adminAccess} ${circleColor} ${borderColor} ${position} ${labelColor} ${keycardName} 1`;
+            break;
+          case 'админская':
+            command = `ckeycard ${idPlayer} keycardcustommanagement ${inventoryName} ${scpAccess} ${weaponAccess} ${adminAccess} ${circleColor} ${borderColor} ${position} ${labelColor} ${keycardName} 1`;
+            break;
+          case 'металлическая':
+            if (!serialNumber) { showToast('Введите серийный номер', true); return; }
+            command = `ckeycard ${idPlayer} KeycardCustomMetalCase ${inventoryName} ${scpAccess} ${weaponAccess} ${adminAccess} ${circleColor} ${borderColor} ${position} ${labelColor} ${keycardName} ${serialNumber}1`;
+            break;
+          case 'оперативника':
+             if (!serialNumber) { showToast('Введите серийный номер', true); return; }
+            command = `ckeycard ${idPlayer} keycardcustomtaskforce ${inventoryName} ${scpAccess} ${weaponAccess} ${adminAccess} ${circleColor} ${borderColor} ${keycardName} ${serialNumber} ${circleCountMap[circleCount] || '0'}`;
+            break;
+          default:
+            command = 'Неизвестный тип ключ-карты';
+        }
+
+        document.getElementById('output-box').textContent = command;
+        saveData();
+      });
+
+      // Copy to Clipboard Button Logic
+      document.getElementById('btn-copy').addEventListener('click', () => {
+        const output = document.getElementById('output-box').textContent;
+        if (!output) {
+          showToast('Сначала сгенерируйте команду', true);
+          return;
+        }
+        navigator.clipboard.writeText(output).then(() => {
+          showToast('Команда скопирована в буфер обмена!');
+        }).catch(() => {
+          showToast('Не удалось скопировать команду', true);
+        });
+      });
+
+      // Load saved data on initial page load
+      loadData();
+    });
+  </script>
+</body>
+</html>

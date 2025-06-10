@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Генератор документов SCP:SL</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Styles -->
+  <style>
+    /* Applying the base font */
+    body {
+      font-family: 'Roboto', sans-serif;
+      /* UPDATED: New background GIF */
+      background-image: url('https://media1.tenor.com/m/M2RvCdBnNQ0AAAAd/steam.gif');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+    }
+    /* Style for gradient text */
+    .gradient-text {
+      background-image: linear-gradient(to right, #a5b4fc, #f9a8d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    /* Custom scrollbar for Webkit browsers */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e293b; /* bg-slate-800 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #475569; /* bg-slate-600 */
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b; /* bg-slate-500 */
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-300 p-4 md:p-8">
+
+  <!-- Main container with backdrop blur effect -->
+  <div class="max-w-7xl mx-auto space-y-8 bg-slate-900/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-slate-700">
+    
+    <!-- Page Header -->
+    <header class="text-center">
+        <h1 class="text-4xl md:text-5xl font-bold gradient-text">
+            Генератор документов SCP:SL
+        </h1>
+        <p class="text-slate-400 mt-2">Создание кастомных документов для сервера</p>
+    </header>
+
+    <!-- Settings Card: Basic Info -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg space-y-6">
+        <h4 class="text-xl font-semibold text-slate-200 border-b border-slate-700 pb-2">Основные параметры</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-1">
+                <label for="doc-id" class="block text-sm font-medium text-slate-300 mb-2">ID</label>
+                <input type="number" id="doc-id" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="800">
+            </div>
+            <div class="lg:col-span-2">
+                <label for="doc-name" class="block text-sm font-medium text-slate-300 mb-2">Название</label>
+                <input type="text" id="doc-name" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Ориентационная листовка">
+            </div>
+            <div class="lg:col-span-3">
+                <label for="doc-description" class="block text-sm font-medium text-slate-300 mb-2">Описание</label>
+                <textarea id="doc-description" rows="2" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Ознакомительный документ..."></textarea>
+            </div>
+             <div>
+                <label for="doc-weight" class="block text-sm font-medium text-slate-300 mb-2">Вес</label>
+                <input type="number" step="0.1" id="doc-weight" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="0.5">
+            </div>
+             <div>
+                <label for="doc-show-time" class="block text-sm font-medium text-slate-300 mb-2">Время показа текста</label>
+                <input type="number" id="doc-show-time" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="15">
+            </div>
+             <div>
+                <label for="doc-type" class="block text-sm font-medium text-slate-300 mb-2">Тип</label>
+                <!-- UPDATED: Input replaced with Select -->
+                <select id="doc-type" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="None">None</option>
+                    <option value="KeycardJanitor">KeycardJanitor</option>
+                    <option value="KeycardScientist">KeycardScientist</option>
+                    <option value="KeycardResearchCoordinator" selected>KeycardResearchCoordinator</option>
+                    <option value="KeycardZoneManager">KeycardZoneManager</option>
+                    <option value="KeycardGuard">KeycardGuard</option>
+                    <option value="KeycardMTFPrivate">KeycardMTFPrivate</option>
+                    <option value="KeycardContainmentEngineer">KeycardContainmentEngineer</option>
+                    <option value="KeycardMTFOperative">KeycardMTFOperative</option>
+                    <option value="KeycardMTFCaptain">KeycardMTFCaptain</option>
+                    <option value="KeycardFacilityManager">KeycardFacilityManager</option>
+                    <option value="KeycardChaosInsurgency">KeycardChaosInsurgency</option>
+                    <option value="KeycardO5">KeycardO5</option>
+                    <option value="Radio">Radio</option>
+                    <option value="GunCOM15">GunCOM15</option>
+                    <option value="Medkit">Medkit</option>
+                    <option value="Flashlight">Flashlight</option>
+                    <option value="MicroHID">MicroHID</option>
+                    <option value="SCP500">SCP500</option>
+                    <option value="SCP207">SCP207</option>
+                    <option value="Ammo12gauge">Ammo12gauge</option>
+                    <option value="GunE11SR">GunE11SR</option>
+                    <option value="GunCrossvec">GunCrossvec</option>
+                    <option value="Ammo556x45">Ammo556x45</option>
+                    <option value="GunFSP9">GunFSP9</option>
+                    <option value="GunLogicer">GunLogicer</option>
+                    <option value="GrenadeHE">GrenadeHE</option>
+                    <option value="GrenadeFlash">GrenadeFlash</option>
+                    <option value="Ammo44cal">Ammo44cal</option>
+                    <option value="Ammo762x39">Ammo762x39</option>
+                    <option value="Ammo9x19">Ammo9x19</option>
+                    <option value="GunCOM18">GunCOM18</option>
+                    <option value="SCP018">SCP018</option>
+                    <option value="SCP268">SCP268</option>
+                    <option value="Adrenaline">Adrenaline</option>
+                    <option value="Painkillers">Painkillers</option>
+                    <option value="Coin">Coin</option>
+                    <option value="ArmorLight">ArmorLight</option>
+                    <option value="ArmorCombat">ArmorCombat</option>
+                    <option value="ArmorHeavy">ArmorHeavy</option>
+                    <option value="GunRevolver">GunRevolver</option>
+                    <option value="GunAK">GunAK</option>
+                    <option value="GunShotgun">GunShotgun</option>
+                    <option value="SCP330">SCP330</option>
+                    <option value="SCP2176">SCP2176</option>
+                    <option value="SCP244a">SCP244a</option>
+                    <option value="SCP244b">SCP244b</option>
+                    <option value="SCP1853">SCP1853</option>
+                    <option value="ParticleDisruptor">ParticleDisruptor</option>
+                    <option value="GunCom45">GunCom45</option>
+                    <option value="SCP1576">SCP1576</option>
+                    <option value="Jailbird">Jailbird</option>
+                    <option value="AntiSCP207">AntiSCP207</option>
+                    <option value="GunFRMG0">GunFRMG0</option>
+                    <option value="GunA7">GunA7</option>
+                    <option value="Lantern">Lantern</option>
+                    <option value="Snowball">Snowball</option>
+                    <option value="Coal">Coal</option>
+                    <option value="SpecialCoal">SpecialCoal</option>
+                    <option value="Tape">Tape</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Card: Pages -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg space-y-6">
+        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+            <h4 class="text-xl font-semibold text-slate-200 flex items-center gap-2">
+                Страницы документа
+                <div class="relative flex items-center group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-60 p-2 bg-slate-900 text-slate-300 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                       Текст проверяйте через команду hbc на сервере
+                    </div>
+                </div>
+            </h4>
+            <button id="add-page-btn" class="text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-sm">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                Добавить страницу
+            </button>
+        </div>
+        <div id="pages-container" class="space-y-4">
+            <!-- Page 1 -->
+            <div class="page-entry flex items-start gap-4">
+                <textarea rows="3" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Текст страницы..."></textarea>
+                <button class="remove-page-btn text-pink-500 hover:text-pink-400 p-2 mt-2 transition-colors">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Actions and Output Card -->
+    <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg space-y-6">
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <button id="btn-generate" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    Сгенерировать
+            </button>
+            <button id="btn-copy" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                    Копировать
+            </button>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Результат (YAML):</label>
+            <pre id="output-box" class="w-full p-4 bg-slate-900 rounded-lg border border-slate-700 min-h-[200px] text-pink-400 font-mono text-sm whitespace-pre-wrap break-all overflow-auto"></pre>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const pagesContainer = document.getElementById('pages-container');
+      const addPageBtn = document.getElementById('add-page-btn');
+      const generateBtn = document.getElementById('btn-generate');
+      const copyBtn = document.getElementById('btn-copy');
+      const outputBox = document.getElementById('output-box');
+
+      // --- Helper Functions ---
+      const showToast = (message, isError = false) => {
+        const toast = document.createElement('div');
+        toast.textContent = message;
+        let classes = 'fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-all duration-300 transform translate-y-10 opacity-0';
+        classes += isError ? ' bg-pink-600' : ' bg-blue-600';
+        toast.className = classes;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.remove('translate-y-10', 'opacity-0');
+        }, 10);
+        setTimeout(() => {
+          toast.classList.add('opacity-0');
+          setTimeout(() => document.body.removeChild(toast), 300);
+        }, 3000);
+      };
+      
+      const createPageElement = () => {
+          const pageEntry = document.createElement('div');
+          pageEntry.className = 'page-entry flex items-start gap-4';
+          const textarea = document.createElement('textarea');
+          textarea.rows = 3;
+          textarea.className = 'w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none';
+          textarea.placeholder = 'Текст страницы...';
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-page-btn text-pink-500 hover:text-pink-400 p-2 mt-2 transition-colors';
+          removeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>`;
+          pageEntry.appendChild(textarea);
+          pageEntry.appendChild(removeBtn);
+          return pageEntry;
+      };
+
+      // --- Event Listeners ---
+      addPageBtn.addEventListener('click', () => {
+          pagesContainer.appendChild(createPageElement());
+      });
+
+      pagesContainer.addEventListener('click', (e) => {
+          if (e.target.closest('.remove-page-btn')) {
+            if (pagesContainer.childElementCount > 1) {
+              e.target.closest('.page-entry').remove();
+            } else {
+              showToast('Должна быть хотя бы одна страница.', true);
+            }
+          }
+      });
+
+      generateBtn.addEventListener('click', () => {
+          // Get user-configured values, providing defaults if empty
+          const data = {
+              id: document.getElementById('doc-id').value || '800',
+              name: document.getElementById('doc-name').value || 'Ориентационная листовка',
+              description: document.getElementById('doc-description').value || 'Представляет собой ознакомительый документ, включающий необходимую для каждого члена персонала Класса D информацию.',
+              weight: document.getElementById('doc-weight').value || '0.5',
+              spawn_properties: {
+                  limit: 0,
+                  dynamic_spawn_points: [],
+                  static_spawn_points: [],
+                  role_spawn_points: [],
+                  room_spawn_points: [],
+                  locker_spawn_points: [],
+              },
+              text_show_time: document.getElementById('doc-show-time').value || '15',
+              keycard_perms: 'None', // Static value from example
+              pages: Array.from(pagesContainer.querySelectorAll('textarea'))
+                          .map(textarea => textarea.value.trim())
+                          .filter(text => text), // Filter out empty pages
+              picked_up_hint_duration: -1, // Static value from example
+              selected_hint_duration: -1, // Static value from example
+              scale: { // Static values from example
+                  x: 3.5,
+                  y: 30,
+                  z: 4
+              },
+              type: document.getElementById('doc-type').value || 'KeycardResearchCoordinator'
+          };
+          
+          if (data.pages.length === 0) {
+              showToast('Добавьте хотя бы одну страницу с текстом.', true);
+              return;
+          }
+
+          // Build the full YAML string from the data object
+          let yamlString = `- id: ${data.id}\n`;
+          yamlString += `  name: ${data.name}\n`;
+          yamlString += `  description: ${data.description}\n`;
+          yamlString += `  weight: ${data.weight}\n`;
+          yamlString += `  spawn_properties:\n`;
+          yamlString += `    limit: ${data.spawn_properties.limit}\n`;
+          yamlString += `    dynamic_spawn_points: []\n`;
+          yamlString += `    static_spawn_points: []\n`;
+          yamlString += `    role_spawn_points: []\n`;
+          yamlString += `    room_spawn_points: []\n`;
+          yamlString += `    locker_spawn_points: []\n`;
+          yamlString += `  text_show_time: ${data.text_show_time}\n`;
+          yamlString += `  keycard_perms: ${data.keycard_perms}\n`;
+          yamlString += `  pages:\n`;
+          data.pages.forEach(page => {
+              // Properly format multi-line strings if any (though textarea is single line here)
+              yamlString += `  - "${page.replace(/"/g, '\\"')}"\n`;
+          });
+          yamlString += `  picked_up_hint_duration: ${data.picked_up_hint_duration}\n`;
+          yamlString += `  selected_hint_duration: ${data.selected_hint_duration}\n`;
+          yamlString += `  scale:\n`;
+          yamlString += `    x: ${data.scale.x}\n`;
+          yamlString += `    y: ${data.scale.y}\n`;
+          yamlString += `    z: ${data.scale.z}\n`;
+          yamlString += `  type: ${data.type}\n`;
+
+          outputBox.textContent = yamlString;
+      });
+
+      copyBtn.addEventListener('click', () => {
+          if (!outputBox.textContent) {
+              showToast('Сначала сгенерируйте конфиг.', true);
+              return;
+          }
+          navigator.clipboard.writeText(outputBox.textContent).then(() => {
+              showToast('Конфиг скопирован в буфер обмена!');
+          }).catch(() => {
+              showToast('Не удалось скопировать конфиг.', true);
+          });
+      });
+    });
+  </script>
+</body>
+</html>

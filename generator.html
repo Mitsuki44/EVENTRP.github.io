@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Генератор CLSCRIPT SCP:SL</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-image: url('https://i.pinimg.com/originals/19/73/65/19736506d95a73dbddd30457418ce075.gif');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+    }
+    .gradient-text {
+      background-image: linear-gradient(to right, #a5b4fc, #f9a8d4);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #1e293b; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-300 p-4 md:p-8">
+
+  <div class="max-w-7xl mx-auto space-y-8 bg-slate-900/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-slate-700">
+    
+    <header class="text-center">
+        <h1 class="text-4xl md:text-5xl font-bold gradient-text">
+            Генератор CLSCRIPT
+        </h1>
+    </header>
+
+    <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg space-y-6">
+        <h4 class="text-xl font-semibold text-slate-200 border-b border-slate-700 pb-2">Параметры игрока</h4>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+                <label for="player-id" class="block text-sm font-medium text-slate-300 mb-2">ID Игрока (необязательно)</label>
+                <input type="number" id="player-id" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500" placeholder="ID цели">
+            </div>
+            <div>
+                <label for="role" class="block text-sm font-medium text-slate-300 mb-2">Роль</label>
+                <select id="role" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+                    <option value="">Пусто</option><option value="ChaosConscript">Новобранец ПХ</option><option value="ChaosMarauder">Усмиритель ПХ</option><option value="ChaosRepressor">Мародёр ПХ</option><option value="ChaosRifleman">Стрелок ПХ</option><option value="ClassD">Класс Д</option><option value="FacilityGuard">Охранник комплекса</option><option value="NtfCaptain">Капитан МОГ</option><option value="NtfPrivate">Рядовой МОГ</option><option value="NtfSergeant">Сержант МОГ</option><option value="NtfSpecialist">Специалист МОГ</option><option value="Scientist">Учёный</option><option value="Scp049">SCP-049</option><option value="Scp0492">SCP-049-2</option><option value="Scp079">SCP-079</option><option value="Scp096">SCP-096</option><option value="Scp106">SCP-106</option><option value="Scp173">SCP-173</option><option value="Scp3114">SCP-3114</option><option value="Scp939">SCP-939</option><option value="Tutorial">Обучение</option>
+                </select>
+            </div>
+            <div>
+                <label for="nickname" class="block text-sm font-medium text-slate-300 mb-2">Никнейм</label>
+                <input type="text" id="nickname" placeholder="Никнейм" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label for="health" class="block text-sm font-medium text-slate-300 mb-2">Здоровье</label>
+                <input type="number" id="health" value="100" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="lg:col-span-3">
+                 <label for="custom-info" class="block text-sm font-medium text-slate-300 mb-2">Кастомная информация</label>
+                 <div class="flex flex-col sm:flex-row gap-2">
+                    <textarea id="custom-info" rows="3" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500" placeholder="Текст кастомной информации"></textarea>
+                    <select id="custom-info-color" class="bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+                        <option value="Standart">Стандарт</option><option value="<color=#FF96DE>" style="color:#FF96DE">Розовый</option><option value="<color=#C50000>" style="color:#C50000">Красный</option><option value="<color=#A0A0A0>" style="color:#A0A0A0">Серебро</option><option value="<color=#32CD32>" style="color:#32CD32">Светло-зелёный</option><option value="<color=#00B7EB>" style="color:#00B7EB">Циан</option><option value="<color=#FF1493>" style="color:#FF1493">Глубокий розовый</option><option value="<color=#FAFF86>" style="color:#FAFF86">Жёлтый</option><option value="<color=#FF0090>" style="color:#FF0090">Маджента</option><option value="<color=#EE7600>" style="color:#EE7600">Тыква</option>
+                    </select>
+                 </div>
+            </div>
+        </div>
+
+        <hr class="border-slate-700">
+
+        <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">Предметы (8 слотов)</label>
+            <div id="items-container" class="grid grid-cols-2 sm:grid-cols-4 gap-4"></div>
+        </div>
+        
+        <hr class="border-slate-700">
+
+        <div>
+            <div class="flex justify-between items-center mb-2">
+                 <label class="block text-sm font-semibold text-slate-300">Патроны</label>
+                 <button id="add-ammo-btn" class="text-white font-semibold py-1 px-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+                    Добавить
+                 </button>
+            </div>
+            <div id="ammo-container" class="space-y-2"></div>
+        </div>
+        
+        <hr class="border-slate-700">
+        
+        <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">Отображаемые поля</label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="display-nickname" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Никнейм</label>
+                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="display-badge" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Плашка</label>
+                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="display-custom-info" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> КастомИнфо</label>
+                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="display-role" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Роль</label>
+                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="display-unit" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Отряд</label>
+                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="display-power" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Должность</label>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg space-y-6">
+        <div>
+            <label for="import-script" class="block text-sm font-medium text-slate-300 mb-2">Вставить и разобрать CLSCRIPT</label>
+            <div class="flex gap-2">
+                <input type="text" id="import-script" placeholder="Вставьте сюда clscript..." class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-blue-500">
+                <button id="btn-parse" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">Разобрать</button>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <button id="btn-generate" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    Сгенерировать
+            </button>
+            <button id="btn-copy" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                    Копировать
+            </button>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-slate-300 mb-2">Результат:</label>
+            <pre id="output-box" class="w-full p-4 bg-slate-900 rounded-lg border border-slate-700 min-h-[70px] text-pink-400 font-mono text-sm whitespace-pre-wrap break-all overflow-auto"></pre>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const getValue = (id) => document.getElementById(id)?.value || '';
+        const getChecked = (id) => document.getElementById(id)?.checked || false;
+        const setValue = (id, val) => { if(document.getElementById(id)) document.getElementById(id).value = val; };
+        const setChecked = (id, state) => { if(document.getElementById(id)) document.getElementById(id).checked = state; };
+
+        const populateItems = () => {
+            const container = document.getElementById('items-container');
+            if (!container) return;
+            const itemsList = [ { value: "Adrenaline", text: "Адреналин" }, { value: "AntiSCP207", text: "Anti-SCP-207" }, { value: "ArmorCombat", text: "Тактическая броня" }, { value: "ArmorHeavy", text: "Тяжёлая броня" }, { value: "ArmorLight", text: "Лёгкая броня" }, { value: "Coin", text: "Монета" }, { value: "Flashlight", text: "Фонарик" }, { value: "GunAK", text: "АК" }, { value: "GunCOM15", text: "COM-15" }, { value: "GunCOM18", text: "COM-18" }, { value: "GunCom45", text: "COM-45" }, { value: "GunCrossvec", text: "Crossvec" }, { value: "GunE11SR", text: "E11-SR" }, { value: "GunFSP9", text: "FSP-9" }, { value: "GunFRMG0", text: "FRMG-0" }, { value: "GunLogicer", text: "Logicer" }, { value: "GunRevolver", text: "Revolver" }, { value: "GunShotgun", text: "Shotgun" }, { value: "GunA7", text: "A7" }, { value: "Jailbird", text: "Jailbird" }, { value: "KeycardChaosInsurgency", text: "Устройство взлома" }, { value: "KeycardContainmentEngineer", text: "Ключ-карта инженера" }, { value: "KeycardFacilityManager", text: "Ключ-карта менеджера" }, { value: "KeycardGuard", text: "Ключ-карта охранника" }, { value: "KeycardJanitor", text: "Ключ-карта уборщика" }, { value: "KeycardMTFCaptain", text: "Ключ-карта капитана МОГ" }, { value: "KeycardMTFOperative", text: "Ключ-карта оперативника МОГ" }, { value: "KeycardMTFPrivate", text: "Ключ-карта рядового МОГ" }, { value: "KeycardO5", text: "Ключ-карта О5" }, { value: "KeycardResearchCoordinator", text: "Ключ-карта научного руководителя" }, { value: "KeycardScientist", text: "Ключ-карта научного сотрудника" }, { value: "KeycardZoneManager", text: "Ключ-карта менеджера зоны" }, { value: "Lantern", text: "Лампа" }, { value: "Medkit", text: "Аптечка" }, { value: "MicroHID", text: "MicroHID" }, { value: "Painkillers", text: "Обезбол" }, { value: "ParticleDisruptor", text: "Particle Disruptor" }, { value: "Radio", text: "Рация" }, { value: "SCP018", text: "SCP-018" }, { value: "SCP1576", text: "SCP-1576" }, { value: "SCP1853", text: "SCP-1853" }, { value: "SCP207", text: "SCP-207" }, { value: "SCP2176", text: "SCP-2176" }, { value: "SCP244a", text: "SCP-244a" }, { value: "SCP244b", text: "SCP-244b" }, { value: "SCP268", text: "SCP-268" }, { value: "SCP330", text: "SCP-330" }, { value: "SCP500", text: "SCP-500" }, { value: "GrenadeFlash", text: "Светошумовая граната" }, { value: "GrenadeHE", text: "Осколочно-фугасная граната" } ];
+            let html = '';
+            for (let i = 0; i < 8; i++) {
+                let optionsHtml = `<option value="">Слот ${i + 1}</option>`;
+                itemsList.forEach(item => { optionsHtml += `<option value="${item.value}">${item.text}</option>`; });
+                html += `<select id="item-${i+1}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 text-sm">${optionsHtml}</select>`;
+            }
+            container.innerHTML = html;
+        };
+
+        const showToast = (message, isError = false) => {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            let classes = 'fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-lg transition-all duration-300 transform translate-y-10 opacity-0';
+            classes += isError ? ' bg-pink-600' : ' bg-blue-600';
+            toast.className = classes;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        };
+
+        const calculateInfoSum = () => {
+            let sum = 0;
+            if (getChecked('display-nickname')) sum += 1;
+            if (getChecked('display-badge')) sum += 2;
+            if (getChecked('display-custom-info')) sum += 4;
+            if (getChecked('display-role')) sum += 8;
+            if (getChecked('display-unit')) sum += 16;
+            if (getChecked('display-power')) sum += 32;
+            return sum;
+        };
+        
+        const addAmmoRow = (type = '', amount = '') => {
+            const container = document.getElementById('ammo-container');
+            const ammoTypes = ['None', 'Nato9', 'Nato556', 'Nato762', 'Ammo12Gauge', 'Ammo44Cal'];
+
+            const row = document.createElement('div');
+            row.className = 'ammo-row flex items-center gap-2';
+
+            const select = document.createElement('select');
+            select.className = 'ammo-type w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 text-sm';
+            let optionsHtml = '<option value="">Тип патрон</option>';
+            ammoTypes.forEach(ammo => optionsHtml += `<option value="${ammo}" ${type === ammo ? 'selected' : ''}>${ammo}</option>`);
+            select.innerHTML = optionsHtml;
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'ammo-amount w-1/3 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 text-sm';
+            input.placeholder = 'Кол-во';
+            input.value = amount;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'text-pink-500 hover:text-pink-400 p-1 transition-colors';
+            removeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>`;
+            removeBtn.onclick = () => row.remove();
+            
+            row.appendChild(select);
+            row.appendChild(input);
+            row.appendChild(removeBtn);
+            container.appendChild(row);
+        };
+
+        const generateClscript = () => {
+            const playerId = getValue('player-id');
+            const role = getValue('role');
+            const customInfoRaw = getValue('custom-info');
+            const customInfoColor = getValue('custom-info-color');
+            const nickname = getValue('nickname');
+            const health = getValue('health');
+            const items = Array.from({length: 8}, (_, i) => getValue(`item-${i+1}`)).filter(Boolean).join(',');
+            
+            const ammoRows = document.querySelectorAll('.ammo-row');
+            const ammoString = Array.from(ammoRows).map(row => {
+                const type = row.querySelector('.ammo-type').value;
+                const amount = row.querySelector('.ammo-amount').value;
+                return (type && amount) ? `${type}:${amount}` : '';
+            }).filter(Boolean).join(',');
+
+            const infoSum = calculateInfoSum();
+            
+            let finalCustomInfo = customInfoColor !== 'Standart' ? `${customInfoColor}${customInfoRaw}</color>` : customInfoRaw;
+            const scriptBody = `${role};${finalCustomInfo};${nickname};${health};${items};${ammoString};${infoSum}`;
+            
+            const command = playerId ? `/clscript ${playerId} ${scriptBody}` : scriptBody;
+            document.getElementById('output-box').textContent = command;
+        };
+
+        const parseScript = () => {
+            const importText = getValue('import-script').trim();
+            if (!importText) return showToast('Поле для вставки пустое.', true);
+
+            let scriptBody = importText;
+            const commandPrefix = '/clscript ';
+            if (scriptBody.startsWith(commandPrefix)) {
+                const temp = scriptBody.substring(commandPrefix.length);
+                const firstSpaceIndex = temp.indexOf(' ');
+                if (firstSpaceIndex !== -1) {
+                    const id = temp.substring(0, firstSpaceIndex);
+                    if (!isNaN(id) && id.trim() !== '') {
+                        setValue('player-id', id);
+                        scriptBody = temp.substring(firstSpaceIndex + 1);
+                    } else {
+                         setValue('player-id', '');
+                         scriptBody = temp;
+                    }
+                } else {
+                    scriptBody = temp; 
+                    setValue('player-id', '');
+                }
+            } else {
+                setValue('player-id', '');
+            }
+            
+            const parts = scriptBody.split(';');
+            if (parts.length < 7) return showToast('Неправильный формат clscript. Необходимо 7 частей, разделенных ";".', true);
+            
+            setValue('role', parts[0]);
+            setValue('custom-info', parts[1]);
+            setValue('custom-info-color', 'Standart');
+            setValue('nickname', parts[2]);
+            setValue('health', parts[3]);
+            
+            const items = parts[4].split(',');
+            for (let i = 0; i < 8; i++) setValue(`item-${i+1}`, items[i] || '');
+            
+            const ammoContainer = document.getElementById('ammo-container');
+            ammoContainer.innerHTML = '';
+            if(parts[5]) {
+                const ammos = parts[5].split(',');
+                ammos.forEach(ammo => {
+                    const [type, amount] = ammo.split(':');
+                    if(type && amount) addAmmoRow(type, amount);
+                });
+            }
+
+            const infoSum = parseInt(parts[6], 10);
+            if (!isNaN(infoSum)) {
+                setChecked('display-nickname', (infoSum & 1) > 0);
+                setChecked('display-badge', (infoSum & 2) > 0);
+                setChecked('display-custom-info', (infoSum & 4) > 0);
+                setChecked('display-role', (infoSum & 8) > 0);
+                setChecked('display-unit', (infoSum & 16) > 0);
+                setChecked('display-power', (infoSum & 32) > 0);
+            }
+            
+            showToast('Скрипт успешно разобран!');
+        };
+
+        document.getElementById('add-ammo-btn').addEventListener('click', () => addAmmoRow());
+        document.getElementById('btn-generate').addEventListener('click', generateClscript);
+        document.getElementById('btn-parse').addEventListener('click', parseScript);
+        document.getElementById('btn-copy').addEventListener('click', () => {
+            const output = document.getElementById('output-box').textContent;
+            if (!output) return showToast('Сначала сгенерируйте команду.', true);
+            navigator.clipboard.writeText(output).then(() => showToast('Команда скопирована в буфер обмена!'), () => showToast('Ошибка при копировании.', true));
+        });
+
+        populateItems();
+    });
+  </script>
+</body>
+</html>

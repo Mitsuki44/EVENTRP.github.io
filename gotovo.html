@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Инновационный редактор биндов</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключение шрифта Roboto -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Применяем стили фона и шрифта ко всему документу, как в style2 */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('https://media1.tenor.com/m/GiO4XNKti44AAAAd/retrowave-synthwave.gif'); /* GIF из style1 */
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        /* Стили для градиентного текста из style1 */
+        .gradient-text {
+            background-image: linear-gradient(to right, #a5b4fc, #f9a8d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Стилизация скроллбара, как в style2 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; /* bg-slate-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; /* bg-slate-600 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* bg-slate-500 */
+        }
+        
+        /* Скрытие элементов, как в style2 */
+        .reborn.hidden {
+            display: none;
+        }
+        .zone-content.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300 p-4 md:p-8">
+
+    <!-- Основной контейнер с эффектом размытия и уменьшенными отступами (space-y-4) -->
+    <div class="max-w-7xl mx-auto space-y-4 bg-slate-900/80 backdrop-blur-sm p-6 md:p-8 rounded-2xl border border-slate-700">
+        
+        <!-- Главный заголовок -->
+        <h1 class="text-4xl md:text-5xl font-bold text-center gradient-text flex items-center justify-center gap-4">
+            <img src="https://cdn.discordapp.com/icons/389532939152654342/a_a5a3619c7bce639a1e2937bf5a89ef61.gif?size=128" width="40" height="40" alt="icon">
+            Инновационный редактор биндов
+            <img src="https://cdn.discordapp.com/icons/389532939152654342/a_a5a3619c7bce639a1e2937bf5a89ef61.gif?size=128" width="40" height="40" alt="icon">
+        </h1>
+        <hr class="border-slate-700">
+
+        <!-- Блок выбора кнопки бинда -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg">
+            <div class="mb-4">
+                <label for="BIND" class="block text-xl font-semibold mb-2 text-slate-200">Кнопка бинда:</label>
+                <select id="BIND" class="w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none">
+                    <option value="8">Backspace</option><option value="9">Tab</option><option value="12">Clear</option><option value="13">Return</option><option value="19">Pause</option><option value="27">Escape</option><option value="32">Space</option><option value="33">Exclaim</option><option value="34">DoubleQuote</option><option value="35">Hash</option><option value="36">Dollar</option><option value="38">Ampersand</option><option value="39">Quote</option><option value="40">LeftParen</option><option value="41">RightParen</option><option value="42">Asterisk</option><option value="43">Plus</option><option value="44">Comma</option><option value="45">Minus</option><option value="46">Period</option><option value="47">Slash</option><option value="48">Alpha0</option><option value="49">Alpha1</option><option value="50">Alpha2</option><option value="51">Alpha3</option><option value="52">Alpha4</option><option value="53">Alpha5</option><option value="54">Alpha6</option><option value="55">Alpha7</option><option value="56">Alpha8</option><option value="57">Alpha9</option><option value="58">Colon</option><option value="59">Semicolon</option><option value="60">Less</option><option value="61">Equals</option><option value="62">Greater</option><option value="63">Question</option><option value="64">At</option><option value="91">LeftBracket</option><option value="92">Backslash</option><option value="93">RightBracket</option><option value="94">Caret</option><option value="95">Underscore</option><option value="96">BackQuote</option><option value="97">A</option><option value="98">B</option><option value="99">C</option><option value="100">D</option><option value="101">E</option><option value="102">F</option><option value="103">G</option><option value="104">H</option><option value="105">I</option><option value="106">J</option><option value="107">K</option><option value="108">L</option><option value="109">M</option><option value="110">N</option><option value="111">O</option><option value="112">P</option><option value="113">Q</option><option value="114">R</option><option value="115">S</option><option value="116">T</option><option value="117">U</option><option value="118">V</option><option value="119">W</option><option value="120">X</option><option value="121">Y</option><option value="122">Z</option><option value="127">Delete</option><option value="256">Keypad0</option><option value="257">Keypad1</option><option value="258">Keypad2</option><option value="259">Keypad3</option><option value="260">Keypad4</option><option value="261">Keypad5</option><option value="262">Keypad6</option><option value="263">Keypad7</option><option value="264">Keypad8</option><option value="265">Keypad9</option><option value="266">KeypadPeriod</option><option value="267">KeypadDivide</option><option value="268">KeypadMultiply</option><option value="269">KeypadMinus</option><option value="270">KeypadPlus</option><option value="271">KeypadEnter</option><option value="272">KeypadEquals</option><option value="273">UpArrow</option><option value="274">DownArrow</option><option value="275">RightArrow</option><option value="276">LeftArrow</option><option value="277">Insert</option><option value="278">Home</option><option value="279">End</option><option value="280">PageUp</option><option value="281">PageDown</option><option value="282">F1</option><option value="283">F2</option><option value="284">F3</option><option value="285">F4</option><option value="286">F5</option><option value="287">F6</option><option value="288">F7</option><option value="289">F8</option><option value="290">F9</option><option value="291">F10</option><option value="292">F11</option><option value="293">F12</option><option value="294">F13</option><option value="295">F14</option><option value="296">F15</option><option value="300">Numlock</option><option value="301">CapsLock</option><option value="302">ScrollLock</option><option value="303">RightShift</option><option value="304">LeftShift</option><option value="305">RightControl</option><option value="306">LeftControl</option><option value="307">RightAlt</option><option value="308">LeftAlt</option><option value="309">RightApple/RightCommand</option><option value="310">LeftApple/LeftCommand</option><option value="311">LeftWindows</option><option value="312">RightWindows</option><option value="313">AltGr</option><option value="315">Help</option><option value="316">Print</option><option value="317">SysReq</option><option value="318">Break</option><option value="319">Menu</option><option value="323">Mouse0</option><option value="324">Mouse1</option><option value="325">Mouse2</option><option value="326">Mouse3</option><option value="327">Mouse4</option><option value="328">Mouse5</option><option value="329">Mouse6</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Блок "Основные процессы" -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+            <button onclick="toggleVisibility('NACH', this)" class="w-full flex justify-between items-center p-4 text-left font-bold text-slate-200 hover:bg-slate-700/50 transition-colors">
+                <span>Основные процессы</span>
+                <svg class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div id="NACH" class="reborn hidden p-6 border-t border-slate-700">
+                <!-- Секция "Начало раунда" -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+                    <h4 class="col-span-full text-xl font-semibold text-slate-200 mb-2 border-b border-slate-700 pb-2">Начало раунда:</h4>
+                    <label for="lobbylock" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="lobbylock" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Лоббилок:</span></label>
+                    <label for="roundlock" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="roundlock" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Раундлок:</span></label>
+                    <label for="whlock" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="whlock" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Боеголовкалок:</span></label>
+                    <label for="obezlock" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="obezlock" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Обеззараживание:</span></label>
+                    <label for="roundstart" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="roundstart" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Раундстарт:</span></label>
+                </div>
+                <hr class="border-slate-700 my-6">
+                <!-- Секция "Event" -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <h4 class="col-span-full text-xl font-semibold text-slate-200 mb-2 border-b border-slate-700 pb-2">Event:</h4>
+                    <label for="eventbblock" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors col-span-full cursor-pointer"><input id="eventbblock" type="checkbox" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Включен ли блок?:</span></label>
+                    <div><label for="idevent" class="block text-slate-300 mb-1">Стандартный айди:</label><input id="idevent" class="w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"></div>
+                    <div><label for="name" class="block text-slate-300 mb-1">Имя:</label><input id="name" class="w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"></div>
+                    <div class="col-span-full"><label for="ops" class="block text-slate-300 mb-1">Описание:</label><input id="ops" class="w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"></div>
+                    <label for="autoresp" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="autoresp" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Автореспавн?:</span></label>
+                    <label for="autowh" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="autowh" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Автобоеголовка?:</span></label>
+                    <label for="ff" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="ff" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Френдли-фаер?:</span></label>
+                    <label for="blkut" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="blkut" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Блекауты?:</span></label>
+                    <label for="eventstart" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors col-span-full font-bold text-slate-200 cursor-pointer"><input type="checkbox" id="eventstart" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-200 ml-3">Запустить ивент?:</span></label>
+                </div>
+                <hr class="border-slate-700 my-6">
+                <!-- Секция "ToggleCommands" -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+                     <h4 class="col-span-full text-xl font-semibold text-slate-200 mb-2 border-b border-slate-700 pb-2">ToggleCommands:</h4>
+                    <label for="Togglerel" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="Togglerel" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Togglerel:</span></label>
+                    <label for="Togglehit" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="Togglehit" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Togglehit:</span></label>
+                    <label for="TogglecamerasF" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="TogglecamerasF" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Togglecameras false:</span></label>
+                    <label for="TogglecamerasT" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="TogglecamerasT" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Togglecameras true:</span></label>
+                    <label for="Togglerespawn" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="Togglerespawn" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Togglerespawn:</span></label>
+                </div>
+                <hr class="border-slate-700 my-6">
+                <!-- Секция "Массовые действия" -->
+                <div>
+                    <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Массовые действия:</h4>
+                    <div class="space-y-4">
+                        <label for="massrole" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="massrole" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Массовый перевод роли:</span></label>
+                        <div><label for="bc" class="block text-slate-300 mb-1">Бродкаст:</label><textarea value= "-" id="bc" rows="3" class="w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea></div>
+                        <div><label for="hint" class="block text-slate-300 mb-1">Хинт массовый:</label><textarea value= "-" id="hint" rows="3" class="w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Блок "Настройка MapEditor" -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+             <button onclick="toggleVisibility('reborn', this)" class="w-full flex justify-between items-center p-4 text-left font-bold text-slate-200 hover:bg-slate-700/50 transition-colors">
+                <span>Настройка MapEditor</span>
+                <svg class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="reborn hidden p-6 border-t border-slate-700" id="reborn">
+                <!-- Секция "Базовые действия" -->
+                <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Базовые действия:</h4>
+                <div class="space-y-4 mb-6">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <label for="posmp" class="font-medium text-slate-300 w-16">mp pos:</label>
+                        <select id="posmp" class="flex-shrink-0 bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"><option value="">Выбрать</option><option value="add">add</option><option value="set">set</option><option value="grab">grab</option></select>
+                        <input type="number" class="flex-grow w-24 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" id="posmpX" placeholder="X">
+                        <input type="number" class="flex-grow w-24 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" id="posmpY" placeholder="Y">
+                        <input type="number" class="flex-grow w-24 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" id="posmpZ" placeholder="Z">
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <label for="rotmp" class="font-medium text-slate-300 w-16">mp rot:</label>
+                        <select id="rotmp" class="flex-shrink-0 bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"><option value="">Выбрать</option><option value="add">add</option><option value="set">set</option></select>
+                        <input type="number" class="flex-grow w-24 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" id="rotmpX" placeholder="X">
+                        <input type="number" class="flex-grow w-24 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" id="rotmpY" placeholder="Y">
+                        <input type="number" class="flex-grow w-24 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none" id="rotmpZ" placeholder="Z">
+                    </div>
+                </div>
+                <hr class="border-slate-700 my-6">
+                <!-- Секция "Настройки карты" -->
+                <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Настройки карты:</h4>
+                <div class="space-y-4 mb-6">
+                    <label for="unload" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer"><input type="checkbox" id="unload" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"><span class="text-slate-300 ml-3">Убрать ли предыдущую карту</span></label>
+                    <div><label for="mapname" class="block text-slate-300 mb-1">Название карты:</label><input id="mapname" class="w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"></div>
+                </div>
+                <hr class="border-slate-700 my-6">
+                <!-- Секция "Спавн" -->
+                <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Спавн:</h4>
+                <div class="space-y-4">
+                     <div class="flex flex-wrap items-center gap-4">
+                         <label for="ChemCount" class="text-slate-300">Сколько создать:</label>
+                         <input type="number" id="ChemCount" placeholder="Количество блоков" min="0" max="255" class="w-48 bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                         <button onclick="createChems()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">Создать блоки</button>
+                    </div>
+                    <div id="chemsContainer" class="space-y-6 mt-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Блок "Настройка карты" -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+            <button onclick="toggleVisibility('slmap', this)" class="w-full flex justify-between items-center p-4 text-left font-bold text-slate-200 hover:bg-slate-700/50 transition-colors">
+                <span>Настройка карты</span>
+                <svg class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="reborn hidden p-6 border-t border-slate-700" id="slmap">
+                 <!-- НАСТРОЙКА ЗОН -->
+                <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Настройка зон:</h4>
+                <div class="space-y-4">
+                    <!-- Зона: Лёгкая -->
+                    <div class="bg-slate-800/50 p-4 rounded-lg">
+                        <button onclick="showZoneContents('lzc', this)" class="zone-button w-full flex justify-between items-center text-left text-lg font-semibold text-slate-200"><span class="flex-grow">Лёгкая зона</span><span class="button-state text-blue-400 text-sm ml-4">Показать</span></button>
+                        <div class="zone-content hidden mt-4 space-y-4" id="lzc">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Интенсивность:</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Значение" id="lzcINTEN"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Время" id="lzcINTENTIME"></label></div>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Цвет:</span><input placeholder="R" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="lzcRED"></label><label class="block col-span-1"><span class="text-slate-400 invisible">G</span><input placeholder="G" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="lzcGREEN"></label><label class="block col-span-1"><span class="text-slate-400 invisible">B</span><input placeholder="B" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="lzcBLUE"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="lzcCOLORTIME"></label></div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Блекаут:</span><input placeholder="Значение" id="lzcBLACKOUT" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="lzcBLACKOUTTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label></div>
+                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Блокировка:</span><input placeholder="Значение" id="lzcLOCKDOWN" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="lzcLOCKDOWNTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label></div>
+                            <label class="block"><span class="text-slate-400">Статус дверей:</span><select id="lzcDOOR" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"><option value="">Ничего</option><option value="lock LightContainment false">Разблокировать</option><option value="lock LightContainment true">Заблокировать</option><option value="state LightContainment true">Открыть</option><option value="state LightContainment false">Закрыть</option><option value="destroy LightContainment">Выбить</option></select></label>
+                        </div>
+                    </div>
+                    <!-- Зона: Тяжёлая -->
+                    <div class="bg-slate-800/50 p-4 rounded-lg">
+                        <button onclick="showZoneContents('hzc', this)" class="zone-button w-full flex justify-between items-center text-left text-lg font-semibold text-slate-200"><span class="flex-grow">Тяжёлая зона</span><span class="button-state text-blue-400 text-sm ml-4">Показать</span></button>
+                        <div class="zone-content hidden mt-4 space-y-4" id="hzc">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Интенсивность:</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Значение" id="hzcINTEN"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Время" id="hzcINTENTIME"></label></div>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Цвет:</span><input placeholder="R" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="hzcRED"></label><label class="block col-span-1"><span class="text-slate-400 invisible">G</span><input placeholder="G" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="hzcGREEN"></label><label class="block col-span-1"><span class="text-slate-400 invisible">B</span><input placeholder="B" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="hzcBLUE"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="hzcCOLORTIME"></label></div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Блекаут:</span><input placeholder="Значение" id="hzcBLACKOUT" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="hzcBLACKOUTTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label></div>
+                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Блокировка:</span><input placeholder="Значение" id="hzcLOCKDOWN" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="hzcLOCKDOWNTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label></div>
+                            <label class="block"><span class="text-slate-400">Статус дверей:</span><select id="hzcDOOR" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"><option value="">Ничего</option><option value="lock HeavyContainment false">Разблокировать</option><option value="lock HeavyContainment true">Заблокировать</option><option value="state HeavyContainment true">Открыть</option><option value="state HeavyContainment false">Закрыть</option><option value="destroy HeavyContainment">Выбить</option></select></label>
+                        </div>
+                    </div>
+                     <!-- Зона: Офисная -->
+                    <div class="bg-slate-800/50 p-4 rounded-lg">
+                        <button onclick="showZoneContents('ezc', this)" class="zone-button w-full flex justify-between items-center text-left text-lg font-semibold text-slate-200"><span class="flex-grow">Офисная зона</span><span class="button-state text-blue-400 text-sm ml-4">Показать</span></button>
+                        <div class="zone-content hidden mt-4 space-y-4" id="ezc">
+                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Интенсивность:</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Значение" id="ezcINTEN"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Время" id="ezcINTENTIME"></label></div>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Цвет:</span><input placeholder="R" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="ezcRED"></label><label class="block col-span-1"><span class="text-slate-400 invisible">G</span><input placeholder="G" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="ezcGREEN"></label><label class="block col-span-1"><span class="text-slate-400 invisible">B</span><input placeholder="B" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="ezcBLUE"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="ezcCOLORTIME"></label></div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Блекаут:</span><input placeholder="Значение" id="ezcBLACKOUT" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="ezcBLACKOUTTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label></div>
+                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Блокировка:</span><input placeholder="Значение" id="ezcLOCKDOWN" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="ezcLOCKDOWNTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label></div>
+                            <label class="block"><span class="text-slate-400">Статус дверей:</span><select id="ezcDOOR" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"><option value="">Ничего</option><option value="lock Entrance false">Разблокировать</option><option value="lock Entrance true">Заблокировать</option><option value="state Entrance true">Открыть</option><option value="state Entrance false">Закрыть</option><option value="destroy Entrance">Выбить</option></select></label>
+                        </div>
+                    </div>
+                    <!-- Зона: Поверхность -->
+                    <div class="bg-slate-800/50 p-4 rounded-lg">
+                        <button onclick="showZoneContents('sur', this)" class="zone-button w-full flex justify-between items-center text-left text-lg font-semibold text-slate-200"><span class="flex-grow">Поверхность</span><span class="button-state text-blue-400 text-sm ml-4">Показать</span></button>
+                        <div class="zone-content hidden mt-4 space-y-4" id="sur">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Интенсивность:</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Значение" id="surINTEN"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Время" id="surINTENTIME"></label></div>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Цвет:</span><input placeholder="R" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="surRED"></label><label class="block col-span-1"><span class="text-slate-400 invisible">G</span><input placeholder="G" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="surGREEN"></label><label class="block col-span-1"><span class="text-slate-400 invisible">B</span><input placeholder="B" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="surBLUE"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="surCOLORTIME"></label></div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Блекаут:</span><input placeholder="Значение" id="surBLACKOUT" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="surBLACKOUTTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label></div>
+                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"><label class="block col-span-1"><span class="text-slate-400">Блокировка:</span><input placeholder="Значение" id="surLOCKDOWN" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label><label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="surLOCKDOWNTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></label></div>
+                            <label class="block"><span class="text-slate-400">Статус дверей:</span><select id="surDOOR" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"><option value="">Ничего</option><option value="lock Surface false">Разблокировать</option><option value="lock Surface true">Заблокировать</option><option value="state Surface true">Открыть</option><option value="state Surface false">Закрыть</option><option value="destroy Surface">Выбить</option></select></label>
+                        </div>
+                    </div>
+                </div>
+                <hr class="border-slate-700 my-6">
+                <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Настройка комнат:</h4>
+                <div class="flex flex-wrap gap-2 mb-4" id="room-buttons-container"></div>
+                <div id="room-content-container"></div>
+                <hr class="border-slate-700 my-6">
+                <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Настройка дверей и лифтов:</h4>
+                <div class="flex flex-wrap gap-2 mb-4" id="door-buttons-container"></div>
+                <div id="door-content-container"></div>
+            </div>
+        </div>
+
+        <!-- Блок "Создание игроков" -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg">
+            <div class="flex flex-wrap items-center gap-4 mb-6">
+                <label for="blockCount" class="text-slate-300 font-semibold">Введите количество особ:</label>
+                <input type="number" id="blockCount" placeholder="1-50" min="1" max="50" class="w-32 bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <button onclick="createBlocks()" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">Создать блоки</button>
+            </div>
+            <div id="blocksContainer" class="space-y-6"></div>
+        </div>
+        
+        <!-- Блок "Свои команды" -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg shadow-lg overflow-hidden">
+             <button onclick="toggleVisibility('SVO', this)" class="w-full flex justify-between items-center p-4 text-left font-bold text-slate-200 hover:bg-slate-700/50 transition-colors">
+                <span>Свои команды</span>
+                <svg class="w-5 h-5 transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="reborn hidden p-6 border-t border-slate-700" id="SVO">
+                <textarea id="inputText" placeholder="Введите команду" rows="3" class="w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none mb-4"></textarea>
+                <button onclick="addItem()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 mb-4">Добавить команду</button>
+                <div class="item-list space-y-2" id="itemList"></div>
+            </div>
+        </div>
+            
+        <!-- Блок "Генерация и Копирование" -->
+        <div class="bg-slate-800 border border-slate-700 rounded-lg p-6 shadow-lg">
+            <h3 class="text-xl font-bold text-slate-200 mb-4">Генерация и Копирование</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="generateAllScripts()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    Сгенерировать все скрипты
+                </button>
+                <button onclick="copyAllScripts()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                    Копировать все скрипты
+                </button>
+            </div>
+            <hr class="border-t border-slate-700 my-6">
+            <label class="block text-slate-300 font-semibold mb-2">Общий вывод:</label>
+            <div class="all-output mt-2 p-4 bg-slate-900 rounded-lg border border-slate-700 min-h-[100px] text-purple-300 font-mono text-xs whitespace-pre-wrap" id="allScriptsOutput"></div>
+        </div>
+    </div>
+</body>
+
+
+    <script>
+
+        function toggleVisibility(id, button) {
+            const element = document.getElementById(id);
+            const svg = button.querySelector('svg');
+            element.classList.toggle('hidden');
+            if (element.classList.contains('hidden')) {
+                svg.classList.remove('rotate-180');
+            } else {
+                svg.classList.add('rotate-180');
+            }
+        }
+
+    // --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (ИЗ STYLE2) ---
+    const getValue = (id) => document.getElementById(id)?.value || '';
+    const isChecked = (id) => document.getElementById(id)?.checked || false;
+    const setValue = (id, val) => { if(document.getElementById(id)) document.getElementById(id).value = val; };
+    const setChecked = (id, state) => { if(document.getElementById(id)) document.getElementById(id).checked = state; };
+    const replaceNewLines = (text) => text.replace(/\n/g, "\\n");
+
+    // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
+    const itemsArray = []; // Для "Своих команд"
+
+    // --- УПРАВЛЕНИЕ UI (ИЗ STYLE2) ---
+
+    function createBlocks() {
+        const blockCount = document.getElementById('blockCount').value;
+        const blocksContainer = document.getElementById('blocksContainer');
+        blocksContainer.innerHTML = ''; // Очистить контейнер
+        for (let i = 1; i <= blockCount; i++) {
+            const block = document.createElement('div');
+            block.className = 'block bg-slate-900/50 border border-slate-700 rounded-lg p-4 mb-8';
+            block.innerHTML = `
+                <h2 class="text-2xl font-bold text-slate-200 mb-4 flex items-center">
+                    Игрок ${i}: <input class="nname ml-4 flex-grow bg-slate-700 border-slate-600 rounded p-1 text-lg" placeholder="Имя игрока">
+                </h2>
+                <div class="flex flex-wrap gap-2 mb-4 border-b border-slate-700 pb-4">
+                    <button class="flex-1 tab-button bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 px-3 rounded-md text-sm transition-colors" onclick="showPlayerContent('generator1_${i}', this)">Основные</button>
+                    <button class="flex-1 tab-button bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 px-3 rounded-md text-sm transition-colors" onclick="showPlayerContent('generator2_${i}', this)">Clscript</button>
+                    <button class="flex-1 tab-button bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 px-3 rounded-md text-sm transition-colors" onclick="showPlayerContent('generator_1_1_${i}', this)">Дополнительные</button>
+                    <button class="flex-1 tab-button bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 px-3 rounded-md text-sm transition-colors" onclick="showPlayerContent('generator3_${i}', this)">Статус и Управление</button>
+                </div>
+                
+                <div class="player-content hidden" id="generator1_${i}">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="id${i}" class="block text-slate-400 mb-1">ID:</label>
+                            <input class="idd w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" type="text" id="id${i}" name="id" placeholder="Введите ID">
+                        </div>
+                        <div>
+                            <label for="pochrol${i}" class="block text-slate-400 mb-1">Начальная роль:</label>
+                            <select class="pochrolw w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="pochrol${i}">
+                                <option value="">Нет</option><option value="ChaosConscript">Новобранец ПХ</option><option value="ChaosMarauder">Усмиритель ПХ</option><option value="ChaosRepressor">Мародёр ПХ</option><option value="ChaosRifleman">Стрелок ПХ</option><option value="ClassD">Класс Д</option><option value="FacilityGuard">Охранник комплекса</option><option value="NtfCaptain">Капитан МОГ</option><option value="NtfPrivate">Рядовой МОГ</option><option value="NtfSergeant">Сержант МОГ</option><option value="NtfSpecialist">Специалист МОГ</option><option value="Scientist">Учёный</option><option value="Scp049">SCP-049</option><option value="Scp0492">SCP-049-2</option><option value="Scp079">SCP-079</option><option value="Scp096">SCP-096</option><option value="Scp106">SCP-106</option><option value="Scp173">SCP-173</option><option value="Scp3114">SCP-3114</option><option value="Scp939">SCP-939</option><option value="Tutorial">Обучение</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                             <label for="playerText${i}" class="block text-slate-400 mb-1">Хинт игроку:</label>
+                             <div class="flex gap-2">
+                                <textarea class="player-text-containerw w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" rows="3" id="playerText${i}" name="playerText" placeholder="Введите текст"><mark=#000000><size=100>Ожидайте ивентолога</size>\\n<size=50>Откройте консоль для ознакомления с информацией</size></mark></textarea>
+                                <select class="hbctimew bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="hbctime${i}" name="hbctime${i}" onchange="hbcсtime(${i})">
+                                    <option value="">✖️</option><option value="5">5с</option><option value="10">10с</option><option value="15">15с</option><option value="20">20с</option><option value="OWN">Своё</option>
+                                </select>
+                                <input type="text" id="hbctimeInput${i}" class="w-20 bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Время" style="display: none;">
+                             </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="pbctext${i}" class="block text-slate-400 mb-1">Сообщение в консоль:</label>
+                             <div class="flex gap-2">
+                                <textarea class="pbcw w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" rows="3" id="pbctext${i}" name="playerText" placeholder="Введите текст"></textarea>
+                                <select class="pbctimew bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="pbctime${i}">
+                                    <option value="">✖️</option><option value="1">➕</option>
+                                </select>
+                             </div>
+                        </div>
+                        <div class="md:col-span-1">
+                           <label class="block text-slate-400 mb-1">Заспавнить (координаты):</label>
+                           <div class="grid grid-cols-3 gap-2">
+                             <input type="number" class="xyz w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="cordX${i}" placeholder="X">
+                             <input type="number" class="xyz w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="cordY${i}" placeholder="Y">
+                             <input type="number" class="xyz w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="cordZ${i}" placeholder="Z">
+                           </div>
+                        </div>
+                        <div class="md:col-span-1">
+                           <label class="block text-slate-400 mb-1">Размер игрока:</label>
+                           <div class="grid grid-cols-3 gap-2">
+                             <input type="number" class="xyz w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="growthX${i}" placeholder="X">
+                             <input type="number" class="xyz w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="growthY${i}" placeholder="Y">
+                             <input type="number" class="xyz w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="growthZ${i}" placeholder="Z">
+                           </div>
+                        </div>
+                        <div class="md:col-span-2 p-4 border border-slate-700 rounded-lg">
+                           <label for="smset${i}" class="flex items-center gap-3 cursor-pointer">
+                             <input type="checkbox" id="smset${i}" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500">
+                             <span class="font-semibold text-slate-300">Привязать схематик (Sm set)</span>
+                           </label>
+                           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                                <input placeholder="Тип слота" id="typeslut${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                <input placeholder="Название схематика" id="smname${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                <select id="typepriv${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Тип привязки:</option><option value="Body">Тело</option><option value="Camera">Камера</option>
+                                </select>
+                                <select id="typevisible${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Кто видит?</option><option value="all">Все</option><option value="others">Другие</option><option value="self">Себе</option>
+                                </select>
+                                <select id="smplayer${i}" class="sm:col-span-2 w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Видимость игрока:</option><option value="visible">Игрока видят</option><option value="invisible">Игрока не видят</option>
+                                </select>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="player-content hidden" id="generator2_${i}">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                           <label for="clscriptt${i}" class="flex items-center gap-3 cursor-pointer p-2 hover:bg-slate-700/50 rounded-md">
+                             <input type="checkbox" id="clscriptt${i}" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500">
+                             <span class="font-semibold text-slate-300">Включить блок Clscript</span>
+                           </label>
+                        </div>
+                        <div>
+                            <label for="class${i}" class="block text-slate-400 mb-1">Роль:</label>
+                             <select id="class${i}" name="class${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                <option value="">Пусто</option><option value="ChaosConscript">Новобранец ПХ</option><option value="ChaosMarauder">Усмиритель ПХ</option><option value="ChaosRepressor">Мародёр ПХ</option><option value="ChaosRifleman">Стрелок ПХ</option><option value="ClassD">Класс Д</option><option value="FacilityGuard">Охранник комплекса</option><option value="NtfCaptain">Капитан МОГ</option><option value="NtfPrivate">Рядовой МОГ</option><option value="NtfSergeant">Сержант МОГ</option><option value="NtfSpecialist">Специалист МОГ</option><option value="Scientist">Учёный</option><option value="Scp049">SCP-049</option><option value="Scp0492">SCP-049-2</option><option value="Scp079">SCP-079</option><option value="Scp096">SCP-096</option><option value="Scp106">SCP-106</option><option value="Scp173">SCP-173</option><option value="Scp3114">SCP-3114</option><option value="Scp939">SCP-939</option><option value="Tutorial">Обучение</option>
+                            </select>
+                        </div>
+                         <div>
+                            <label for="nickname${i}" class="block text-slate-400 mb-1">Никнейм:</label>
+                            <input type="text" id="nickname${i}" name="nickname" placeholder="Никнейм" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="health${i}" class="block text-slate-400 mb-1">Здоровье:</label>
+                            <input type="number" id="health${i}" name="health" value="100" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                             <label for="changeCI${i}" class="block text-slate-400 mb-1">Пресеты предметов:</label>
+                             <select id="changeCI${i}" onchange="changeCI(${i})" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                <option value="DEF">Default</option><option value="MRP">MediumRP</option><option value="FRP">FunRP</option><option value="ERP">EventRP</option><option value="HRP">HardRP</option><option value="LRP">LightRP</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                             <label for="customInfo${i}" class="block text-slate-400 mb-1">Кастомная информация:</label>
+                             <div class="flex gap-2">
+                                <textarea id="customInfo${i}" class="customInfo w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" rows="2" placeholder="Текст кастомной информации"></textarea>
+                                <select id="customInfoColors${i}" class="bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                    <option value="Standart">Стандарт</option><option value="<color=#FF96DE>" style="color:#FF96DE">Розовый</option><option value="<color=#C50000>" style="color:#C50000">Красный</option><option value="<color=#944710>" style="color:#944710">Коричневый</option><option value="<color=#A0A0A0>" style="color:#A0A0A0">Серебро</option><option value="<color=#32CD32>" style="color:#32CD32">Светло-зелёный</option><option value="<color=#DC143C>" style="color:#DC143C">Малиновый</option><option value="<color=#00B7EB>" style="color:#00B7EB">Циан</option><option value="<color=#00FFFF>" style="color:#00FFFF">Аква</option><option value="<color=#FF1493>" style="color:#FF1493">Глубокий розовый</option><option value="<color=#FF6448>" style="color:#FF6448">Томат</option><option value="<color=#FAFF86>" style="color:#FAFF86">Жёлтый</option><option value="<color=#FF0090>" style="color:#FF0090">Маджента</option><option value="<color=#4DFFB8>" style="color:#4DFFB8">Сине-зелёный</option><option value="<color=#FF9966>" style="color:#FF9966">Оранжевый</option><option value="<color=#BFFF00>" style="color:#BFFF00">Лайм</option><option value="<color=#228B22>" style="color:#228B22">Зелёный</option><option value="<color=#50C878>" style="color:#50C878">Изумруд</option><option value="<color=#960018>" style="color:#960018">Кармин</option><option value="<color=#727472>" style="color:#727472">Никель</option><option value="<color=#98FB98>" style="color:#98FB98">Холодный зелёный</option><option value="<color=#4B5320>" style="color:#4B5320">Военный зелёный</option><option value="<color=#EE7600>" style="color:#EE7600">Тыква</option><option value="<color=#000000>" style="color:#000000">Чёрный</option><option value="<color=#FFFFFF>" style="color:#FFFFFF">Белый</option>
+                                </select>
+                             </div>
+                        </div>
+                        <div class="md:col-span-2">
+                             <label class="block text-slate-400 mb-2">Предметы (8 слотов):</label>
+                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                ${Array.from({length: 8}, (_, k) => `
+                                    <select id="item${k+1}${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 text-sm">
+                                        <option value="">Слот ${k+1}</option>
+                                        <option value="Adrenaline">Адреналин</option><option value="AntiSCP207">Anti-SCP-207</option><option value="ArmorCombat">Тактическая броня</option><option value="ArmorHeavy">Тяжёлая броня</option><option value="ArmorLight">Лёгкая броня</option><option value="Coin">Монета</option><option value="Flashlight">Фонарик</option><option value="GunAK">АК</option><option value="GunCOM15">COM-15</option><option value="GunCOM18">COM-18</option><option value="GunCom45">COM-45</option><option value="GunCrossvec">Crossvec</option><option value="GunE11SR">E11-SR</option><option value="GunFSP9">FSP-9</option><option value="GunFRMG0">FRMG-0</option><option value="GunLogicer">Logicer</option><option value="GunRevolver">Revolver</option><option value="GunShotgun">Shotgun</option><option value="GunA7">A7</option><option value="Jailbird">Jailbird</option><option value="KeycardChaosInsurgency">Устройство взлома</option><option value="KeycardContainmentEngineer">Ключ-карта инженера</option><option value="KeycardFacilityManager">Ключ-карта менеджера (Красная)</option><option value="KeycardGuard">Ключ-карта охранника</option><option value="KeycardJanitor">Ключ-карта уборщика</option><option value="KeycardMTFCaptain">Ключ-карта капитана МОГ</option><option value="KeycardMTFOperative">Ключ-карта оперативника МОГ</option><option value="KeycardMTFPrivate">Ключ-карта рядового МОГ</option><option value="KeycardO5">Ключ-карта О5</option><option value="KeycardResearchCoordinator">Ключ-карта научного руководителя</option><option value="KeycardScientist">Ключ-карта научного сотрудника</option><option value="KeycardZoneManager">Ключ-карта менеджера (Зелёная)</option><option value="Lantern">Лампа</option><option value="Medkit">Аптечка</option><option value="MicroHID">MicroHID</option><option value="Painkillers">Обезбол</option><option value="ParticleDisruptor">Particle Disruptor</option><option value="Radio">Рация</option><option value="SCP018">SCP-018</option><option value="SCP1576">SCP-1576</option><option value="SCP1853">SCP-1853</option><option value="SCP207">SCP-207</option><option value="SCP2176">SCP-2176</option><option value="SCP244a">SCP-244a</option><option value="SCP244b">SCP-244b</option><option value="SCP268">SCP-268</option><option value="SCP330">SCP-330</option><option value="SCP500">SCP-500</option><option value="GrenadeFlash">Светошумовая граната</option><option value="GrenadeHE">Осколочно-фугасная граната</option>
+                                    </select>
+                                `).join('')}
+                             </div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-slate-400 mb-2">Отображаемые поля:</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="nicknameCheckbox${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Никнейм</label>
+                                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="badgeCheckbox${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Плашка</label>
+                                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="customInfoCheckbox${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> КастомИнфо</label>
+                                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="roleCheckbox${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Роль</label>
+                                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="unitNameCheckbox${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Отряд</label>
+                                <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="powerStatusCheckbox${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500" checked> Должность</label>
+                            </div>
+                        </div>
+                        <div class="md:col-span-2">
+                             <label for="inputScript${i}" class="block text-slate-400 mb-1">Открыть скрипт:</label>
+                             <div class="flex gap-2">
+                                <input type="text" id="inputScript${i}" placeholder="Вставьте сюда clscript..." class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg" onclick="parseScript(${i})">Открыть</button>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="player-content hidden" id="generator_1_1_${i}">
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Эффект:</label>
+                            <select id="effecttype${i}" name="effecttype" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                <option value="">Нет</option><option value="AmnesiaItems">AmnesiaItems</option><option value="AmnesiaVision">AmnesiaVision</option><option value="Asphyxiated">Asphyxiated</option><option value="Bleeding">Bleeding</option><option value="Blinded">Blinded</option><option value="Burned">Burned</option><option value="Concussed">Concussed</option><option value="Corroding">Corroding</option><option value="Deafened">Deafened</option><option value="Decontaminating">Decontaminating</option><option value="Disabled">Disabled</option><option value="Ensnared">Ensnared</option><option value="Exhausted">Exhausted</option><option value="Flashed">Flashed</option><option value="Hemorrhage">Hemorrhage</option><option value="Invigorated">Invigorated</option><option value="BodyshotReduction">BodyshotReduction</option><option value="Poisoned">Poisoned</option><option value="Scp207">Scp207</option><option value="Invisible">Invisible</option><option value="SinkHole">SinkHole</option><option value="DamageReduction">DamageReduction</option><option value="MovementBoost">MovementBoost</option><option value="RainbowTaste">RainbowTaste</option><option value="SeveredHands">SeveredHands</option><option value="Stained">Stained</option><option value="Vitality">Vitality</option><option value="Hypothermia">Hypothermia</option><option value="Scp1853">Scp1853</option><option value="CardiacArrest">CardiacArrest</option><option value="InsufficientLighting">InsufficientLighting</option><option value="SoundtrackMute">SoundtrackMute</option><option value="SpawnProtected">SpawnProtected</option><option value="Traumatized">Traumatized</option><option value="AntiScp207">AntiScp207</option><option value="Scanned">Scanned</option><option value="PocketCorroding">PocketCorroding</option><option value="SilentWalk">SilentWalk</option><option value="Marshmallow">Marshmallow</option><option value="Strangled">Strangled</option><option value="Ghostly">Ghostly</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                             <label class="block text-slate-400 mb-1 col-span-2">Параметры эффекта:</label>
+                            <input type="number" value="1" id="IntensityEF${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Интенсивность">
+                            <input type="number" value="0" id="DuratEF${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" placeholder="Длительность">
+                        </div>
+                        <div class="md:col-span-2 p-4 border border-slate-700 rounded-lg">
+                            <label class="block text-slate-400 mb-2 font-semibold">RP Предмет:</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <select id="rpitemType${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Тип предмета</option>
+                                    ${["Adrenaline", "AntiSCP207", "ArmorCombat", "ArmorHeavy", "ArmorLight", "Coin", "Flashlight", "GunAK", "GunCOM15", "GunCOM18", "GunCom45", "GunCrossvec", "GunE11SR", "GunFSP9", "GunFRMG0", "GunLogicer", "GunRevolver", "GunShotgun", "GunA7", "Jailbird", "KeycardChaosInsurgency", "KeycardContainmentEngineer", "KeycardFacilityManager", "KeycardGuard", "KeycardJanitor", "KeycardMTFCaptain", "KeycardMTFOperative", "KeycardMTFPrivate", "KeycardO5", "KeycardResearchCoordinator", "KeycardScientist", "KeycardZoneManager", "Lantern", "Medkit", "MicroHID", "Painkillers", "ParticleDisruptor", "Radio", "SCP018", "SCP1576", "SCP1853", "SCP207", "SCP2176", "SCP244a", "SCP244b", "SCP268", "SCP330", "SCP500", "GrenadeFlash", "GrenadeHE"].map(item => `<option value="${item}">${item.replace('Keycard','KC ')}</option>`).join('')}
+                                </select>
+                                <input type="number" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="rpitemDuration${i}" placeholder="Длительность">
+                                <div class="grid grid-cols-3 gap-2 sm:col-span-2">
+                                     <input class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="rpitemX${i}" placeholder="Размер X">
+                                     <input class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="rpitemY${i}" placeholder="Размер Y">
+                                     <input class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500" id="rpitemZ${i}" placeholder="Размер Z">
+                                </div>
+                                <textarea id="rpitemMessage${i}" rows="2" placeholder="Сообщение при взятии" class="sm:col-span-2 w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500"></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="capp${i}" class="block text-slate-400 mb-1">Сменить облик:</label>
+                            <select id="capp${i}" name="capp" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                               <option value="">Пусто</option><option value="ChaosConscript">Новобранец ПХ</option><option value="ChaosMarauder">Усмиритель ПХ</option><option value="ChaosRepressor">Мародёр ПХ</option><option value="ChaosRifleman">Стрелок ПХ</option><option value="ClassD">Класс Д</option><option value="FacilityGuard">Охранник комплекса</option><option value="NtfCaptain">Капитан МОГ</option><option value="NtfPrivate">Рядовой МОГ</option><option value="NtfSergeant">Сержант МОГ</option><option value="NtfSpecialist">Специалист МОГ</option><option value="Scientist">Учёный</option><option value="Scp049">SCP-049</option><option value="Scp0492">SCP-049-2</option><option value="Scp079">SCP-079</option><option value="Scp096">SCP-096</option><option value="Scp106">SCP-106</option><option value="Scp173">SCP-173</option><option value="Scp3114">SCP-3114</option><option value="Scp939">SCP-939</option><option value="Tutorial">Обучение</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="tp${i}" class="block text-slate-400 mb-1">Телепорт:</label>
+                             <div class="flex gap-2">
+                                <select id="tp${i}" name="capp" onchange="bringtpx(${i})" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Выбрать</option><option value="bring">К себе</option><option value="tpx">К другому игроку</option>
+                                </select>
+                                <input id="tpx${i}" style="display: none" placeholder="Айди игрока" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                             </div>
+                        </div>
+                        <div>
+                           <label for="disarm${i}" class="block text-slate-400 mb-1">Действие с игроком:</label>
+                            <select id="disarm${i}" class="w-full bg-slate-700 border border-slate-600 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+                                <option value="">Выбрать</option><option value="disarm">Связать</option><option value="free">Развязать</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                             <label class="block text-slate-400 mb-2">Выдача / Удаление предметов:</label>
+                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                ${Array.from({length: 8}, (_, k) => `
+                                    <div class="flex gap-1">
+                                        <select id="PROSTitem${k+1}STATUS${i}" class="bg-slate-700 border border-slate-600 rounded-l-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                                            <option value="give">+</option><option value="remove">-</option>
+                                        </select>
+                                        <select id="PROSTitem${k+1}${i}" class="w-full bg-slate-700 border border-slate-600 rounded-r-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Слот ${k+1}</option>
+                                            <option value="33">Адреналин</option><option value="51">Anti-SCP-207</option><option value="37">Такт. броня</option><option value="38">Тяж. броня</option><option value="36">Лёг. броня</option><option value="35">Монета</option><option value="15">Фонарик</option><option value="40">АК</option><option value="13">COM-15</option><option value="30">COM-18</option><option value="48">COM-45</option><option value="21">Crossvec</option><option value="20">E11-SR</option><option value="23">FSP-9</option><option value="52">FRMG-0</option><option value="24">Logicer</option><option value="39">Revolver</option><option value="41">Shotgun</option><option value="53">A7</option><option value="50">Jailbird</option><option value="10">Уст-во взлома</option><option value="6">KC Инженера</option><option value="9">KC Менеджера</option><option value="4">KC Охранника</option><option value="0">KC Уборщика</option><option value="8">KC Капитана</option><option value="7">KC Оператив.</option><option value="5">KC Рядового</option><option value="11">KC О5</option><option value="2">KC Н.С.</option><option value="1">KC Учёного</option><option value="3">KC Менед. Зоны</option><option value="54">Лампа</option><option value="14">Аптечка</option><option value="16">MicroHID</option><option value="34">Обезбол</option><option value="47">P. Disruptor</option><option value="12">Рация</option><option value="31">SCP-018</option><option value="49">SCP-1576</option><option value="46">SCP-1853</option><option value="18">SCP-207</option><option value="43">SCP-2176</option><option value="44">SCP-244a</option><option value="45">SCP-244b</option><option value="32">SCP-268</option><option value="42">SCP-330</option><option value="17">SCP-500</option><option value="26">Свет. граната</option><option value="25">Оск. граната</option>
+                                        </select>
+                                    </div>
+                                `).join('')}
+                             </div>
+                        </div>
+                     </div>
+                </div>
+
+                <div class="player-content hidden" id="generator3_${i}">
+                    <div class="space-y-4">
+                        <label for="blockstatus${i}" class="flex items-center gap-3 cursor-pointer p-2 hover:bg-slate-700/50 rounded-md">
+                           <input type="checkbox" id="blockstatus${i}" class="form-checkbox h-5 w-5 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500">
+                           <span class="font-semibold text-slate-300">Включить блок Infoarea</span>
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                            <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="plahka${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"> Плашка</label>
+                            <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="castomnainformacia${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"> КастомИнфо</label>
+                            <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="Nickh${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"> Никнейм</label>
+                            <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="Rolya${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"> Роль</label>
+                            <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="Otryad${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"> Отряд</label>
+                            <label class="flex items-center gap-2 p-2 hover:bg-slate-700/50 rounded-md cursor-pointer"><input type="checkbox" id="Zvanie${i}" class="form-checkbox h-4 w-4 bg-slate-600 border-slate-500 rounded text-pink-400 focus:ring-pink-500"> Должность</label>
+                        </div>
+                         <div class="output mt-4 p-3 bg-slate-800 rounded-lg border border-slate-700 min-h-[50px] text-purple-300 font-mono text-xs whitespace-pre-wrap" id="output${i}"></div>
+                         <div class="flex flex-wrap gap-2 mt-4">
+                            <button onclick="confirmClear(${i})" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex-grow">Очистить всё</button>
+                            <button onclick="confirmClear1(${i})" class="bg-red-700/80 hover:bg-red-800/80 text-white font-bold py-1 px-3 rounded-lg text-sm">Осн.</button>
+                            <button onclick="confirmClear2(${i})" class="bg-red-700/80 hover:bg-red-800/80 text-white font-bold py-1 px-3 rounded-lg text-sm">Cls</button>
+                            <button onclick="confirmClear3(${i})" class="bg-red-700/80 hover:bg-red-800/80 text-white font-bold py-1 px-3 rounded-lg text-sm">Доп.</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            blocksContainer.appendChild(block);
+        }
+    }
+
+    function showPlayerContent(contentId, button) {
+        const playerBlock = button.closest('.block');
+        if (!playerBlock) return;
+        playerBlock.querySelectorAll('.player-content').forEach(el => el.classList.add('hidden'));
+        playerBlock.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('bg-indigo-600', 'text-white'));
+        
+        const contentToShow = playerBlock.querySelector(`#${contentId}`);
+        if (contentToShow) contentToShow.classList.remove('hidden');
+        
+        button.classList.add('bg-indigo-600', 'text-white');
+    }
+
+    function toggleSVOIVisibility() {
+        const svoSection = document.getElementById('SVO');
+        const buttonState = document.querySelector('.button-state-svo');
+        if (svoSection) {
+            const isHidden = svoSection.classList.toggle('hidden');
+            buttonState.textContent = isHidden ? 'Показать' : 'Скрыть';
+        }
+    }
+
+    function addItem() {
+        const inputText = document.getElementById('inputText').value;
+        if (inputText.trim() === '') return;
+        itemsArray.push(inputText.trim());
+        renderCustomCommands();
+        document.getElementById('inputText').value = '';
+    }
+
+    function removeItem(index) {
+        itemsArray.splice(index, 1);
+        renderCustomCommands();
+    }
+
+    function renderCustomCommands() {
+        const itemList = document.getElementById('itemList');
+        itemList.innerHTML = '';
+        itemsArray.forEach((text, index) => {
+            const item = document.createElement('div');
+            item.className = 'item flex justify-between items-center p-2 bg-slate-700/50 rounded-md';
+            item.innerHTML = `
+                <span class="text-slate-300">${text}</span>
+                <button class="remove-btn text-red-500 hover:text-red-400 font-bold text-xl" onclick="removeItem(${index})">✖</button>
+            `;
+            itemList.appendChild(item);
+        });
+    }
+
+    function hbcсtime(blockIndex) {
+        const select = document.getElementById(`hbctime${blockIndex}`);
+        const input = document.getElementById(`hbctimeInput${blockIndex}`);
+        if (!select || !input) return;
+        input.style.display = select.value === 'OWN' ? 'block' : 'none';
+    }
+
+    function bringtpx(blockIndex) {
+        const select = document.getElementById(`tp${blockIndex}`);
+        const input = document.getElementById(`tpx${blockIndex}`);
+        if (!select || !input) return;
+        input.style.display = select.value === 'tpx' ? 'block' : 'none';
+    }
+    
+    // Переключение видимости основных блоков
+    function toggleNACHVisibility() { document.getElementById('NACH')?.classList.toggle('hidden'); }
+    function toggleContetVisibility() { document.getElementById('slmap')?.classList.toggle('hidden'); }
+    function toggleRebornVisibility() { document.getElementById('reborn')?.classList.toggle('hidden'); }
+    
+    // Управление отображением контента для комнат, дверей и зон (из style2)
+    function showZoneContents(id, button) {
+        const targetPane = document.getElementById(id);
+        const buttonState = button.querySelector('.button-state');
+        if (targetPane) {
+            const isHidden = targetPane.classList.toggle('hidden');
+            buttonState.textContent = isHidden ? 'Показать' : 'Скрыть';
+        }
+    }
+    
+    function showContents(id, containerId, clickedButton) {
+        const contentContainer = document.getElementById(containerId);
+        const buttonContainer = document.getElementById(containerId.replace('-content-', '-buttons-'));
+        const targetPane = document.getElementById(id);
+        if (!targetPane || !clickedButton || !buttonContainer) return;
+        
+        const isAlreadyActive = clickedButton.classList.contains('active-gradient-button');
+        
+        buttonContainer.querySelectorAll('button').forEach(btn => btn.classList.remove('active-gradient-button'));
+        contentContainer.querySelectorAll('.content-pane').forEach(pane => pane.classList.add('hidden'));
+
+        if (!isAlreadyActive) {
+            clickedButton.classList.add('active-gradient-button');
+            targetPane.classList.remove('hidden');
+        }
+    }
+
+    // --- УПРАВЛЕНИЕ ОБЪЕКТАМИ (ИЗ STYLE2) ---
+    function createChems() {
+        const ChemCount = document.getElementById('ChemCount').value;
+        const chemsContainer = document.getElementById('chemsContainer');
+        chemsContainer.innerHTML = '';
+        for (let i = 1; i <= ChemCount; i++) {
+            const chema = document.createElement('div');
+            chema.className = 'chem mb-6 p-4 border border-slate-700 rounded-lg bg-slate-800/50';
+            chema.innerHTML = `
+                <h2 class="text-xl font-semibold text-slate-200 mb-4 flex justify-between items-center">
+                    <span>Объект ${i}:</span>
+                    <select class="w-1/2 bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2" id="schemstype${i}" onchange="schemstype(${i})">
+                        <option value="">Выберите</option><option value="1">Схематик</option><option value="2">Примитив</option>
+                    </select>
+                </h2><hr class="border-slate-700/50 mb-4"><div id="CreatsContainer${i}"></div>`;
+            chemsContainer.appendChild(chema);
+        }
+    }
+
+    function schemstype(chemaIndex) {
+        const ChemType = document.getElementById(`schemstype${chemaIndex}`).value;
+        const CreatsContainer = document.getElementById(`CreatsContainer${chemaIndex}`);
+        CreatsContainer.innerHTML = ''; 
+        const inputClasses = "w-full bg-slate-700 border border-slate-600 text-slate-200 rounded-lg p-2";
+        const labelClasses = "block text-slate-300 mb-1";
+        if (ChemType == "1") {
+            CreatsContainer.innerHTML = `<div class="space-y-4"><div><label class="${labelClasses}">Название:</label><input id="schemaname${chemaIndex}" placeholder="Декор_чинук" class="${inputClasses}"></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-4"><div><label class="${labelClasses}">Позиция:</label><div class="space-y-2"><input type="number" class="${inputClasses}" id="ObjectX${chemaIndex}" placeholder="X"><input type="number" class="${inputClasses}" id="ObjectY${chemaIndex}" placeholder="Y"><input type="number" class="${inputClasses}" id="ObjectZ${chemaIndex}" placeholder="Z"></div></div><div><label class="${labelClasses}">Поворот:</label><div class="space-y-2"><input type="number" class="${inputClasses}" id="RotatoX${chemaIndex}" placeholder="X"><input type="number" class="${inputClasses}" id="RotatoY${chemaIndex}" placeholder="Y"><input type="number" class="${inputClasses}" id="RotatoZ${chemaIndex}" placeholder="Z"></div></div><div><label class="${labelClasses}">Размер:</label><div class="space-y-2"><input type="number" class="${inputClasses}" id="ScaleX${chemaIndex}" placeholder="X"><input type="number" class="${inputClasses}" id="ScaleY${chemaIndex}" placeholder="Y"><input type="number" class="${inputClasses}" id="ScaleZ${chemaIndex}" placeholder="Z"></div></div></div><label for="IsPickable${chemaIndex}" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 cursor-pointer"><input type="checkbox" id="IsPickable${chemaIndex}" class="form-checkbox h-5 w-5 bg-slate-600 rounded text-pink-400"><span class="text-slate-300 ml-3">Можно подбирать гравипушкой</span></label></div>`;
+        } else if (ChemType == "2") {
+            CreatsContainer.innerHTML = `<div class="space-y-4"><div><label class="${labelClasses}">Тип примитива:</label><select class="${inputClasses}" id="PrimitiveType${chemaIndex}"><option value="3">Куб</option><option value="0">Сфера</option><option value="1">Капсула</option><option value="2">Цилиндр</option><option value="4">Платформа</option></select></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-4"><div><label class="${labelClasses}">Позиция:</label><div class="space-y-2"><input type="number" class="${inputClasses}" id="ObjectX${chemaIndex}" placeholder="X"><input type="number" class="${inputClasses}" id="ObjectY${chemaIndex}" placeholder="Y"><input type="number" class="${inputClasses}" id="ObjectZ${chemaIndex}" placeholder="Z"></div></div><div><label class="${labelClasses}">Поворот:</label><div class="space-y-2"><input type="number" class="${inputClasses}" id="RotatoX${chemaIndex}" placeholder="X"><input type="number" class="${inputClasses}" id="RotatoY${chemaIndex}" placeholder="Y"><input type="number" class="${inputClasses}" id="RotatoZ${chemaIndex}" placeholder="Z"></div></div><div><label class="${labelClasses}">Размер:</label><div class="space-y-2"><input type="number" class="${inputClasses}" id="ScaleX${chemaIndex}" placeholder="X"><input type="number" class="${inputClasses}" id="ScaleY${chemaIndex}" placeholder="Y"><input type="number" class="${inputClasses}" id="ScaleZ${chemaIndex}" placeholder="Z"></div></div></div><label for="Col${chemaIndex}" class="flex items-center p-2 rounded-lg hover:bg-slate-700/50 cursor-pointer"><input type="checkbox" id="Col${chemaIndex}" class="form-checkbox h-5 w-5 bg-slate-600 rounded text-pink-400"><span class="text-slate-300 ml-3">Включена ли коллизия</span></label></div>`;
+        }
+    }
+    
+    // --- ГЕНЕРАЦИЯ И ОБРАБОТКА СКРИПТОВ (ОБЪЕДИНЕННАЯ ЛОГИКА) ---
+
+    function calculateInfoSum(blockIndex) {
+        let sum = 0;
+        if (isChecked(`nicknameCheckbox${blockIndex}`)) sum += 1;
+        if (isChecked(`badgeCheckbox${blockIndex}`)) sum += 2;
+        if (isChecked(`customInfoCheckbox${blockIndex}`)) sum += 4;
+        if (isChecked(`roleCheckbox${blockIndex}`)) sum += 8;
+        if (isChecked(`unitNameCheckbox${blockIndex}`)) sum += 16;
+        if (isChecked(`powerStatusCheckbox${blockIndex}`)) sum += 32;
+        return sum;
+    }
+
+    function generateScript(blockIndex) {
+        let full = ``;
+        const bind = getValue('BIND');
+        const id = getValue(`id${blockIndex}`);
+        
+        if (!id) return ''; // Не генерировать, если нет ID
+
+        const rpitemType = getValue(`rpitemType${blockIndex}`);
+        const rpitemX = getValue(`rpitemX${blockIndex}`);
+        const rpitemY = getValue(`rpitemY${blockIndex}`);
+        const rpitemZ = getValue(`rpitemZ${blockIndex}`);
+        const rpitemDuration = getValue(`rpitemDuration${blockIndex}`);
+        const rpitemMessage = getValue(`rpitemMessage${blockIndex}`);
+        
+        const selectValue = getValue(`hbctime${blockIndex}`);
+        const customInputValue = getValue(`hbctimeInput${blockIndex}`);
+        const hbctime = selectValue === 'OWN' ? customInputValue : selectValue;
+
+        const infoSum = calculateInfoSum(blockIndex);
+        const tp = getValue(`tp${blockIndex}`);
+        const tpx = getValue(`tpx${blockIndex}`);
+        const DuratEF = getValue(`DuratEF${blockIndex}`);
+        const IntensityEF = getValue(`IntensityEF${blockIndex}`);
+        const effecttype = getValue(`effecttype${blockIndex}`);
+        const role = getValue(`class${blockIndex}`);
+        const pochrol = getValue(`pochrol${blockIndex}`);
+        let playerText = getValue(`playerText${blockIndex}`);
+        playerText = replaceNewLines(playerText);
+        const pbctime = getValue(`pbctime${blockIndex}`);
+        let pbc = getValue(`pbctext${blockIndex}`);
+        pbc = replaceNewLines(pbc);
+        let customInfo = getValue(`customInfo${blockIndex}`);
+        customInfo = replaceNewLines(customInfo);
+        const nickname = getValue(`nickname${blockIndex}`);
+        const health = getValue(`health${blockIndex}`);
+        const capp = getValue(`capp${blockIndex}`);
+        const growthX = getValue(`growthX${blockIndex}`);
+        const growthY = getValue(`growthY${blockIndex}`);
+        const growthZ = getValue(`growthZ${blockIndex}`);
+        const cordX = getValue(`cordX${blockIndex}`);
+        const cordY = getValue(`cordY${blockIndex}`);
+        const cordZ = getValue(`cordZ${blockIndex}`);
+        const typeslut = getValue(`typeslut${blockIndex}`);
+        const smname = getValue(`smname${blockIndex}`);
+        const typepriv = getValue(`typepriv${blockIndex}`);
+        const typevisible = getValue(`typevisible${blockIndex}`);
+        const smplayer = getValue(`smplayer${blockIndex}`);
+        const disarm = getValue(`disarm${blockIndex}`);
+        const customInfoColor = getValue(`customInfoColors${blockIndex}`);
+
+        const itemsString = [
+            getValue(`item1${blockIndex}`), getValue(`item2${blockIndex}`), getValue(`item3${blockIndex}`), getValue(`item4${blockIndex}`),
+            getValue(`item5${blockIndex}`), getValue(`item6${blockIndex}`), getValue(`item7${blockIndex}`), getValue(`item8${blockIndex}`)
+        ].filter(item => item).join(',');
+
+        if (pochrol) {
+            full += `\n${bind}:/forceclass ${id} ${pochrol}`;
+        }
+        if (isChecked(`clscriptt${blockIndex}`)) {
+            let finalCustomInfo = customInfoColor !== 'Standart' ? `${customInfoColor}${customInfo}</color>` : customInfo;
+            full += `\n${bind}:/clscript ${id} ${role};${finalCustomInfo};${nickname};${health};${itemsString};;${infoSum}`;
+        }
+        if (capp) {
+            full += `\n${bind}:/capp ${id} ${capp}`;
+        }
+        if (growthX || growthY || growthZ) {
+            full += `\n${bind}:/size ${id} ${growthX || 1} ${growthY || 1} ${growthZ || 1}`;
+        }
+        if (cordX || cordY || cordZ) {
+            full += `\n${bind}:/tpcd ${cordX || 0} ${cordY || 0} ${cordZ || 0} ${id}`;
+        }
+        if (tp === "bring") {
+            full += `\n${bind}:/bring ${id}`;
+        } else if (tp === "tpx" && tpx) {
+            full += `\n${bind}:/tpx ${id} ${tpx}`;
+        }
+        if (effecttype) {
+            full += `\n${bind}:/pfx ${effecttype} ${IntensityEF} ${DuratEF} ${id}`;
+        }
+        if (rpitemType) {
+            full += `\n${bind}:/rpi give ${id} ${rpitemType} ${rpitemX} ${rpitemY} ${rpitemZ} ${rpitemDuration} ${rpitemMessage}`;
+        }
+        if (isChecked(`smset${blockIndex}`)) {
+            full += `\n${bind}:/sm set ${id} ${typeslut} ${smname} ${typepriv} ${typevisible} ${smplayer}`;
+        }
+        if (disarm) {
+            full += `\n${bind}:/${disarm} ${id}`;
+        }
+        for(let k = 1; k <= 8; k++) {
+            const item = getValue(`PROSTitem${k}${blockIndex}`);
+            const status = getValue(`PROSTitem${k}STATUS${blockIndex}`);
+            if(item) {
+                 full += `\n${bind}:/${status} ${id} ${item}`;
+            }
+        }
+        if (isChecked(`blockstatus${blockIndex}`)) {
+            full += `\n${bind}:/infoarea ${id} Badge ${isChecked(`plahka${blockIndex}`)}`;
+            full += `\n${bind}:/infoarea ${id} CustomInfo ${isChecked(`castomnainformacia${blockIndex}`)}`;
+            full += `\n${bind}:/infoarea ${id} Nickname ${isChecked(`Nickh${blockIndex}`)}`;
+            full += `\n${bind}:/infoarea ${id} Role ${isChecked(`Rolya${blockIndex}`)}`;
+            full += `\n${bind}:/infoarea ${id} UnitName ${isChecked(`Otryad${blockIndex}`)}`;
+            full += `\n${bind}:/infoarea ${id} PowerStatus ${isChecked(`Zvanie${blockIndex}`)}`;
+        }
+        if (hbctime) {
+            full += `\n${bind}:/hbc user ${id} ${hbctime} ${playerText}`;
+        }
+        if (pbctime) {
+            full += `\n${bind}:/pbc ${id} ${pbctime} ${pbc}`;
+        }
+        
+        const outputEl = document.getElementById(`output${blockIndex}`);
+        if(outputEl) outputEl.innerText = full.trim();
+        return full;
+    }
+
+    function generateAllScripts() {
+        let allScripts = '';
+        const bind = getValue('BIND');
+        
+        // Глобальные команды
+                const idevent = document.getElementById('idevent').value;
+                const name = document.getElementById('name').value;
+                const ops = document.getElementById('ops').value;
+        if (isChecked('lobbylock')) allScripts += `\n${bind}:/LOBBYLOCK`;
+        if (isChecked('roundlock')) allScripts += `\n${bind}:/ROUNDLOCK`;
+        if (isChecked('roundstart')) allScripts += `\n${bind}:/FORCESTART`;
+        if (isChecked('whlock')) allScripts += `\n${bind}:/WARHEAD LOCK`;
+        if (isChecked('obezlock')) allScripts += `\n${bind}:/DECONTAMINATION DISABLE`;
+        if (isChecked('massrole')) allScripts += `\n${bind}:/forceclass 1.2.3.4.5.6.7.8.9.10.11.12.13.14.15.16.17.18.19.20.21.22.23.24.25.26.27.28.29.30.31.32.33.34.35.36.37.38.39.40.41.42.43.44.45.46.47.48.49.50.51.52.53.54.55.56.57.58.59.60.61.62.63.64.65.66.67.68.69.70.71.72.73.74.75.76.78.79.80.81.82.83.84.85.86.87.88.89.90. Tutorial 3`;
+        
+
+            if (document.getElementById('eventbblock').checked) {
+                if (idevent) {
+                    allScripts += `\n${bind}:/event load ${idevent}`;
+                }
+                if (name) {
+                    allScripts += `\n${bind}:/event edit name ${name}`;
+                }
+                if (ops) {
+                    allScripts += `\n${bind}:/event edit des ${ops}`;
+                }
+                
+                if (document.getElementById('autoresp').checked) {
+                    allScripts += `\n${bind}:/event edit spawn true`;
+                }
+                else {
+                    allScripts += `\n${bind}:/event edit spawn false`;
+                }
+                if (document.getElementById('autowh').checked) {
+                    allScripts += `\n${bind}:/event edit wh true`;
+                }
+                else {
+                    allScripts += `\n${bind}:/event edit wh false`;
+                }
+                if (document.getElementById('ff').checked) {
+                    allScripts += `\n${bind}:/event edit ff true`;
+                }
+                else {
+                    allScripts += `\n${bind}:/event edit ff false`;
+                }
+                if (document.getElementById('blkut').checked) {
+                    allScripts += `\n${bind}:/event edit blkout true`;
+                }
+                else {
+                    allScripts += `\n${bind}:/event edit blkout false`;
+                }
+                if (document.getElementById('eventstart').checked) {
+                    allScripts += `\n${bind}:/event save\n${bind}:/event start`;
+                }}
+                if (document.getElementById('Togglerel').checked) {
+                    allScripts += `\n${bind}:/togglerel`;
+                }
+                if (document.getElementById('Togglehit').checked) {
+                    allScripts += `\n${bind}:/togglehit`;
+                }
+                if (document.getElementById('TogglecamerasF').checked) {
+                    allScripts += `\n${bind}:/togglecameras false`;
+                }
+                if (document.getElementById('TogglecamerasT').checked) {
+                    allScripts += `\n${bind}:/togglecameras true`;
+                }
+                if (document.getElementById('Togglerespawn').checked) {
+                    allScripts += `\n${bind}:/togglerespawn`;
+                }
+
+                // --- NEW LOGIC FOR POSMP ---
+                const posmpSelect = document.getElementById('posmp').value;
+                if (posmpSelect) {
+                    const posmpX = document.getElementById('posmpX').value;
+                    const posmpY = document.getElementById('posmpY').value;
+                    const posmpZ = document.getElementById('posmpZ').value;
+                    // Only add the command if at least one value is entered
+                    if (posmpX || posmpY || posmpZ) {
+                       allScripts += `\n${bind}:/event edit posmp ${posmpSelect} ${posmpX || 0} ${posmpY || 0} ${posmpZ || 0}`;
+                    }
+                }
+                
+                // --- NEW LOGIC FOR ROTMP ---
+                const rotmpSelect = document.getElementById('rotmp').value;
+                if (rotmpSelect) {
+                    const rotmpX = document.getElementById('rotmpX').value;
+                    const rotmpY = document.getElementById('rotmpY').value;
+                    const rotmpZ = document.getElementById('rotmpZ').value;
+                     // Only add the command if at least one value is entered
+                    if (rotmpX || rotmpY || rotmpZ) {
+                        allScripts += `\n${bind}:/event edit rotmp ${rotmpSelect} ${rotmpX || 0} ${rotmpY || 0} ${rotmpZ || 0}`;
+                    }}
+// Получаем текстовые значения из полей ввода
+const bcValue = document.getElementById('bc').value;
+const hintValue = document.getElementById('hint').value;
+
+// Проверяем, что значение 'bc' не пустое (и не состоит только из пробелов)
+if (bcValue && bcValue.trim() !== "") {
+    allScripts += `\n${bind}:/bc 30 ${bcValue}`;
+}
+
+// Проверяем, что значение 'hint' не пустое (и не состоит только из пробелов)
+if (hintValue && hintValue.trim() !== "") {
+    allScripts += `\n${bind}:/hbc all 30 ${hintValue}`;
+}
+
+        // Скрипты игроков
+        const blockCount = document.querySelectorAll('#blocksContainer .block').length;
+        for (let i = 1; i <= blockCount; i++) {
+            allScripts += generateScript(i);
+        }
+
+        // Карта и объекты
+        const mapname = getValue(`mapname`);
+        if (isChecked(`unload`)) allScripts += `\n${bind}:/mp unload`;
+        if (mapname) allScripts += `\n${bind}:/mp load ${mapname}`;
+        
+        const ChemCount = getValue('ChemCount');
+        for (let i = 1; i <= ChemCount; i++) {
+            const ChemType = getValue(`schemstype${i}`);
+            const ObjectX = getValue(`ObjectX${i}`) || 0;
+            const ObjectY = getValue(`ObjectY${i}`) || 0;
+            const ObjectZ = getValue(`ObjectZ${i}`) || 0;
+            const RotatoX = getValue(`RotatoX${i}`) || 0;
+            const RotatoY = getValue(`RotatoY${i}`) || 0;
+            const RotatoZ = getValue(`RotatoZ${i}`) || 0;
+            const ScaleX = getValue(`ScaleX${i}`) || 1;
+            const ScaleY = getValue(`ScaleY${i}`) || 1;
+            const ScaleZ = getValue(`ScaleZ${i}`) || 1;
+
+            if (ChemType == "1") { // Схематик
+                const schemaname = getValue(`schemaname${i}`);
+                if (schemaname) {
+                    allScripts += `\n${bind}:/mp cr ${schemaname} ${ObjectX} ${ObjectY} ${ObjectZ}`;
+                    if (RotatoX != 0 || RotatoY != 0 || RotatoZ != 0) allScripts += `\n${bind}:/mp rot set ${RotatoX} ${RotatoY} ${RotatoZ}`;
+                    if (ScaleX != 1 || ScaleY != 1 || ScaleZ != 1) allScripts += `\n${bind}:/mp scale set ${ScaleX} ${ScaleY} ${ScaleZ}`;
+                    if (isChecked(`IsPickable${i}`)) allScripts += `\n${bind}:/mp mod IsPickable False`;
+                }
+            } else if (ChemType == "2") { // Примитив
+                const PrimitiveType = getValue(`PrimitiveType${i}`);
+                allScripts += `\n${bind}:/mp cr Primitive ${ObjectX} ${ObjectY} ${ObjectZ}`;
+                if (PrimitiveType !== "3") allScripts += `\n${bind}:/mp mod PrimitiveType ${PrimitiveType}`;
+                if (RotatoX != 0 || RotatoY != 0 || RotatoZ != 0) allScripts += `\n${bind}:/mp rot set ${RotatoX} ${RotatoY} ${RotatoZ}`;
+                if (ScaleX != 1 || ScaleY != 1 || ScaleZ != 1) allScripts += `\n${bind}:/mp scale set ${ScaleX} ${ScaleY} ${ScaleZ}`;
+                if (isChecked(`Col${i}`)) allScripts += `\n${bind}:/mp mod PrimitiveFlags 2`;
+            }
+        }
+        
+        // Свет и двери (Зоны)
+        ['lzc', 'hzc', 'ezc', 'sur'].forEach(zone => {
+             const zoneNameMapping = {'lzc': 'LightContainment', 'hzc': 'HeavyContainment', 'ezc': 'Entrance', 'sur': 'Surface'};
+             const zoneName = zoneNameMapping[zone];
+             const INTEN = getValue(`${zone}INTEN`);
+             const INTENTIME = getValue(`${zone}INTENTIME`);
+             const RED = getValue(`${zone}RED`);
+             const GREEN = getValue(`${zone}GREEN`);
+             const BLUE = getValue(`${zone}BLUE`);
+             const COLORTIME = getValue(`${zone}COLORTIME`);
+             const BLACKOUT = getValue(`${zone}BLACKOUT`);
+             const BLACKOUTTIME = getValue(`${zone}BLACKOUTTIME`);
+             
+             if(INTEN) allScripts += `\n${bind}:/lights ${zoneName} ${INTENTIME} Intensity ${INTEN}`;
+             if(RED || GREEN || BLUE) allScripts += `\n${bind}:/lights ${zoneName} ${COLORTIME} Color ${RED||0} ${GREEN||0} ${BLUE||0}`;
+             if(BLACKOUT) allScripts += `\n${bind}:/lights ${zoneName} ${BLACKOUTTIME} Blackout ${BLACKOUT}`;
+        });
+        
+        // Свет и двери (Комнаты)
+        rooms.forEach(room => {
+             const INTEN = getValue(`${room}INTEN`);
+             const INTENTIME = getValue(`${room}INTENTIME`);
+             const RED = getValue(`${room}RED`);
+             const GREEN = getValue(`${room}GREEN`);
+             const BLUE = getValue(`${room}BLUE`);
+             const COLORTIME = getValue(`${room}COLORTIME`);
+             const BLACKOUT = getValue(`${room}BLACKOUT`);
+             const BLACKOUTTIME = getValue(`${room}BLACKOUTTIME`);
+             const LOCKDOWN = getValue(`${room}LOCKDOWN`);
+             const LOCKDOWNTIME = getValue(`${room}LOCKDOWNTIME`);
+             const DOOR = getValue(`${room}DOOR`);
+
+             if(INTEN) allScripts += `\n${bind}:/lights ${room} ${INTENTIME} Intensity ${INTEN}`;
+             if(RED || GREEN || BLUE) allScripts += `\n${bind}:/lights ${room} ${COLORTIME} Color ${RED||0} ${GREEN||0} ${BLUE||0}`;
+             if(BLACKOUT) allScripts += `\n${bind}:/lights ${room} ${BLACKOUTTIME} Blackout ${BLACKOUT}`;
+             if(LOCKDOWN) allScripts += `\n${bind}:/lights ${room} ${LOCKDOWNTIME} Lockdown ${LOCKDOWN}`;
+             if(DOOR) allScripts += `\n${bind}:/modd ${DOOR}`;
+        });
+
+        // Двери
+        doors.forEach(door => {
+            const doorAction = getValue(`sel${door}DOOR`);
+            if (doorAction) allScripts += `\n${bind}:/modd ${doorAction}`;
+        });
+
+        // Свои команды
+        if (itemsArray.length > 0) {
+            allScripts += '\n' + itemsArray.map(item => `${bind}:/${item}`).join('\n');
+        }
+
+        document.getElementById('allScriptsOutput').innerText = allScripts.trim();
+    }
+    
+    function copyAllScripts() {
+        const allScriptsOutput = document.getElementById('allScriptsOutput').value;
+        if (!allScriptsOutput) return;
+        navigator.clipboard.writeText(allScriptsOutput)
+            .then(() => {
+                alert("Скрипты успешно скопированы в буфер обмена!");
+            })
+            .catch((error) => {
+                console.error("Ошибка копирования текста: ", error);
+            });
+    }
+
+    // --- ОЧИСТКА И ПАРСИНГ ---
+
+    function confirmClear(i) { if (confirm("Вы уверены, что хотите очистить этот блок?")) { clearALL1(i); clearALL2(i); clearALL3(i); } }
+    function confirmClear1(i) { if (confirm("Очистить основные настройки?")) clearALL1(i); }
+    function confirmClear2(i) { if (confirm("Очистить Clscript?")) clearALL2(i); }
+    function confirmClear3(i) { if (confirm("Очистить дополнительные настройки?")) clearALL3(i); }
+
+    function clearALL1(blockIndex) {
+        setValue(`id${blockIndex}`, ''); setValue(`pochrol${blockIndex}`, ''); 
+        setValue(`playerText${blockIndex}`, "<mark=#000000><size=100>Ожидайте ивентолога</size>\\n<size=50>Откройте консоль для ознакомления с информацией</size></mark>");
+        setValue(`hbctime${blockIndex}`, ''); setValue(`hbctimeInput${blockIndex}`, '');
+        setValue(`pbctime${blockIndex}`, ''); setValue(`pbctext${blockIndex}`, '');
+        setValue(`growthX${blockIndex}`, ''); setValue(`growthY${blockIndex}`, ''); setValue(`growthZ${blockIndex}`, '');
+        setValue(`cordX${blockIndex}`, ''); setValue(`cordY${blockIndex}`, ''); setValue(`cordZ${blockIndex}`, '');
+        setValue(`typeslut${blockIndex}`, ''); setValue(`smname${blockIndex}`, ''); setValue(`typepriv${blockIndex}`, '');
+        setValue(`typevisible${blockIndex}`, ''); setValue(`smplayer${blockIndex}`, ''); setChecked(`smset${blockIndex}`, false);
+    }
+    function clearALL2(blockIndex) {
+        setChecked(`clscriptt${blockIndex}`, false);
+        setValue(`class${blockIndex}`, ''); setValue(`nickname${blockIndex}`, ''); setValue(`health${blockIndex}`, '100');
+        setValue(`customInfo${blockIndex}`, ''); setValue(`customInfoColors${blockIndex}`, 'Standart');
+        for (let k = 1; k <= 8; k++) setValue(`item${k}${blockIndex}`, '');
+        setChecked(`nicknameCheckbox${blockIndex}`, true); setChecked(`badgeCheckbox${blockIndex}`, true); setChecked(`customInfoCheckbox${blockIndex}`, true);
+        setChecked(`roleCheckbox${blockIndex}`, true); setChecked(`unitNameCheckbox${blockIndex}`, true); setChecked(`powerStatusCheckbox${blockIndex}`, true);
+    }
+     function clearALL3(blockIndex) {
+        setValue(`effecttype${blockIndex}`, ''); setValue(`IntensityEF${blockIndex}`, '1'); setValue(`DuratEF${blockIndex}`, '0');
+        setValue(`rpitemType${blockIndex}`, ''); setValue(`rpitemX${blockIndex}`, ''); setValue(`rpitemY${blockIndex}`, '');
+        setValue(`rpitemZ${blockIndex}`, ''); setValue(`rpitemDuration${blockIndex}`, ''); setValue(`rpitemMessage${blockIndex}`, '');
+        setValue(`capp${blockIndex}`, ''); setValue(`tp${blockIndex}`, ''); setValue(`tpx${blockIndex}`, '');
+        setValue(`disarm${blockIndex}`, '');
+        for (let k = 1; k <= 8; k++) {
+             setValue(`PROSTitem${k}${blockIndex}`, '');
+             setValue(`PROSTitem${k}STATUS${blockIndex}`, 'give');
+        }
+        setChecked(`blockstatus${blockIndex}`, false);
+        setChecked(`plahka${blockIndex}`, false); setChecked(`castomnainformacia${blockIndex}`, false); setChecked(`Nickh${blockIndex}`, false);
+        setChecked(`Rolya${blockIndex}`, false); setChecked(`Otryad${blockIndex}`, false); setChecked(`Zvanie${blockIndex}`, false);
+    }
+
+    function parseScript(blockIndex) {
+        const inputScript = getValue(`inputScript${blockIndex}`);
+        const parts = inputScript.split(';');
+        if (parts.length < 7) {
+            alert("Неправильный формат clscript.");
+            return;
+        }
+        setValue(`class${blockIndex}`, parts[0]);
+        let customInfo = parts[1];
+        const colorMatch = customInfo.match(/(<color=#[0-9A-Fa-f]{6}>)(.*?)<\/color>/);
+        if (colorMatch) {
+            setValue(`customInfoColors${blockIndex}`, colorMatch[1]);
+            setValue(`customInfo${blockIndex}`, colorMatch[2]);
+        } else {
+            setValue(`customInfoColors${blockIndex}`, 'Standart');
+            setValue(`customInfo${blockIndex}`, customInfo);
+        }
+        setValue(`nickname${blockIndex}`, parts[2]);
+        setValue(`health${blockIndex}`, parts[3]);
+        const items = parts[4].split(',');
+        for (let i = 0; i < items.length && i < 8; i++) {
+            setValue(`item${i + 1}${blockIndex}`, items[i]);
+        }
+        const infoSum = parseInt(parts[6], 10);
+        setChecked(`nicknameCheckbox${blockIndex}`, (infoSum & 1) > 0);
+        setChecked(`badgeCheckbox${blockIndex}`, (infoSum & 2) > 0);
+        setChecked(`customInfoCheckbox${blockIndex}`, (infoSum & 4) > 0);
+        setChecked(`roleCheckbox${blockIndex}`, (infoSum & 8) > 0);
+        setChecked(`unitNameCheckbox${blockIndex}`, (infoSum & 16) > 0);
+        setChecked(`powerStatusCheckbox${blockIndex}`, (infoSum & 32) > 0);
+    }
+    
+    const rooms = ['LczArmory','LczCurve','LczStraight','Lcz914','LczCrossing','LczTCross','LczCafe','LczPlants','LczToilets','LczAirlock','Lcz173','LczClassDSpawn','LczCheckpointB','LczGlassBox','LczCheckpointA','Hcz079','HczEzCheckpointA','HczEzCheckpointB','HczArmory','Hcz939','HczHid','Hcz049','HczCrossing','Hcz106','HczNuke','HczTesla','HczServers','HczTCross','HczCurve','Hcz096','HczStraight','EzVent','EzIntercom','EzGateA','EzDownstairsPcs','EzCurve','EzPcs','EzCrossing','EzCollapsedTunnel','EzConference','EzStraight','EzCafeteria','EzUpstairsPcs','EzGateB','EzShelter','Pocket','Surface','EzTCross','Lcz330','EzCheckpointHallway','HczTestRoom','HczElevatorA','HczElevatorB'];
+    const doors = ['UnknownDoor','Scp914Door','GR18Inner','Scp049Gate','Scp049Armory','Scp079First','Scp079Second','Scp096','Scp106Primary','Scp106Secondary','Scp173Gate','Scp173Connector','Scp173Armory','Scp173Bottom','GR18Gate','Scp914Gate','Scp939Cryo','CheckpointLczA','CheckpointLczB','EntranceDoor','EscapePrimary','EscapeSecondary','ServersBottom','GateA','GateB','HczArmory','HeavyContainmentDoor','HID','HIDLeft','HIDRight','Intercom','LczArmory','LczCafe','LczWc','LightContainmentDoor','NukeArmory','NukeSurface','PrisonDoor','SurfaceGate','Scp330','Scp330Chamber','CheckpointGate','SurfaceDoor','CheckpointEzHczA','CheckpointEzHczB','UnknownGate','UnknownElevator','ElevatorGateA','ElevatorGateB','ElevatorNuke','ElevatorScp049','ElevatorLczA','ElevatorLczB','CheckpointArmoryA','CheckpointArmoryB','Airlock','Scp173NewGate'];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Запуск создания блоков при загрузке
+        createBlocks();
+        
+        // Генерация кнопок для комнат
+        const roomButtonsContainer = document.getElementById('room-buttons-container');
+        const roomContentContainer = document.getElementById('room-content-container');
+        if (roomButtonsContainer && roomContentContainer) {
+            rooms.forEach(room => {
+                const button = document.createElement('button');
+                button.className = "bg-slate-700 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded-lg text-sm transition-colors";
+                button.textContent = room;
+                button.onclick = (event) => showContents(room, 'room-content-container', event.currentTarget);
+                roomButtonsContainer.appendChild(button);
+
+                const contentPane = document.createElement('div');
+                contentPane.className = "content-pane hidden mt-4 space-y-4 bg-slate-800/50 p-4 rounded-lg";
+                contentPane.id = room;
+                contentPane.innerHTML = `<h3 class="text-lg font-semibold text-slate-200">${room}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <label class="block col-span-1"><span class="text-slate-400">Интенсивность:</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2" placeholder="Значение" id="${room}INTEN"></label>
+                        <label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2" placeholder="Время" id="${room}INTENTIME"></label>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                        <label class="block col-span-1"><span class="text-slate-400">Цвет:</span><input placeholder="R" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2" id="${room}RED"></label>
+                        <label class="block col-span-1"><span class="text-slate-400 invisible">G</span><input placeholder="G" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2" id="${room}GREEN"></label>
+                        <label class="block col-span-1"><span class="text-slate-400 invisible">B</span><input placeholder="B" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2" id="${room}BLUE"></label>
+                        <label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2" id="${room}COLORTIME"></label>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <label class="block col-span-1"><span class="text-slate-400">Блекаут:</span><input placeholder="Значение" id="${room}BLACKOUT" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2"></label>
+                        <label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="${room}BLACKOUTTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2"></label>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <label class="block col-span-1"><span class="text-slate-400">Блокировка:</span><input placeholder="Значение" id="${room}LOCKDOWN" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2"></label>
+                        <label class="block col-span-2"><span class="text-slate-400 invisible">Время</span><input placeholder="Время" id="${room}LOCKDOWNTIME" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2"></label>
+                    </div>
+                    <label class="block"><span class="text-slate-400">Статус дверей:</span><select id="${room}DOOR" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2"><option value="">Ничего</option><option value="lock ${room} false">Разблок.</option><option value="lock ${room} true">Заблок.</option><option value="state ${room} true">Открыть</option><option value="state ${room} false">Закрыть</option><option value="destroy ${room}">Выбить</option></select></label>`;
+                roomContentContainer.appendChild(contentPane);
+            });
+        }
+        
+        // Генерация кнопок для дверей
+        const doorButtonsContainer = document.getElementById('door-buttons-container');
+        const doorContentContainer = document.getElementById('door-content-container');
+        if (doorButtonsContainer && doorContentContainer) {
+            doors.forEach(door => {
+                const doorId = `d${door}`;
+                const selectId = `sel${door}DOOR`;
+                const button = document.createElement('button');
+                button.className = "bg-slate-700 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded-lg text-sm transition-colors";
+                button.textContent = door;
+                button.onclick = (event) => showContents(doorId, 'door-content-container', event.currentTarget);
+                doorButtonsContainer.appendChild(button);
+
+                const contentPane = document.createElement('div');
+                contentPane.className = "content-pane hidden mt-4 space-y-4 bg-slate-800/50 p-4 rounded-lg";
+                contentPane.id = doorId;
+                contentPane.innerHTML = `<h3 class="text-lg font-semibold text-slate-200">${door}</h3><label class="block"><span class="text-slate-400">Статус двери:</span><select id="${selectId}" class="w-full mt-1 bg-slate-700 border border-slate-600 rounded-lg p-2"><option value="">Ничего</option><option value="lock ${door} false">Разблок.</option><option value="lock ${door} true">Заблок.</option><option value="state ${door} true">Открыть</option><option value="state ${door} false">Закрыть</option><option value="destroy ${door}">Выбить</option></select></label>`;
+                doorContentContainer.appendChild(contentPane);
+            });
+        }
+    });
+
+</script>
+
+
+
+</body>
+</html>
